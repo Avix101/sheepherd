@@ -1,0 +1,19 @@
+{
+  "name": "herd.io",
+  "version": "0.0.1",
+  "description": "GDD II Digital Game Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avix101/sheepherd.git"
+  },
+  "author": "Meh.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Avix101/sheepherd/issues"
+  },
+  "homepage": "https://github.com/Avix101/sheepherd#readme"
+}
