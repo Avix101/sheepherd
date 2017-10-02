@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Avix101/sheepherd/issues"
   },
-  "homepage": "https://github.com/Avix101/sheepherd#readme"
+  "homepage": "https://github.com/Avix101/sheepherd#readme",
+  "dependencies": {
+    "express": "^4.16.1"
+  }
 }
