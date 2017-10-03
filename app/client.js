@@ -1,4 +1,4 @@
-//(function(){
+(function(){
 	
 	const socket = io();
 	window.onload = init;
@@ -66,4 +66,4 @@
 		socket.emit('playerUpdate', playerObj.x, playerObj.y);
 	}
 
-//}());
+}());
