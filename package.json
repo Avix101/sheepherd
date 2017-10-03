@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Avix101/sheepherd#readme",
   "dependencies": {
-    "express": "^4.16.1"
+    "express": "^4.16.1",
+    "redis-js": "^0.1.2",
+    "socket.io": "^2.0.3"
   }
 }
