@@ -57,7 +57,7 @@ let gameManager = (function(){
 		requestAnimationFrame(update);
 	}
 	
-	function onMouseMove(){
+	function onMouseMove(event){
 		var rect = canvas.getBoundingClientRect();
 		player.x = event.clientX - rect.left;
 		player.y = event.clientY - rect.top;
