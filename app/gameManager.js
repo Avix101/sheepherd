@@ -45,13 +45,17 @@ let gameManager = (function(){
 		players = [];
 		
 		input.setMouseMoveCallback(onMouseMove);
+		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN]);
 		
 		update();
 	}
 	
 	function update(){
 		
+		checkInput();
+		
 		display.clearCanvas();
+		display.drawBG();
 		display.drawPlayers(players);
 		
 		requestAnimationFrame(update);
@@ -62,6 +66,21 @@ let gameManager = (function(){
 		player.x = event.clientX - rect.left;
 		player.y = event.clientY - rect.top;
 		network.sendPlayerInfo(player);
+	}
+	
+	function checkInput(){
+		
+		if(input.isPressed(input.KEYS.RIGHT)){
+			display.translateCamera(-5, 0);
+		} else if (input.isPressed(input.KEYS.LEFT)){
+			display.translateCamera(5, 0);
+		}
+		
+		if(input.isPressed(input.KEYS.UP)){
+			display.translateCamera(0, 5);
+		} else if (input.isPressed(input.KEYS.DOWN)){
+			display.translateCamera(0, -5);
+		}
 	}
 	
 	return {
