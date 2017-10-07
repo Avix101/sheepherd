@@ -32,6 +32,13 @@ let inputManager = (function(){
 			canvas.onmousemove = callback;
 		}
 		
+		object.setMouseWheelCallback = function(callback){
+			canvas.onwheel = function(event){
+				let result = event.deltaY > 0;
+				callback(result);
+			}
+		}
+		
 		object.addListenerForKeys = function(keyCodes){
 			
 			for(let i = 0; i < keyCodes.length; i++){

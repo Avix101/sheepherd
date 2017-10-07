@@ -45,7 +45,9 @@ let gameManager = (function(){
 		players = [];
 		
 		input.setMouseMoveCallback(onMouseMove);
+		input.setMouseWheelCallback(onMouseScroll);
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN]);
+		
 		
 		update();
 	}
@@ -55,6 +57,7 @@ let gameManager = (function(){
 		checkInput();
 		
 		display.clearCanvas();
+		display.update();
 		display.drawBG();
 		display.drawPlayers(players);
 		
@@ -62,10 +65,16 @@ let gameManager = (function(){
 	}
 	
 	function onMouseMove(event){
-		var rect = canvas.getBoundingClientRect();
-		player.x = event.clientX - rect.left;
-		player.y = event.clientY - rect.top;
+		
+		let globalFrame = display.getGlobalFrame();
+		let rect = canvas.getBoundingClientRect();
+		player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
+		player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
 		network.sendPlayerInfo(player);
+	}
+	
+	function onMouseScroll(result){
+		display.scaleCamera(result ? -0.1 : 0.1);
 	}
 	
 	function checkInput(){
