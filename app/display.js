@@ -182,15 +182,13 @@ let cameraInit = (function(){
 	}
 	
 	function scale(newScale){
-		var scaleFactor = newScale - viewPort.scale;
-		
-		console.log(viewPort);
-		
+		var scaleFactor = newScale - viewPort.scale;	
 		viewPort.scale = newScale;
 		viewPort.left += canvas.width * scaleFactor;
 		viewPort.top += canvas.height * scaleFactor;
 		viewPort.width -= canvas.width * scaleFactor * 2;
 		viewPort.height -= canvas.height * scaleFactor * 2;
+		keepInBounds();
 	}
 	
 	function keepInBounds(){
