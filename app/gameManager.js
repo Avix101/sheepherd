@@ -1,4 +1,4 @@
-let player, players, radius, canvas;
+let player, players, sheep, radius, canvas;
 
 let gameManager = (function(){
 	
