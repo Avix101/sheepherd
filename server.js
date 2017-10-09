@@ -54,6 +54,12 @@ io.on('connection', function(socket){
 	
 	redis.lpush('playerIDs', socket.id);
 	redis.lpush('players', player);
+    
+    var sheep = {
+            x: math.random() * 1000,
+            y: math.random() * 1000,
+        }
+        redis.lpush('sheep', sheep);
 	
 	sendGamestate();
 	

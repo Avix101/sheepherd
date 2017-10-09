@@ -68,9 +68,7 @@ let gameManager = (function(){
 		display.update();
 		display.drawBG();
 		display.drawPlayers(players);
-        if (sheep.length > 0){
-            display.drawSheep(sheep);
-        }
+        display.drawSheep(sheep);
         //display.translateCamera(cameraSpeed.x, cameraSpeed.y);
         
         let localPlayerPosition = display.getLocalPosition(player.x, player.y);
