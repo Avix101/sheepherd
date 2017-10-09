@@ -9,6 +9,8 @@ const KEYCODES = {
 }
 
 let keys;
+let localMousePos;
+let globalMousePos;
 
 //Input Manager Instance
 let inputManager = (function(){
@@ -20,16 +22,66 @@ let inputManager = (function(){
 		
 		object.KEYS = KEYCODES;
 		keys = {};
+        localMousePos = {x: 0, y: 0};
+        globalMousePos = {x: 0, y: 0};
 		
 		/*
 		Method to get local mouse coordinates (relative to the canvas)
 		*/
 
+        object.getGlobalMouseCoords = function(event, globalFrame, rect){
+            let globalMouse = {
+                x: ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x,
+                y: ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y
+            };
+            globalMousePos = globalMouse;
+            return globalMouse;
+        }
+        
+        object.addToGlobalMouse = function(x, y){
+            globalMousePos.x += x;
+            globalMousePos.y += y;
+        }
+        
+        object.calcLocalMouseCoords = function(event, globalFrame, rect){
+            let localMouse = {
+                x: (event.clientX - rect.left) / globalFrame.scale,
+                y: (event.clientY - rect.top) / globalFrame.scale
+            };
+            localMousePos = localMouse;
+            return localMouse;
+        }
+        
+        object.getLocalMouseCoords = function(){
+            return localMousePos;
+        }
+        
+        object.getVectorToMouse = function(pointX, pointY){
+            let mouse = localMousePos;
+            let vector = {
+                x: mouse.x - pointX,
+                y: mouse.y - pointY
+            };
+            
+            /*let distance  = vector.x * vector.x + vector.y * vector.y;
+            let normVector = {
+                x: (vector.x * vector.x) / distance,
+                y: (vector.y * vector.y) / distance
+            };*/
+            let norm = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+            if(norm != 0){
+                vector.x /= norm;
+                vector.y /= norm;
+            }
+            
+            return vector;
+        }
+        
 		/*
 		Listeners to detect input (Only detect)
 		*/
 		object.setMouseMoveCallback = function(callback){
-			canvas.onmousemove = callback;
+            canvas.onmousemove = callback;
 		}
 		
 		object.setMouseWheelCallback = function(callback){

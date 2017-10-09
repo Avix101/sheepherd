@@ -7,6 +7,9 @@ let gameManager = (function(){
 	let display;
 	let input;
 	let network;
+    
+    let cameraSpeed = {x: 0, y: 0};
+    let playerSpeed;
 	
 	function createInstance() {
 		audio = audioManager.getInstance();
@@ -41,13 +44,17 @@ let gameManager = (function(){
 			mouseX: 0,
 			mouseY: 0
 		}
+        
+        playerSpeed = {
+            x: 2,
+            y: 2
+        }
 		
 		players = [];
 		
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN]);
-		
 		
 		update();
 	}
@@ -60,6 +67,30 @@ let gameManager = (function(){
 		display.update();
 		display.drawBG();
 		display.drawPlayers(players);
+        //display.translateCamera(cameraSpeed.x, cameraSpeed.y);
+        
+        let localPlayerPosition = display.getLocalPosition(player.x, player.y);
+        var localMouse = input.getLocalMouseCoords();
+        let playerDirection = input.getVectorToMouse(localPlayerPosition.x, localPlayerPosition.y);
+        
+        let addX = playerDirection.x * playerSpeed.x;
+        let addY = playerDirection.y * playerSpeed.y;
+        
+        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4){
+            addX = 0;
+        }
+        
+        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4){
+            addY = 0;
+        }
+        
+        player.x += addX;
+        player.y += addY;
+        
+        //input.addToGlobalMouse(addX, addY, world);
+        
+        display.translateToCamera(player.x, player.y);
+        network.sendPlayerInfo(player);
 		
 		requestAnimationFrame(update);
 	}
@@ -68,9 +99,19 @@ let gameManager = (function(){
 		
 		let globalFrame = display.getGlobalFrame();
 		let rect = canvas.getBoundingClientRect();
-		player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
-		player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
-		network.sendPlayerInfo(player);
+		//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
+		//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
+		//
+        
+        let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);
+        //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);
+        
+        /*cameraSpeed = {
+            x: ((canvas.width / 2) - mouseLocation.x) / 15,
+            y: ((canvas.height / 2) - mouseLocation.y) / 15
+        };*/
+        //console.dir(cameraSpeed);
+        
 	}
 	
 	function onMouseScroll(result){

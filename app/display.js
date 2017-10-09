@@ -69,8 +69,10 @@ let displayManager = (function(){
 		Camera controls
 		*/
 		object.translateCamera = function(x, y){camera.translate(x, y);};
+        object.translateToCamera = function(x, y){camera.translateTo(x, y);};
 		object.scaleCamera = function(amount){camera.scale(amount);};
 		object.getGlobalFrame = function(){return camera.getGlobalFrame();};
+        object.getLocalPosition = function(globalX, globalY){return camera.getLocalPos(globalX, globalY);};
 		
 		console.log("Display Manager Instance created");
 		return object;
@@ -134,12 +136,21 @@ let cameraInit = (function(){
 		
 		cameraObj.getViewPort = function(){return viewPort;};
 		cameraObj.translate = function(x, y){translate(x, y);};
+        cameraObj.translateTo = function(x, y){translateTo(x, y);};
 		cameraObj.scale = function(amount){
 			let factor = viewPort.scale + amount;
 			factor = Math.min(factor, MAX_SCROLL);
 			factor = Math.max(factor, MIN_SCROLL);
 			scale(factor);
 		}
+        
+        cameraObj.getLocalPos = function(globalX, globalY){
+            let position = {
+                x: globalX - viewPort.left,
+                y: globalY - viewPort.top
+            }
+            return position;
+        }
 		
 		cameraObj.getGlobalFrame = function(){
 			let frame = {};
@@ -180,6 +191,14 @@ let cameraInit = (function(){
 		viewPort.top -= y;
 		keepInBounds();
 	}
+    
+    function translateTo(x, y){
+        let left = x - (canvas.width / 2);
+        let top = y - (canvas.height / 2);
+        viewPort.left = left;
+        viewPort.top = top;
+        keepInBounds();
+    }
 	
 	function scale(newScale){
 		var scaleFactor = newScale - viewPort.scale;	
