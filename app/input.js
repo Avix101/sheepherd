@@ -5,7 +5,8 @@ const KEYCODES = {
 	UP: 38,
 	DOWN: 40,
 	LEFT: 37,
-	RIGHT: 39
+	RIGHT: 39,
+    S: 83
 }
 
 let keys;

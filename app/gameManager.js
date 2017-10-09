@@ -43,10 +43,11 @@ let gameManager = (function(){
 		}
 		
 		players = [];
+        sheep = [];
 		
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
-		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN]);
+		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.S]);
 		
 		
 		update();
@@ -60,6 +61,7 @@ let gameManager = (function(){
 		display.update();
 		display.drawBG();
 		display.drawPlayers(players);
+        display.drawSheep(sheep);
 		
 		requestAnimationFrame(update);
 	}
@@ -90,6 +92,10 @@ let gameManager = (function(){
 		} else if (input.isPressed(input.KEYS.DOWN)){
 			display.translateCamera(0, -5);
 		}
+        
+        if(input.isPressed(input.KEYS.S)){
+            network.spawnSheep();
+        }
 	}
 	
 	return {

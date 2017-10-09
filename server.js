@@ -35,9 +35,11 @@ function getPlayerIndex(socket){
 };
 
 function sendGamestate(){
-
-	var playerData = redis.lrange('players', 0, -1);
-	io.sockets.emit('gamestate', playerData);
+    var gameData = {
+        playerData: redis.lrange('players', 0, -1),
+        sheepData: redis.lrange('sheep', 0, -1)
+    };
+	io.sockets.emit('gamestate', gameData);
 };
 
 io.on('connection', function(socket){
@@ -68,6 +70,15 @@ io.on('connection', function(socket){
 		redis.lset('players', index, playerObj);
 		sendGamestate();
 	});
+    
+    socket.on('spawnSheep', function(){
+        var sheep = {
+            x: math.random() * 1000,
+            y: math.random() * 1000,
+        }
+        redis.lpush('sheep', sheep);
+		sendGamestate();
+    })
 	
 	socket.on('disconnect', function(){
 		

@@ -19,6 +19,9 @@ let networkManager = (function(){
 			socket.emit('playerUpdate', playerObj.x, playerObj.y);
 		}
 		
+        object.spawnSheep = function(){
+            socket.emit('spawnSheep');
+        }
 		/*
 		Methods that receive information from the server
 		*/
@@ -31,8 +34,9 @@ let networkManager = (function(){
 		console.log("Connected to server...");
 	});
 
-	socket.on('gamestate', function(playersObj){
+	socket.on('gamestate', function(playersObj, sheepObj){
 		players = playersObj;
+        sheep = sheepObj;
 	});
 	
 	return {

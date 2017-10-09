@@ -63,8 +63,11 @@ let displayManager = (function(){
 			}
 		}
         
-        object.drawObjects = function(objects){
-            
+        object.drawSheep = function(sheep){
+			var viewPort = camera.getViewPort();
+			for(var i = 0; i < sheep.length; i++){
+				drawSheep(sheep[i]);
+			}
         }
 		
 		/*
@@ -87,17 +90,26 @@ let displayManager = (function(){
 		
 		ctx.beginPath();
 		ctx.arc(playerObj.x, playerObj.y, radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle('black');
 		ctx.fill();
 		ctx.stroke();
 	}
     
-    function drawSprite(drawObj){
+    function drawSheep(playerObj){
+        ctx.beginPath();
+		ctx.arc(playerObj.x, playerObj.y, radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle('white');
+		ctx.fill();
+		ctx.stroke();
+    }
+    
+    function drawSprite(drawObj, sprite){
         ctx.drawImage(
-                drawObj.spriteSheet,            // spritesheet
+                sprite.src,                     // spritesheet
                 0,                              // x pos on spritesheet
                 0,                              // y pos on spritesheet
-                drawObj.spriteWidth,            // width on spritesheet
-                drawObj.spriteHeight,           // height on spritesheet
+                sprite.width,                   // width on spritesheet
+                sprite.height,                  // height on spritesheet
                 drawObj.x - drawObj.width / 2,  // top left corner x on canvas
                 drawObj.y - drawObj.height / 2, // top left corner y on canvas
                 drawObj.width,                  // width on canvas
