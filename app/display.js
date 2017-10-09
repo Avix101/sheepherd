@@ -28,6 +28,9 @@ let displayManager = (function(){
 		mapImage.onload = function(){
 			mapPattern = ctx.createPattern(mapImage, "repeat");
 		}
+        
+        let sheepSprite = new Image();
+        sheepSprite.src = "app/resources/sheep.png";
 		
 		/*
 		Method to Clear the canvas
@@ -59,6 +62,10 @@ let displayManager = (function(){
 				drawPlayer(players[i]);
 			}
 		}
+        
+        object.drawObjects = function(objects){
+            
+        }
 		
 		/*
 		Methods to Render / Draw objects onscreen
@@ -83,6 +90,20 @@ let displayManager = (function(){
 		ctx.fill();
 		ctx.stroke();
 	}
+    
+    function drawSprite(drawObj){
+        ctx.drawImage(
+                drawObj.spriteSheet,            // spritesheet
+                0,                              // x pos on spritesheet
+                0,                              // y pos on spritesheet
+                drawObj.spriteWidth,            // width on spritesheet
+                drawObj.spriteHeight,           // height on spritesheet
+                drawObj.x - drawObj.width / 2,  // top left corner x on canvas
+                drawObj.y - drawObj.height / 2, // top left corner y on canvas
+                drawObj.width,                  // width on canvas
+                drawObj.height                  // height on canvas
+            );
+    }
 	
 	return {
 		getInstance: function() {
