@@ -97,9 +97,9 @@ let displayManager = (function(){
 		ctx.stroke();
 	}
     
-    function drawSheep(playerObj){
+    function drawSheep(sheepObj){
         ctx.beginPath();
-		ctx.arc(playerObj.x, playerObj.y, radius, 0, 2 * Math.PI, false);
+		ctx.arc(sheepObj.x, sheepObj.y, radius, 0, 2 * Math.PI, false);
         ctx.fillStyle('white');
 		ctx.fill();
 		ctx.stroke();
