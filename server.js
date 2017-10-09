@@ -37,9 +37,14 @@ function getPlayerIndex(socket){
 function sendGamestate(){
     var gameData = {
         playerData: redis.lrange('players', 0, -1),
-        sheepData: redis.lrange('sheep', 0, -1)
     };
 	io.sockets.emit('gamestate', gameData);
+};
+function sendSheepstate(){
+    var gameData = {
+        sheepData: redis.lrange('sheep', 0, -1)
+    };
+	io.sockets.emit('sheepstate', gameData);
 };
 
 io.on('connection', function(socket){
@@ -55,13 +60,14 @@ io.on('connection', function(socket){
 	redis.lpush('playerIDs', socket.id);
 	redis.lpush('players', player);
     
-    var sheep = {
-            x: math.random() * 1000,
-            y: math.random() * 1000,
-        }
-        redis.lpush('sheep', sheep);
+    var playerSheep = {
+        x: Math.random() * 500,
+        y: Math.random() * 500
+    };
+    redis.lpush('sheep', playerSheep);
 	
 	sendGamestate();
+	sendSheepstate();
 	
 	socket.on('playerUpdate', function(x, y){
 			
@@ -70,7 +76,7 @@ io.on('connection', function(socket){
 			x: x,
 			y: y,
 			id: socket.id
-		}
+		};
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, playerObj);
@@ -79,11 +85,11 @@ io.on('connection', function(socket){
     
     socket.on('spawnSheep', function(){
         var sheep = {
-            x: math.random() * 1000,
-            y: math.random() * 1000,
-        }
+            x: Math.random() * 5000,
+            y: Math.random() * 5000
+        };
         redis.lpush('sheep', sheep);
-		sendGamestate();
+		sendSheepstate();
     })
 	
 	socket.on('disconnect', function(){

@@ -34,9 +34,12 @@ let networkManager = (function(){
 		console.log("Connected to server...");
 	});
 
-	socket.on('gamestate', function(playersObj, sheepObj){
-		players = playersObj;
-        sheep = sheepObj;
+	socket.on('gamestate', function(gameData){
+		players = gameData.playerData;
+	});
+    
+	socket.on('sheepstate', function(gameData){
+        sheep = gameData.sheepData;
 	});
 	
 	return {
