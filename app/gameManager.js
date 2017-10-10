@@ -41,7 +41,7 @@ let gameManager = (function(){
 		player = {	
 			x: -10,
 			y: -10,
-			id: network.getID()
+			id: null
 		}
         
         playerSpeed = {
@@ -94,6 +94,10 @@ let gameManager = (function(){
          for (i = 0; i < sheep.length; i++) {
              let vector = getNormalizedVectortoPlayer(sheep[i].x, sheep[i].y);
 
+             if(player.id == undefined){
+                 continue;
+             }
+             
              if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500 && getClosestPlayer(sheep[i]).id == player.id) {
                  sheep[i].x += vector.x;
                  sheep[i].y += vector.y;

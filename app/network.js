@@ -15,7 +15,7 @@ let networkManager = (function(){
 		Methods that send information to the server
 		*/
         object.getID = function(){
-            return socket.id;
+            return socket.io.engine.id;
         }
 		
 		object.sendPlayerInfo = function(playerObj){
@@ -39,6 +39,7 @@ let networkManager = (function(){
 	
 	socket.on('connect', function(){
 		console.log("Connected to server...");
+        player.id = instance.getID();
 	});
 
 	socket.on('gamestate', function(gameData){
