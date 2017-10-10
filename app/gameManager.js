@@ -94,7 +94,7 @@ let gameManager = (function(){
          for (i = 0; i < sheep.length; i++) {
              let vector = getNormalizedVectortoPlayer(sheep[i].x, sheep[i].y);
 
-             if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500) {
+             if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500 && getClosestPlayer(sheep[i]).id == player.id) {
                  sheep[i].x += vector.x;
                  sheep[i].y += vector.y;
                  network.updateSheep(sheep[i], i);
@@ -184,7 +184,7 @@ let gameManager = (function(){
                 playNum = i;
             }
         }
-        return player[playNum];
+        return players[playNum];
     }
 
     function getVectortoPlayer(playerV, pointX, pointY) {
