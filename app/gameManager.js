@@ -89,6 +89,16 @@ let gameManager = (function(){
         
         player.x += addX;
         player.y += addY;
+
+         //sheep movement
+         for (i = 0; i < sheep.length; i++) {
+             let vector = getNormalizedVectortoPlayer(sheep[i].x, sheep[i].y);
+
+             if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500) {
+                 sheep[i].x += vector.x;
+                 sheep[i].y += vector.y;
+             }
+         }
         
         //input.addToGlobalMouse(addX, addY, world);
         
@@ -138,7 +148,43 @@ let gameManager = (function(){
         if(input.isPressed(input.KEYS.S)){
             network.spawnSheep();
         }
-	}
+    }
+
+    function calcPointDistance(point1, point2) {
+        return Math.sqrt(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2))
+    }
+
+    function calcVectorDistance(vector) {
+        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+    }
+
+    function getNormalizedVectortoPlayer(pointX, pointY) {
+        let vector = {
+            x: player.x - pointX,
+            y: player.y - pointY
+        };
+
+        let norm = calcVectorDistance(vector);
+        if (norm != 0) {
+            vector.x /= norm;
+            vector.y /= norm;
+        }
+
+        return vector;
+    }
+
+    function getVectortoPlayer(pointX, pointY) {
+        let vector = {
+            x: player.x - pointX,
+            y: player.y - pointY
+        };
+
+        return vector;
+    }
+
+    function sheepSeek(sheep) {
+        
+    }
 	
 	return {
 		getInstance: function() {
