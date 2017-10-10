@@ -88,9 +88,14 @@ io.on('connection', function(socket){
             x: Math.random() * 5000,
             y: Math.random() * 5000
         };
-        redis.lpush('sheep', sheep);
+        redis.rpush('sheep', sheep);
 		sendSheepstate();
-    })
+    });
+    
+    socket.on('updateSheep', function(sheep, index){
+        redis.lset('sheep', index, sheep);
+        sendSheepstate();
+    });
 	
 	socket.on('disconnect', function(){
 		

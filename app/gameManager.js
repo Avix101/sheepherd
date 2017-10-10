@@ -98,6 +98,7 @@ let gameManager = (function(){
              if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500) {
                  sheep[i].x += vector.x;
                  sheep[i].y += vector.y;
+                 network.updateSheep(sheep[i], i);
              }
          }
         
