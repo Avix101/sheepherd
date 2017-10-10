@@ -94,7 +94,11 @@ io.on('connection', function(socket){
 	
 	socket.on('disconnect', function(){
 		
-		log.info(socket.request.connection.remoteAddress + " disconnected.");
+        log.info(socket.request.connection.remoteAddress + " disconnected.");
+
+        if (redis.lrange('players', 0, -1).length == 1) {
+            redis.del('sheep');
+        }
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, DELETE);
