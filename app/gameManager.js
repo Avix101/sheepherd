@@ -41,7 +41,7 @@ let gameManager = (function(){
 		player = {	
 			x: -10,
 			y: -10,
-			id: null
+			id: 0
 		}
         
         playerSpeed = {
@@ -91,7 +91,7 @@ let gameManager = (function(){
         player.y += addY;
 
          //sheep movement
-         for (i = 0; i < sheep.length; i++) {
+         for (let i = 0; i < sheep.length; i++) {
              let vector = getNormalizedVectortoPlayer(sheep[i].x, sheep[i].y);
 
              if(player.id == undefined){
@@ -156,7 +156,7 @@ let gameManager = (function(){
     }
 
     function calcPointDistance(point1, point2) {
-        return Math.sqrt(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2))
+        return Math.sqrt(Math.abs(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2)));
     }
 
     function calcVectorDistance(vector) {
@@ -180,8 +180,8 @@ let gameManager = (function(){
 
     function getClosestPlayer(point) {
         let closest = 10000;
-        let playNum = 0
-        for (i = 0; i < players.length; i++) {
+        let playNum = 0;
+        for (let i = 0; i < players.length; i++) {
             let dist = calcPointDistance(point, players[i]);
             if (dist < closest) {
                 closest = dist;
