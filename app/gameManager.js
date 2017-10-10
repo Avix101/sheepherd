@@ -79,11 +79,12 @@ let gameManager = (function(){
         let addX = playerDirection.x * playerSpeed.x;
         let addY = playerDirection.y * playerSpeed.y;
         
-        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4){
+        let globalFrame = display.getGlobalFrame();
+        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4 / globalFrame.scale){
             addX = 0;
         }
         
-        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4){
+        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4 / globalFrame.scale){
             addY = 0;
         }
         
