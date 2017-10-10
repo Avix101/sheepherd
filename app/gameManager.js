@@ -41,8 +41,7 @@ let gameManager = (function(){
 		player = {	
 			x: -10,
 			y: -10,
-			mouseX: 0,
-			mouseY: 0
+			id: network.getID()
 		}
         
         playerSpeed = {
@@ -79,11 +78,12 @@ let gameManager = (function(){
         let addX = playerDirection.x * playerSpeed.x;
         let addY = playerDirection.y * playerSpeed.y;
         
-        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4){
+        let globalFrame = display.getGlobalFrame();
+        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4 / globalFrame.scale){
             addX = 0;
         }
         
-        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4){
+        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4 / globalFrame.scale){
             addY = 0;
         }
         
@@ -97,6 +97,7 @@ let gameManager = (function(){
              if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500) {
                  sheep[i].x += vector.x;
                  sheep[i].y += vector.y;
+                 network.updateSheep(sheep[i], i);
              }
          }
         
