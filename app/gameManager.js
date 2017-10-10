@@ -191,10 +191,10 @@ let gameManager = (function(){
         return players[playNum];
     }
 
-    function getVectortoPlayer(playerV, pointX, pointY) {
+    function getVectortoPlayer(pointX, pointY) {
         let vector = {
-            x: playerV.x - pointX,
-            y: playerV.y - pointY
+            x: player.x - pointX,
+            y: player.y - pointY
         };
 
         return vector;
