@@ -17,7 +17,18 @@ let displayManager = (function(){
 		
 		canvas = document.querySelector('#primaryCanvas');
 		ctx = canvas.getContext('2d');
+
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		// setup canvas resize to window
+		window.onresize =function() {
+        		canvas.width = window.innerWidth;
+        		canvas.height = window.innerHeight;
+    		};
+
 		
+
 		//Initialize Camera
 		camera = cameraInit.getInstance();
 		camera.init(canvas.width / 2, canvas.height / 2, canvas.width, canvas.height);
