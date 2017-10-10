@@ -41,8 +41,7 @@ let gameManager = (function(){
 		player = {	
 			x: -10,
 			y: -10,
-			mouseX: 0,
-			mouseY: 0
+			id: network.getID()
 		}
         
         playerSpeed = {

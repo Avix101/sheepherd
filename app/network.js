@@ -14,6 +14,9 @@ let networkManager = (function(){
 		/*
 		Methods that send information to the server
 		*/
+        object.getID = function(){
+            return socket.id;
+        }
 		
 		object.sendPlayerInfo = function(playerObj){
 			socket.emit('playerUpdate', playerObj.x, playerObj.y);
@@ -44,7 +47,6 @@ let networkManager = (function(){
     
 	socket.on('sheepstate', function(gameData){
         sheep = gameData.sheepData;
-        
 	});
 	
 	return {
