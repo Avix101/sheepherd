@@ -173,10 +173,23 @@ let gameManager = (function(){
         return vector;
     }
 
-    function getVectortoPlayer(pointX, pointY) {
+    function getClosestPlayer(point) {
+        let closest = 10000;
+        let playNum = 0
+        for (i = 0; i < players.length; i++) {
+            let dist = calcPointDistance(point, players[i]);
+            if (dist < closest) {
+                closest = dist;
+                playNum = i;
+            }
+        }
+        return player[playNum];
+    }
+
+    function getVectortoPlayer(playerV, pointX, pointY) {
         let vector = {
-            x: player.x - pointX,
-            y: player.y - pointY
+            x: playerV.x - pointX,
+            y: playerV.y - pointY
         };
 
         return vector;
