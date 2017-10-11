@@ -56,6 +56,8 @@ function update(){
 	}, 1000 / 60);
 }
 
+let host;
+
 io.on('connection', function(socket){
 	
 	log.notify(socket.request.connection.remoteAddress + " connected!");
@@ -65,6 +67,11 @@ io.on('connection', function(socket){
 		y: 0,
 		id: socket.id
 	};
+	
+	if(!host){
+		host = socket.id;
+		io.sockets.connected[host].emit('host', true);
+	}
 	
 	redis.lpush('playerIDs', socket.id);
 	redis.lpush('players', player);
@@ -126,6 +133,13 @@ io.on('connection', function(socket){
 		redis.lset('players', index, DELETE);
 		redis.lrem('players', -1, DELETE);
 		redis.lrem('playerIDs', -1, socket.id);
+		
+		if(host == socket.id){
+			host = redis.lindex('playerIDs', 0);
+			if(host){
+				io.sockets.connected[host].emit('host', true);
+			}
+		}
 	});
 });
 

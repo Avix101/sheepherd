@@ -9,6 +9,8 @@ const TYPES = {
 	OBJECT: 2
 }
 
+let host = false;
+
 //Network Manager Instance
 let networkManager = (function(){
 	
@@ -24,6 +26,10 @@ let networkManager = (function(){
         object.getID = function(){
             return socket.io.engine.id;
         }
+		
+		object.isHost = function(){
+			return host;
+		}
 		
 		object.sendPlayerInfo = function(playerObj){
 			socket.emit('playerUpdate', playerObj.x, playerObj.y);
@@ -71,6 +77,10 @@ let networkManager = (function(){
     
 	socket.on('sheepstate', function(gameData){
         sheep = gameData.sheepData;
+	});
+	
+	socket.on('host', function(isHost){
+		host = isHost;
 	});
 	
 	return {

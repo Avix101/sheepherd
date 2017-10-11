@@ -90,25 +90,28 @@ let gameManager = (function(){
         player.x += addX;
         player.y += addY;
 
-		let sheepPacket = network.createSheepPacket();
+		if(network.isHost()){
+			let sheepPacket = network.createSheepPacket();
 		
-        //sheep movement
-        for (let i = 0; i < sheep.length; i++) {
-             let vector = getNormalizedVectortoPlayer(sheep[i].x, sheep[i].y);
+			//sheep movement
+			for (let i = 0; i < sheep.length; i++) {
+				 let closestPlayer = getClosestPlayer(sheep[i]); 
+				 let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
 
-             if(player.id == undefined){
-                 continue;
-             }
-             
-             if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500 && getClosestPlayer(sheep[i]).id == player.id) {
-                 sheep[i].x += vector.x;
-                 sheep[i].y += vector.y;
-                 //network.updateSheep(sheep[i], i);
-				 network.appendSheepPacket(sheepPacket, sheep[i], i);
-             }
-         }
-		 
-		 network.sendSheepPacket(sheepPacket);
+				 if(closestPlayer.id == undefined){
+					 continue;
+				 }
+				 
+				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
+					 sheep[i].x += vector.x;
+					 sheep[i].y += vector.y;
+					 //network.updateSheep(sheep[i], i);
+					 network.appendSheepPacket(sheepPacket, sheep[i], i);
+				 }
+			 }
+			 
+			 network.sendSheepPacket(sheepPacket);
+		}
         
         //input.addToGlobalMouse(addX, addY, world);
         
@@ -168,10 +171,10 @@ let gameManager = (function(){
         return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
     }
 
-    function getNormalizedVectortoPlayer(pointX, pointY) {
+    function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {
         let vector = {
-            x: player.x - pointX,
-            y: player.y - pointY
+            x: playerObj.x - pointX,
+            y: playerObj.y - pointY
         };
 
         let norm = calcVectorDistance(vector);
@@ -196,10 +199,10 @@ let gameManager = (function(){
         return players[playNum];
     }
 
-    function getVectortoPlayer(pointX, pointY) {
+    function getVectortoPlayer(playerObj, pointX, pointY) {
         let vector = {
-            x: player.x - pointX,
-            y: player.y - pointY
+            x: playerObj.x - pointX,
+            y: playerObj.y - pointY
         };
 
         return vector;
