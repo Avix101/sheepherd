@@ -47,6 +47,15 @@ function sendSheepstate(){
 	io.sockets.emit('sheepstate', gameData);
 };
 
+function update(){
+	
+	sendGamestate();
+	sendSheepstate();
+	setTimeout(function(){
+		update();
+	}, 1000 / 60);
+}
+
 io.on('connection', function(socket){
 	
 	log.notify(socket.request.connection.remoteAddress + " connected!");
@@ -66,8 +75,9 @@ io.on('connection', function(socket){
     };
     redis.lpush('sheep', playerSheep);
 	
-	sendGamestate();
-	sendSheepstate();
+	update();
+	//sendGamestate();
+	//sendSheepstate();
 	
 	socket.on('playerUpdate', function(x, y){
 			
@@ -89,12 +99,12 @@ io.on('connection', function(socket){
             y: Math.random() * 5000
         };
         redis.rpush('sheep', sheep);
-		sendSheepstate();
+		//sendSheepstate();
     });
     
     socket.on('updateSheep', function(sheep, index){
         redis.lset('sheep', index, sheep);
-        sendSheepstate();
+        //sendSheepstate();
     });
 	
 	socket.on('disconnect', function(){
