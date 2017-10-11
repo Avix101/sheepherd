@@ -121,6 +121,48 @@ io.on('connection', function(socket){
 		sendSheepstate();
 	});
 	
+	socket.on('rejectHost', function(){
+		log.notify("Switching Hosts");
+		
+		redis.lpush('rejectedHosts', host);
+		let players = redis.lrange('playerIDs', 0, -1);
+		let oldHost = host;
+		let oldHostIndex = players.indexOf(oldHost);
+		
+		for(let i = 0; i < players.length; i++){
+			
+		
+			if(redis.lindex('rejectedHosts', players[i]) != -1){
+				continue;
+			}
+		
+			host = redis.lindex('playerIDs', i);
+			
+			if(io.sockets.connected[oldHost]){
+				io.sockets.connected[oldHost].emit('host', false);
+			}
+			
+			if(io.sockets.connected[host]){
+				io.sockets.connected[host].emit('host', true);
+			}
+			
+			return;
+		}
+		
+		host = undefined;
+	});
+	
+	socket.on('acceptHost', function(){
+		redis.lrem('rejectedHosts', -1, socket.id);
+		if(!host){
+			host = socket.id;
+			
+			if(io.sockets.connected[host]){
+				io.sockets.connected[host].emit('host', true);
+			}
+		}
+	});
+	
 	socket.on('disconnect', function(){
 		
         log.info(socket.request.connection.remoteAddress + " disconnected.");

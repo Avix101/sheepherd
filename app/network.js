@@ -10,6 +10,7 @@ const TYPES = {
 }
 
 let host = false;
+let isHostCallback;
 
 //Network Manager Instance
 let networkManager = (function(){
@@ -29,6 +30,18 @@ let networkManager = (function(){
 		
 		object.isHost = function(){
 			return host;
+		}
+		
+		object.rejectHost = function(){
+			socket.emit('rejectHost');
+		}
+		
+		object.acceptHost = function(){
+			socket.emit('acceptHost');
+		}
+		
+		object.setIsHostCallback = function(callback){
+			isHostCallback = callback;
 		}
 		
 		object.sendPlayerInfo = function(playerObj){
@@ -81,6 +94,9 @@ let networkManager = (function(){
 	
 	socket.on('host', function(isHost){
 		host = isHost;
+		if(host){
+			isHostCallback();
+		}
 	});
 	
 	return {

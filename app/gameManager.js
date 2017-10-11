@@ -55,6 +55,8 @@ let gameManager = (function(){
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);
+		input.setWindowActiveCallback(rejectHost, acceptHost);
+		network.setIsHostCallback(checkHostViability);
 		
 		update();
 	}
@@ -112,13 +114,31 @@ let gameManager = (function(){
 			 
 			 network.sendSheepPacket(sheepPacket);
 		}
-        
+		
         //input.addToGlobalMouse(addX, addY, world);
         
         display.translateToCamera(player.x, player.y);
         network.sendPlayerInfo(player);
 		
 		requestAnimationFrame(update);
+	}
+	
+	function rejectHost(windowActive){
+		if(!windowActive && network.isHost()){
+			network.rejectHost();
+		}
+	}
+	
+	function acceptHost(windowActive){
+		if(windowActive){
+			network.acceptHost();
+		}
+	}
+	
+	function checkHostViability(){
+		if(!input.isWindowActive()){
+			network.rejectHost();
+		}
 	}
 	
 	function onMouseMove(event){
