@@ -111,6 +111,7 @@ io.on('connection', function(socket){
 		for(let i = 0; i < packet.sheep.length; i++){
 			redis.lset('sheep', packet.indicies[i], packet.sheep[i]);
 		}
+		sendSheepstate();
 	});
 	
 	socket.on('disconnect', function(){
