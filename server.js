@@ -50,7 +50,7 @@ function sendSheepstate(){
 function update(){
 	
 	sendGamestate();
-	sendSheepstate();
+	//sendSheepstate();
 	setTimeout(function(){
 		update();
 	}, 1000 / 60);
@@ -90,7 +90,7 @@ io.on('connection', function(socket){
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, playerObj);
-		sendGamestate();
+		//sendGamestate();
 	});
     
     socket.on('spawnSheep', function(){
@@ -99,13 +99,19 @@ io.on('connection', function(socket){
             y: Math.random() * 5000
         };
         redis.rpush('sheep', sheep);
-		//sendSheepstate();
+		sendSheepstate();
     });
     
     socket.on('updateSheep', function(sheep, index){
         redis.lset('sheep', index, sheep);
         //sendSheepstate();
     });
+	
+	socket.on('updateAllSheep', function(packet){
+		for(let i = 0; i < packet.sheep.length; i++){
+			redis.lset('sheep', packet.indicies[i], packet.sheep[i]);
+		}
+	});
 	
 	socket.on('disconnect', function(){
 		

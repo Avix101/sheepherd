@@ -3,6 +3,12 @@ Initialize socket connection, describe any constants used
 */
 const socket = io();
 
+const TYPES = {
+	VARIABLE: 0,
+	ARRAY: 1,
+	OBJECT: 2
+}
+
 //Network Manager Instance
 let networkManager = (function(){
 	
@@ -11,6 +17,7 @@ let networkManager = (function(){
 	function createInstance() {
 		let object = new Object();
 		
+		object.TYPES = TYPES;
 		/*
 		Methods that send information to the server
 		*/
@@ -29,6 +36,22 @@ let networkManager = (function(){
         object.updateSheep = function(sheep, index){
             socket.emit('updateSheep', sheep, index);
         }
+		
+		object.createSheepPacket = function(){
+			let packet = {};
+			packet.sheep = [];
+			packet.indicies = [];
+			return packet;
+		}
+		
+		object.appendSheepPacket = function(packet, sheep, index){
+			packet.sheep.push(sheep);
+			packet.indicies.push(index);
+		}
+		
+		object.sendSheepPacket = function(packet){
+			socket.emit('updateAllSheep', packet);
+		}
 		/*
 		Methods that receive information from the server
 		*/

@@ -90,8 +90,10 @@ let gameManager = (function(){
         player.x += addX;
         player.y += addY;
 
-         //sheep movement
-         for (let i = 0; i < sheep.length; i++) {
+		let sheepPacket = network.createSheepPacket();
+		
+        //sheep movement
+        for (let i = 0; i < sheep.length; i++) {
              let vector = getNormalizedVectortoPlayer(sheep[i].x, sheep[i].y);
 
              if(player.id == undefined){
@@ -101,9 +103,12 @@ let gameManager = (function(){
              if (calcVectorDistance(getVectortoPlayer(sheep[i].x, sheep[i].y)) < 500 && getClosestPlayer(sheep[i]).id == player.id) {
                  sheep[i].x += vector.x;
                  sheep[i].y += vector.y;
-                 network.updateSheep(sheep[i], i);
+                 //network.updateSheep(sheep[i], i);
+				 network.appendSheepPacket(sheepPacket, sheep[i], i);
              }
          }
+		 
+		 network.sendSheepPacket(sheepPacket);
         
         //input.addToGlobalMouse(addX, addY, world);
         
