@@ -77,7 +77,7 @@ io.on('connection', function(socket){
 	
 	update();
 	//sendGamestate();
-	//sendSheepstate();
+	sendSheepstate();
 	
 	socket.on('playerUpdate', function(x, y){
 			
