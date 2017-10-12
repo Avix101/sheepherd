@@ -47,6 +47,17 @@ function sendSheepstate(){
 	io.sockets.emit('sheepstate', gameData);
 };
 
+function update(){
+	
+	sendGamestate();
+	//sendSheepstate();
+	setTimeout(function(){
+		update();
+	}, 1000 / 60);
+}
+
+let host;
+
 io.on('connection', function(socket){
 	
 	log.notify(socket.request.connection.remoteAddress + " connected!");
@@ -57,6 +68,11 @@ io.on('connection', function(socket){
 		id: socket.id
 	};
 	
+	if(!host){
+		host = socket.id;
+		io.sockets.connected[host].emit('host', true);
+	}
+	
 	redis.lpush('playerIDs', socket.id);
 	redis.lpush('players', player);
     
@@ -66,7 +82,8 @@ io.on('connection', function(socket){
     };
     redis.lpush('sheep', playerSheep);
 	
-	sendGamestate();
+	update();
+	//sendGamestate();
 	sendSheepstate();
 	
 	socket.on('playerUpdate', function(x, y){
@@ -80,7 +97,7 @@ io.on('connection', function(socket){
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, playerObj);
-		sendGamestate();
+		//sendGamestate();
 	});
     
     socket.on('spawnSheep', function(){
@@ -88,18 +105,83 @@ io.on('connection', function(socket){
             x: Math.random() * 5000,
             y: Math.random() * 5000
         };
-        redis.lpush('sheep', sheep);
+        redis.rpush('sheep', sheep);
 		sendSheepstate();
-    })
+    });
+    
+    socket.on('updateSheep', function(sheep, index){
+        redis.lset('sheep', index, sheep);
+        //sendSheepstate();
+    });
+	
+	socket.on('updateAllSheep', function(packet){
+		for(let i = 0; i < packet.sheep.length; i++){
+			redis.lset('sheep', packet.indicies[i], packet.sheep[i]);
+		}
+		sendSheepstate();
+	});
+	
+	socket.on('rejectHost', function(){
+		log.notify("Switching Hosts");
+		
+		redis.lpush('rejectedHosts', host);
+		let players = redis.lrange('playerIDs', 0, -1);
+		let oldHost = host;
+		let oldHostIndex = players.indexOf(oldHost);
+		
+		for(let i = 0; i < players.length; i++){
+			
+		
+			if(redis.lindex('rejectedHosts', players[i]) != -1){
+				continue;
+			}
+		
+			host = redis.lindex('playerIDs', i);
+			
+			if(io.sockets.connected[oldHost]){
+				io.sockets.connected[oldHost].emit('host', false);
+			}
+			
+			if(io.sockets.connected[host]){
+				io.sockets.connected[host].emit('host', true);
+			}
+			
+			return;
+		}
+		
+		host = undefined;
+	});
+	
+	socket.on('acceptHost', function(){
+		redis.lrem('rejectedHosts', -1, socket.id);
+		if(!host){
+			host = socket.id;
+			
+			if(io.sockets.connected[host]){
+				io.sockets.connected[host].emit('host', true);
+			}
+		}
+	});
 	
 	socket.on('disconnect', function(){
 		
-		log.info(socket.request.connection.remoteAddress + " disconnected.");
+        log.info(socket.request.connection.remoteAddress + " disconnected.");
+
+        if (redis.lrange('players', 0, -1).length == 1) {
+            redis.del('sheep');
+        }
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, DELETE);
 		redis.lrem('players', -1, DELETE);
 		redis.lrem('playerIDs', -1, socket.id);
+		
+		if(host == socket.id){
+			host = redis.lindex('playerIDs', 0);
+			if(host){
+				io.sockets.connected[host].emit('host', true);
+			}
+		}
 	});
 });
 

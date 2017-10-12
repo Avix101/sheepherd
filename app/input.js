@@ -12,6 +12,7 @@ const KEYCODES = {
 let keys;
 let localMousePos;
 let globalMousePos;
+let windowActive;
 
 //Input Manager Instance
 let inputManager = (function(){
@@ -25,6 +26,7 @@ let inputManager = (function(){
 		keys = {};
         localMousePos = {x: 0, y: 0};
         globalMousePos = {x: 0, y: 0};
+		windowActive = true;
 		
 		/*
 		Method to get local mouse coordinates (relative to the canvas)
@@ -104,6 +106,21 @@ let inputManager = (function(){
 			if(keys[key]){
 				return keys[key].pressed;
 			}
+		}
+		
+		object.isWindowActive = function(){
+			return windowActive;
+		};
+		
+		object.setWindowActiveCallback = function(rejectCallback, acceptCallback){
+			window.onfocus = function(){
+				windowActive = true;
+				acceptCallback(windowActive);
+			};
+			window.onblur = function(){
+				windowActive = false;
+				rejectCallback(windowActive);
+			};
 		}
 		
 		document.addEventListener('keydown', function(event){

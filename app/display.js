@@ -32,7 +32,7 @@ let displayManager = (function(){
 		//Initialize Camera
 		camera = cameraInit.getInstance();
 		camera.init(canvas.width / 2, canvas.height / 2, canvas.width, canvas.height);
-		camera.defineWorld(-1000, -1000, 3000, 3000);
+		camera.defineWorld(-1000, -1000, 4500, 4500);
 		
 		let mapImage = new Image();
 		mapImage.src = "app/resources/grass.jpg";

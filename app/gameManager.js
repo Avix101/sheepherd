@@ -41,8 +41,7 @@ let gameManager = (function(){
 		player = {	
 			x: -10,
 			y: -10,
-			mouseX: 0,
-			mouseY: 0
+			id: 0
 		}
         
         playerSpeed = {
@@ -56,6 +55,8 @@ let gameManager = (function(){
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);
+		input.setWindowActiveCallback(rejectHost, acceptHost);
+		network.setIsHostCallback(checkHostViability);
 		
 		update();
 	}
@@ -79,23 +80,65 @@ let gameManager = (function(){
         let addX = playerDirection.x * playerSpeed.x;
         let addY = playerDirection.y * playerSpeed.y;
         
-        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4){
+        let globalFrame = display.getGlobalFrame();
+        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4 / globalFrame.scale){
             addX = 0;
         }
         
-        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4){
+        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4 / globalFrame.scale){
             addY = 0;
         }
         
         player.x += addX;
         player.y += addY;
-        
+
+		if(network.isHost()){
+			let sheepPacket = network.createSheepPacket();
+		
+			//sheep movement
+			for (let i = 0; i < sheep.length; i++) {
+				 let closestPlayer = getClosestPlayer(sheep[i]); 
+				 let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
+
+				 if(closestPlayer.id == undefined){
+					 continue;
+				 }
+				 
+				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
+					 sheep[i].x += vector.x;
+					 sheep[i].y += vector.y;
+					 //network.updateSheep(sheep[i], i);
+					 network.appendSheepPacket(sheepPacket, sheep[i], i);
+				 }
+			 }
+			 
+			 network.sendSheepPacket(sheepPacket);
+		}
+		
         //input.addToGlobalMouse(addX, addY, world);
         
         display.translateToCamera(player.x, player.y);
         network.sendPlayerInfo(player);
 		
 		requestAnimationFrame(update);
+	}
+	
+	function rejectHost(windowActive){
+		if(!windowActive && network.isHost()){
+			network.rejectHost();
+		}
+	}
+	
+	function acceptHost(windowActive){
+		if(windowActive){
+			network.acceptHost();
+		}
+	}
+	
+	function checkHostViability(){
+		if(!input.isWindowActive()){
+			network.rejectHost();
+		}
 	}
 	
 	function onMouseMove(event){
@@ -138,7 +181,56 @@ let gameManager = (function(){
         if(input.isPressed(input.KEYS.S)){
             network.spawnSheep();
         }
-	}
+    }
+
+    function calcPointDistance(point1, point2) {
+        return Math.sqrt(Math.abs(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2)));
+    }
+
+    function calcVectorDistance(vector) {
+        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+    }
+
+    function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {
+        let vector = {
+            x: playerObj.x - pointX,
+            y: playerObj.y - pointY
+        };
+
+        let norm = calcVectorDistance(vector);
+        if (norm != 0) {
+            vector.x /= norm;
+            vector.y /= norm;
+        }
+
+        return vector;
+    }
+
+    function getClosestPlayer(point) {
+        let closest = 10000;
+        let playNum = 0;
+        for (let i = 0; i < players.length; i++) {
+            let dist = calcPointDistance(point, players[i]);
+            if (dist < closest) {
+                closest = dist;
+                playNum = i;
+            }
+        }
+        return players[playNum];
+    }
+
+    function getVectortoPlayer(playerObj, pointX, pointY) {
+        let vector = {
+            x: playerObj.x - pointX,
+            y: playerObj.y - pointY
+        };
+
+        return vector;
+    }
+
+    function sheepSeek(sheep) {
+        
+    }
 	
 	return {
 		getInstance: function() {
