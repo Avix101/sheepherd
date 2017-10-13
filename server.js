@@ -47,7 +47,11 @@ function sendSheepstate(){
 	io.sockets.emit('sheepstate', gameData);
 };
 
+//let updateCallsPerFrame = 0;
+
 function update(){
+	
+	//updateCallsPerFrame++;
 	
 	sendGamestate();
 	//sendSheepstate();
@@ -55,6 +59,19 @@ function update(){
 		update();
 	}, 1000 / 60);
 }
+
+update();
+
+/*function clearUpdateCalls(){
+	log.magic("Update calls per frame: " + updateCallsPerFrame);
+	updateCallsPerFrame = 0;
+	setTimeout(function(){
+		clearUpdateCalls();
+	}, 1000/60);
+}
+
+clearUpdateCalls();
+*/
 
 let host;
 
@@ -82,8 +99,7 @@ io.on('connection', function(socket){
     };
     redis.lpush('sheep', playerSheep);
 	
-	update();
-	//sendGamestate();
+	sendGamestate();
 	sendSheepstate();
 	
 	socket.on('playerUpdate', function(x, y){
