@@ -111,16 +111,10 @@ let gameManager = (function(){
 					 continue;
 				 }
 				 
-<<<<<<< HEAD
 				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
-					 sheep[i].x += vector.x;
-					 sheep[i].y += vector.y;
+					 sheep[i].x += vector.x * sheepSpeed;
+					 sheep[i].y += vector.y * sheepSpeed;
                      sheep[i].angle = Math.atan2(vector.y, vector.x);
-=======
-                 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
-                     sheep[i].x += vector.x * sheepSpeed;
-                     sheep[i].y += vector.y * sheepSpeed;
->>>>>>> b00625d18f8882eb2419c6aeb03a8751505bb0dd
 					 //network.updateSheep(sheep[i], i);
 					 network.appendSheepPacket(sheepPacket, sheep[i], i);
 				 }
