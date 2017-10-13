@@ -187,7 +187,11 @@ let gameManager = (function(){
         }
 
         if(input.isPressed(input.KEYS.C)){
-        	// toggle controls screen
+        	console.log('toggling controls display');
+        	if(ui.controls.visible)
+        		ui.controls.hide();
+        	else
+        		ui.controls.show();
         }
     }
 
