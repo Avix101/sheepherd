@@ -96,14 +96,18 @@ let gameManager = (function(){
 			let sheepPacket = network.createSheepPacket();
 		
 			//sheep movement
-			for (let i = 0; i < sheep.length; i++) {
-				 let closestPlayer = getClosestPlayer(sheep[i]); 
-				 let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
+            for (let i = 0; i < sheep.length; i++) {
+                let closestPlayer = getClosestPlayer(sheep[i]);
 
 				 if(closestPlayer.id == undefined){
 					 continue;
 				 }
-				 
+
+                //calculate sheep movement
+                 let finalVec;
+				 //let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
+
+                //move sheep only if conditions met
 				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
 					 sheep[i].x += vector.x;
 					 sheep[i].y += vector.y;
@@ -191,11 +195,38 @@ let gameManager = (function(){
         return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
     }
 
+    function multiplyVector(vector, num) {
+        vector.x *= num;
+        vector.y *= num;
+        return vector;
+    }
+
+    function negateVector(vector) {
+        vector.x = vector.x * -1;
+        vector.y = vector.y * -1;
+        return vector;
+    }
+
+    function addVector(vector1, vector2) {
+        vector1.x += vector2.x;
+        vector1.y += vector2.y;
+        return vector1;
+    }
+
+    function getVectortoPlayer(playerObj, pointX, pointY) {
+        let vector = {
+            x: playerObj.x - pointX,
+            y: playerObj.y - pointY
+        }
+
+        return vector;
+    }
+
     function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {
         let vector = {
             x: playerObj.x - pointX,
             y: playerObj.y - pointY
-        };
+        }
 
         let norm = calcVectorDistance(vector);
         if (norm != 0) {
@@ -217,15 +248,6 @@ let gameManager = (function(){
             }
         }
         return players[playNum];
-    }
-
-    function getVectortoPlayer(playerObj, pointX, pointY) {
-        let vector = {
-            x: playerObj.x - pointX,
-            y: playerObj.y - pointY
-        };
-
-        return vector;
     }
 
     function sheepSeek(sheep) {
