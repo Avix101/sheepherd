@@ -16,6 +16,7 @@ let gameManager = (function(){
 		display = displayManager.getInstance();
 		input = inputManager.getInstance();
 		network = networkManager.getInstance();
+		ui = uiManager.getInstance();
 		
 		let object = new Object();
 		
@@ -41,7 +42,8 @@ let gameManager = (function(){
 		player = {	
 			x: -10,
 			y: -10,
-			id: 0
+			id: 0,
+			score: 0
 		}
         
         playerSpeed = {
@@ -120,6 +122,8 @@ let gameManager = (function(){
         display.translateToCamera(player.x, player.y);
         network.sendPlayerInfo(player);
 		
+		// update leaderboard
+		ui.leaderboard.update();
 		requestAnimationFrame(update);
 	}
 	
@@ -180,6 +184,10 @@ let gameManager = (function(){
         
         if(input.isPressed(input.KEYS.S)){
             network.spawnSheep();
+        }
+
+        if(input.isPressed(input.KEYS.C)){
+        	// toggle controls screen
         }
     }
 
