@@ -94,7 +94,8 @@ let gameManager = (function(){
 
 		if(network.isHost()){
 			let sheepPacket = network.createSheepPacket();
-		
+
+            let flockVec = averageVectors(sheep);
 			//sheep movement
             for (let i = 0; i < sheep.length; i++) {
                 let closestPlayer = getClosestPlayer(sheep[i]);
@@ -103,12 +104,19 @@ let gameManager = (function(){
 					 continue;
 				 }
 
-                //calculate sheep movement
-                 let finalVec;
-				 //let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
+                 //calculate sheep movement
+                 let cohereWeight = 10;
+                 let separateWeight = 50;
+                 let fleeWeight = 30;
+
+                 for (let j = 0; j < sheep.length; j++) {
+                     //if(sheep[j].)
+                 }
 
                 //move sheep only if conditions met
-				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
+                 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
+                     //let finalVec = multiplyVector(negateVector(getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)), fleeWeight);
+				     let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
 					 sheep[i].x += vector.x;
 					 sheep[i].y += vector.y;
 					 //network.updateSheep(sheep[i], i);
@@ -196,21 +204,47 @@ let gameManager = (function(){
     }
 
     function multiplyVector(vector, num) {
-        vector.x *= num;
-        vector.y *= num;
-        return vector;
+        let multiVec = {
+            x: vector.x * num,
+            y: vector.y * num
+        }
+
+        return multiVec;
     }
 
     function negateVector(vector) {
-        vector.x = vector.x * -1;
-        vector.y = vector.y * -1;
-        return vector;
+        let negVec = {
+            x: vector.x * -1,
+            y: vector.y * -1
+        }
+
+        return negVec;
     }
 
-    function addVector(vector1, vector2) {
-        vector1.x += vector2.x;
-        vector1.y += vector2.y;
-        return vector1;
+    function addVectors(vector1, vector2) {
+        let addVec = {
+            x: vector1.x + vector2.x,
+            y: vector1.y + vector2.y
+        }
+
+        return addVec;
+    }
+
+    function averageVectors(vector[]) {
+        let avgVec = {
+            x: 0,
+            y: 0
+        }
+
+        let i;
+        for (i = 0; i < vector.length; i++) {
+            avgVec = addVectors(avgVec, vector[i]);
+        }
+
+        avgVec.x = avgVec.x / i;
+        avgVec.y = avgVec.y / i;
+
+        return avgVec;
     }
 
     function getVectortoPlayer(playerObj, pointX, pointY) {
