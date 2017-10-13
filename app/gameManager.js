@@ -15,7 +15,9 @@ let gameManager = (function(){
 		audio = audioManager.getInstance();
 		display = displayManager.getInstance();
 		input = inputManager.getInstance();
-		network = networkManager.getInstance();
+        network = networkManager.getInstance();
+
+        //Remove comment
 		ui = uiManager.getInstance();
 		
 		let object = new Object();
@@ -47,8 +49,8 @@ let gameManager = (function(){
 		}
         
         playerSpeed = {
-            x: 2,
-            y: 2
+            x: 4,
+            y: 4
         }
 		
 		players = [];
