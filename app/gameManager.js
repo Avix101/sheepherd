@@ -49,8 +49,8 @@ let gameManager = (function(){
 		}
         
         playerSpeed = {
-            x: 4,
-            y: 4
+            x: 5,
+            y: 5
         }
 		
 		players = [];
@@ -65,8 +65,11 @@ let gameManager = (function(){
 		update();
 	}
 	
-	function update(){
-		
+    function update() {
+
+        //scalable const to change sheep speed as needed
+        const sheepSpeed = 1.75;
+
 		checkInput();
 		
 		display.clearCanvas();
@@ -108,10 +111,16 @@ let gameManager = (function(){
 					 continue;
 				 }
 				 
+<<<<<<< HEAD
 				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
 					 sheep[i].x += vector.x;
 					 sheep[i].y += vector.y;
                      sheep[i].angle = Math.atan2(vector.y, vector.x);
+=======
+                 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
+                     sheep[i].x += vector.x * sheepSpeed;
+                     sheep[i].y += vector.y * sheepSpeed;
+>>>>>>> b00625d18f8882eb2419c6aeb03a8751505bb0dd
 					 //network.updateSheep(sheep[i], i);
 					 network.appendSheepPacket(sheepPacket, sheep[i], i);
 				 }
@@ -168,7 +177,7 @@ let gameManager = (function(){
 	}
 	
 	function onMouseScroll(result){
-		display.scaleCamera(result ? -0.1 : 0.1);
+		display.scaleCamera(result ? -0.05 : 0.05);
 	}
 	
 	function checkInput(){
@@ -190,7 +199,11 @@ let gameManager = (function(){
         }
 
         if(input.isPressed(input.KEYS.C)){
-        	// toggle controls screen
+        	console.log('toggling controls display');
+        	if(ui.controls.visible)
+        		ui.controls.hide();
+        	else
+        		ui.controls.show();
         }
     }
 
