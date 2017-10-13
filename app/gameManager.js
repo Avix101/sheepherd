@@ -111,6 +111,7 @@ let gameManager = (function(){
 				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
 					 sheep[i].x += vector.x;
 					 sheep[i].y += vector.y;
+                     sheep[i].angle = Math.atan2(vector.y, vector.x);
 					 //network.updateSheep(sheep[i], i);
 					 network.appendSheepPacket(sheepPacket, sheep[i], i);
 				 }
