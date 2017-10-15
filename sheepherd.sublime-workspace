@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"grey",
+				"greyDogSpriteSrc"
+			],
+			[
 				"text",
 				"textinput"
 			],
@@ -224,24 +228,74 @@
 	"buffers":
 	[
 		{
-			"contents": "let player, players, sheep, radius, canvas;\n\nlet gameManager = (function(){\n\t\n\tlet instance;\n\tlet audio;\n\tlet display;\n\tlet input;\n\tlet network;\n    \n    let cameraSpeed = {x: 0, y: 0};\n    let playerSpeed;\n\t\n\tfunction createInstance() {\n\t\taudio = audioManager.getInstance();\n\t\tdisplay = displayManager.getInstance();\n\t\tinput = inputManager.getInstance();\n        network = networkManager.getInstance();\n\n        //Remove comment\n\t\tui = uiManager.getInstance();\n\t\t\n\t\tlet object = new Object();\n\t\t\n\t\t/*\n\t\tAll game related methods if they need to be accessible by the client\n\t\t*/\n\t\t\n\t\tcanvas = document.querySelector('#primaryCanvas');\n\t\tinit();\n\t\t\n\t\tconsole.log(\"Game Manager Instance created\");\n\t\treturn object;\n\t}\n\t\n\t/*\n\tGame related methods (not accessible outside of this class)\n\t*/\n\t\n\tfunction init(){\n\t\t\n\t\tradius = 10;\n\t\t\n\t\tplayer = {\t\n\t\t\tx: -10,\n\t\t\ty: -10,\n\t\t\tid: 0,\n\t\t\tscore: 0\n\t\t}\n        \n        playerSpeed = {\n            x: 4,\n            y: 4\n        }\n\t\t\n\t\tplayers = [];\n        sheep = [];\n\t\t\n\t\tinput.setMouseMoveCallback(onMouseMove);\n\t\tinput.setMouseWheelCallback(onMouseScroll);\n\t\tinput.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);\n\t\tinput.setWindowActiveCallback(rejectHost, acceptHost);\n\t\tnetwork.setIsHostCallback(checkHostViability);\n\t\t\n\t\tupdate();\n\t}\n\t\n\tfunction update(){\n\t\t\n\t\tcheckInput();\n\t\t\n\t\tdisplay.clearCanvas();\n\t\tdisplay.update();\n\t\tdisplay.drawBG();\n\t\t\n        display.drawSheep(sheep);\n        display.drawPlayers(players);\n        //display.translateCamera(cameraSpeed.x, cameraSpeed.y);\n        \n        let localPlayerPosition = display.getLocalPosition(player.x, player.y);\n        var localMouse = input.getLocalMouseCoords();\n        let playerDirection = input.getVectorToMouse(localPlayerPosition.x, localPlayerPosition.y);\n        \n        let addX = playerDirection.x * playerSpeed.x;\n        let addY = playerDirection.y * playerSpeed.y;\n        \n        let globalFrame = display.getGlobalFrame();\n        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4 / globalFrame.scale){\n            addX = 0;\n        }\n        \n        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4 / globalFrame.scale){\n            addY = 0;\n        }\n        \n        player.x += addX;\n        player.y += addY;\n\n\t\tif(network.isHost()){\n\t\t\tlet sheepPacket = network.createSheepPacket();\n\t\t\n\t\t\t//sheep movement\n\t\t\tfor (let i = 0; i < sheep.length; i++) {\n\t\t\t\t let closestPlayer = getClosestPlayer(sheep[i]); \n\t\t\t\t let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);\n\n\t\t\t\t if(closestPlayer.id == undefined){\n\t\t\t\t\t continue;\n\t\t\t\t }\n\t\t\t\t \n\t\t\t\t if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {\n\t\t\t\t\t sheep[i].x += vector.x;\n\t\t\t\t\t sheep[i].y += vector.y;\n\t\t\t\t\t //network.updateSheep(sheep[i], i);\n\t\t\t\t\t network.appendSheepPacket(sheepPacket, sheep[i], i);\n\t\t\t\t }\n\t\t\t }\n\t\t\t \n\t\t\t network.sendSheepPacket(sheepPacket);\n\t\t}\n\t\t\n        //input.addToGlobalMouse(addX, addY, world);\n        \n        display.translateToCamera(player.x, player.y);\n        network.sendPlayerInfo(player);\n\t\t\n\t\t// update leaderboard\n\t\tui.leaderboard.update();\n\t\trequestAnimationFrame(update);\n\t}\n\t\n\tfunction rejectHost(windowActive){\n\t\tif(!windowActive && network.isHost()){\n\t\t\tnetwork.rejectHost();\n\t\t}\n\t}\n\t\n\tfunction acceptHost(windowActive){\n\t\tif(windowActive){\n\t\t\tnetwork.acceptHost();\n\t\t}\n\t}\n\t\n\tfunction checkHostViability(){\n\t\tif(!input.isWindowActive()){\n\t\t\tnetwork.rejectHost();\n\t\t}\n\t}\n\t\n\tfunction onMouseMove(event){\n\t\t\n\t\tlet globalFrame = display.getGlobalFrame();\n\t\tlet rect = canvas.getBoundingClientRect();\n\t\t//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;\n\t\t//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;\n\t\t//\n        \n        let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);\n        //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);\n        \n        /*cameraSpeed = {\n            x: ((canvas.width / 2) - mouseLocation.x) / 15,\n            y: ((canvas.height / 2) - mouseLocation.y) / 15\n        };*/\n        //console.dir(cameraSpeed);\n        \n\t}\n\t\n\tfunction onMouseScroll(result){\n\t\tdisplay.scaleCamera(result ? -0.1 : 0.1);\n\t}\n\t\n\tfunction checkInput(){\n\t\t\n\t\tif(input.isPressed(input.KEYS.RIGHT)){\n\t\t\tdisplay.translateCamera(-5, 0);\n\t\t} else if (input.isPressed(input.KEYS.LEFT)){\n\t\t\tdisplay.translateCamera(5, 0);\n\t\t}\n\t\t\n\t\tif(input.isPressed(input.KEYS.UP)){\n\t\t\tdisplay.translateCamera(0, 5);\n\t\t} else if (input.isPressed(input.KEYS.DOWN)){\n\t\t\tdisplay.translateCamera(0, -5);\n\t\t}\n        \n        if(input.isPressed(input.KEYS.S)){\n            network.spawnSheep();\n        }\n\n        if(input.isPressed(input.KEYS.C)){\n        \tconsole.log('toggling controls display');\n        \tif(ui.controls.visible)\n        \t\tui.controls.hide();\n        \telse\n        \t\tui.controls.show();\n        }\n    }\n\n    function calcPointDistance(point1, point2) {\n        return Math.sqrt(Math.abs(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2)));\n    }\n\n    function calcVectorDistance(vector) {\n        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);\n    }\n\n    function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {\n        let vector = {\n            x: playerObj.x - pointX,\n            y: playerObj.y - pointY\n        };\n\n        let norm = calcVectorDistance(vector);\n        if (norm != 0) {\n            vector.x /= norm;\n            vector.y /= norm;\n        }\n\n        return vector;\n    }\n\n    function getClosestPlayer(point) {\n        let closest = 10000;\n        let playNum = 0;\n        for (let i = 0; i < players.length; i++) {\n            let dist = calcPointDistance(point, players[i]);\n            if (dist < closest) {\n                closest = dist;\n                playNum = i;\n            }\n        }\n        return players[playNum];\n    }\n\n    function getVectortoPlayer(playerObj, pointX, pointY) {\n        let vector = {\n            x: playerObj.x - pointX,\n            y: playerObj.y - pointY\n        };\n\n        return vector;\n    }\n\n    function sheepSeek(sheep) {\n        \n    }\n\t\n\treturn {\n\t\tgetInstance: function() {\n\t\t\tif(!instance) {\n\t\t\t\tinstance = createInstance();\n\t\t\t}\n\t\t\treturn instance;\n\t\t}\n\t};\n\t\n})();",
-			"file": "/C/Users/user/Google Drive/School/Classwork/Fall2017/gameManager.js",
-			"file_size": 6592,
-			"file_write_time": 131525031573083090,
+			"file": "app/gameManager.js",
 			"settings":
 			{
-				"buffer_size": 6335,
+				"buffer_size": 5180,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "# Logs\nlogs\n*.log\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n\n# Runtime data\npids\n*.pid\n*.seed\n*.pid.lock\n\n# Directory for instrumented libs generated by jscoverage/JSCover\nlib-cov\n\n# Coverage directory used by tools like istanbul\ncoverage\n\n# nyc test coverage\n.nyc_output\n\n# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)\n.grunt\n\n# Bower dependency directory (https://bower.io/)\nbower_components\n\n# node-waf configuration\n.lock-wscript\n\n# Compiled binary addons (http://nodejs.org/api/addons.html)\nbuild/Release\n\n# Dependency directories\n.vs/\nnode_modules/\njspm_packages/\n\n# Typescript v1 declaration files\ntypings/\n\n# Optional npm cache directory\n.npm\n\n# Optional eslint cache\n.eslintcache\n\n# Optional REPL history\n.node_repl_history\n\n# Output of 'npm pack'\n*.tgz\n\n# Yarn Integrity file\n.yarn-integrity\n\n# dotenv environment variables file\n.env\n\n#sublime text stuff\n",
-			"file": ".gitignore",
-			"file_size": 949,
-			"file_write_time": 131520400060000000,
+			"file": "server.js",
 			"settings":
 			{
-				"buffer_size": 909,
+				"buffer_size": 4480,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/input.js",
+			"settings":
+			{
+				"buffer_size": 3826,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/index.html",
+			"settings":
+			{
+				"buffer_size": 1873,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/sheep.js",
+			"settings":
+			{
+				"buffer_size": 1257,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/network.js",
+			"settings":
+			{
+				"buffer_size": 2859,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "styles/ui.css",
+			"settings":
+			{
+				"buffer_size": 130,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/display.js",
+			"settings":
+			{
+				"buffer_size": 8261,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		}
@@ -276,8 +330,17 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/styles",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/views"
+	],
 	"file_history":
 	[
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/.gitignore",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/gameManager.js",
 		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/gameManager.js",
 		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/css/ui.css",
 		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/css/generated.css",
@@ -434,19 +497,77 @@
 			[
 				{
 					"buffer": 0,
-					"file": "/C/Users/user/Google Drive/School/Classwork/Fall2017/gameManager.js",
+					"file": "app/gameManager.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6335,
+						"buffer_size": 5180,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5893,
-								5893
+								2612,
+								2612
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1350.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "server.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4480,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2141,
+								2141
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1350.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/input.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3826,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2526,
+								2526
 							]
 						],
 						"settings":
@@ -454,38 +575,152 @@
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 3350.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": ".gitignore",
+					"buffer": 3,
+					"file": "views/index.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 909,
+						"buffer_size": 1873,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								908,
-								908
+								1122,
+								1122
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 630.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "app/sheep.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1257,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								963,
+								963
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "app/network.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2859,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								991,
+								991
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 90.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "styles/ui.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 130,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								128,
+								128
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "app/display.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8261,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2595,
+								2595
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 720.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]

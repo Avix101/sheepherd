@@ -8,9 +8,9 @@
 "use strict"
 
 let displayManager = (function(){
-	let mapPattern,sheepSprite;
+	let mapPattern,sheepSprite,dogSprites;
 	var ctx, camera, canvas;
-	let radius = 10;
+	let radius = 20;
 	let instance;
 
 	function createInstance(){
@@ -44,7 +44,7 @@ let displayManager = (function(){
 		}
 
 		//initialize sprites
-		//sheep
+		// sheep
 		let sheepSpriteSrc = new Image();
 		sheepSpriteSrc.src = "app/resources/sheep.png"
 		sheepSprite = {
@@ -53,6 +53,32 @@ let displayManager = (function(){
 			height: 151,
 			drawWidth: 55,
 			drawHeight: 35
+		};
+
+		// dogs
+		let greyDogSpriteSrc = new Image();
+		greyDogSpriteSrc.src = "app/resources/greydog.png";
+		let blackSpotDogSpriteSrc = new Image();
+		blackSpotDogSpriteSrc.src = "app/resources/blackspotdog.png";
+		let brownDogSpriteSrc = new Image();
+		brownDogSpriteSrc.src = "app/resources/browndog.png";
+		let darkBrownDogSpriteSrc = new Image();
+		darkBrownDogSpriteSrc.src = "app/resources/darkbrowndog.png";
+		let redDogSpriteSrc = new Image();
+		redDogSpriteSrc.src = "app/resources/reddog.png";
+		let tanSpotDogSpriteSrc = new Image();
+		tanSpotDogSpriteSrc.src = "app/resources/tanspotdog.png";
+		let whiteDogSpriteSrc = new Image();
+		whiteDogSpriteSrc.src = "app/resources/whitedog.png";
+		let whiteSpotDogSpriteSrc = new Image();
+		whiteSpotDogSpriteSrc.src = "app/resources/whitespotdog.png";
+
+		dogSprites = {
+			src:{}, // sprite changes based on the player
+			width: 48,
+			height: 60,
+			drawWidth: 48,
+			drawHeight: 60 // maintain aspect ratio, 60/48 = 1.25
 		};
 
 		// when the window gets resized, update everything to scale with it 
@@ -99,10 +125,17 @@ let displayManager = (function(){
 			ctx.restore();
 
 			function drawPlayer(playerObj){
-				ctx.beginPath();
-				ctx.arc(playerObj.x, playerObj.y, radius, 0, 2*Math.PI, false);
-				ctx.fillStyle = 'black';
-				ctx.fill();
+				// ctx.beginPath();
+				// ctx.arc(playerObj.x, playerObj.y, radius, 0, 2*Math.PI, false);
+				// ctx.fillStyle = 'black';
+				// ctx.fill();
+				dogSprites.src = greyDogSpriteSrc;
+				//hacky to test
+				let drawobj = {
+					position: {x:playerObj.x, y:playerObj.y},
+					angle: 0
+				};
+				drawSprite(drawobj, dogSprites);
 			}
 		}
 

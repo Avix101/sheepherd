@@ -24,6 +24,7 @@ let gameManager = ( function(){
 		
 		position: { x: -10, y: -10},
 		speed: { x: 4, y: 4},
+		angle: 0,
 		id: 0,
 		score: 0,
 		shepherd: {
@@ -36,7 +37,7 @@ let gameManager = ( function(){
 			}
 		},
 		name: "Player Name",
-		color: "red", 
+		color: "red", // don't know how this will work yet
 		update: function(){
 			let localPosition = display.getLocalPosition(player.position.x, player.position.y);
 			let localMouse = input.getLocalMouseCoords();
@@ -56,6 +57,7 @@ let gameManager = ( function(){
 
 			this.position.x += addX;
 			this.position.y += addY;
+			this.angle = Math.atan2(addY, addX);
 
 			this.shepherd.update();
 		}
@@ -99,7 +101,7 @@ let gameManager = ( function(){
 			hostUpdate();
 		}
 
-		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, score: player.score};
+		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};
 		network.sendPlayerInfo(playerInfo);
 
 		display.translateToCamera(player.position.x, player.position.y);

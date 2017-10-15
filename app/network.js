@@ -50,7 +50,7 @@ let networkManager = (function(){
 		}
 		
 		object.sendPlayerInfo = function(playerObj){
-			socket.emit('playerUpdate', playerObj.x, playerObj.y);
+			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle);
 		}
 		
         object.spawnSheep = function(){
@@ -100,7 +100,7 @@ let networkManager = (function(){
 	function updateSheeps(sheepData){
 		console.dir(sheepData);
 		for(let i = 0; i < sheepData.length; i++){
-			if(sheepData[i].position){
+			if(sheeps[i]){
 				sheeps[i].position.x = sheepData[i].position.x;
 				sheeps[i].position.y = sheepData[i].position.y;
 				sheeps[i].velocity.x = sheepData[i].velocity.x;
@@ -109,11 +109,11 @@ let networkManager = (function(){
 				sheeps[i].acceleration.y = sheepData[i].acceleration.y;
 				sheeps[i].angle = sheepData[i].angle;
 			}
-			else if(!sheeps[i]){ // this sheep is newly spawned
-				sheeps[i] = new sheep(sheepData[i].x, sheepData[i].y);
+			else{
+				sheeps[i] = new sheep(sheepData[i].position.x, sheepData[i].position.y);
 			}
 		}
-		console.dir(sheeps);
+		// console.dir(sheeps);
 	}
 	
 	socket.on('host', function(isHost){

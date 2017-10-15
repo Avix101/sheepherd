@@ -16,8 +16,10 @@ const port = process.env.PORT || 5000;
 
 const views = __dirname + "/views";
 const scripts = __dirname + "/app";
+const styles = __dirname + "/styles";
 app.use('/', express.static(views));
 app.use('/app', express.static(scripts));
+app.use('/styles', express.static(styles));
 
 app.get("/", function(request, response/*, next */) {
 	response.send("index.html");
@@ -94,20 +96,32 @@ io.on('connection', function(socket){
 	redis.lpush('players', player);
     
     var playerSheep = {
-        x: Math.random() * 500,
-        y: Math.random() * 500
+        position:{
+              x: Math.random() * 5000,
+              y: Math.random() * 5000
+          },
+          velocity:{
+            x:0,
+            y:0
+          },
+          acceleration:{
+            x:0,
+            y:0
+          },
+          angle: Math.random()*Math.PI*2
     };
     redis.lpush('sheep', playerSheep);
 	
 	sendGamestate();
 	sendSheepstate();
 	
-	socket.on('playerUpdate', function(x, y){
+	socket.on('playerUpdate', function(x, y,angle){
 			
 		var playerObj = {
 		
 			x: x,
 			y: y,
+			angle: angle,
 			id: socket.id
 		};
 		
@@ -118,8 +132,19 @@ io.on('connection', function(socket){
     
     socket.on('spawnSheep', function(){
         var sheep = {
-            x: Math.random() * 5000,
-            y: Math.random() * 5000
+        	position:{
+            	x: Math.random() * 5000,
+            	y: Math.random() * 5000
+        	},
+        	velocity:{
+        		x:0,
+        		y:0
+        	},
+        	acceleration:{
+        		x:0,
+        		y:0
+        	},
+        	angle: Math.random()*Math.PI*2
         };
         redis.rpush('sheep', sheep);
 		sendSheepstate();
