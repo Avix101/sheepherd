@@ -98,19 +98,22 @@ let networkManager = (function(){
 	});
 
 	function updateSheeps(sheepData){
+		console.dir(sheepData);
 		for(let i = 0; i < sheepData.length; i++){
-			if(i < sheeps.length){
+			if(sheepData[i].position){
 				sheeps[i].position.x = sheepData[i].position.x;
 				sheeps[i].position.y = sheepData[i].position.y;
 				sheeps[i].velocity.x = sheepData[i].velocity.x;
 				sheeps[i].velocity.y = sheepData[i].velocity.y;
 				sheeps[i].acceleration.x = sheepData[i].acceleration.x;
 				sheeps[i].acceleration.y = sheepData[i].acceleration.y;
+				sheeps[i].angle = sheepData[i].angle;
 			}
-			else{ // this sheep is newly spawned
+			else if(!sheeps[i]){ // this sheep is newly spawned
 				sheeps[i] = new sheep(sheepData[i].x, sheepData[i].y);
 			}
 		}
+		console.dir(sheeps);
 	}
 	
 	socket.on('host', function(isHost){

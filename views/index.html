@@ -8,31 +8,54 @@
 	<meta name="author" content="Meh.">
 	
 	<!-- Stylesheet Links -->
-	<link rel="stylesheet" type="text/css" href="styles/ui.css">
+	<link rel="stylesheet" type="text/css" href="../styles/ui.css">
 	<style>
 		canvas {
 			position:absolute;
 			top:0;
 			left:0;
+			z-index: -999;
+		}
+
+		#startScreen, #controlsMenu, #leaderboard, #hud{
+			display:none;
 		}
 	</style>
 	
 </head>
 
 <body>
-	<p>Hello World</p>
-    <!-- <canvas id="primaryCanvas" width="640" height="480"> -->
-    <canvas id="primaryCanvas" width="1000" height="480">
+    <!-- width and height do not need to be set, because they are set in display.js -->
+    <canvas id="primaryCanvas"> </canvas>
 
-    <div id="startScreen">
-    	Name: <input type="text" id="nameInput" name="playerName">
-    </div>
+    <section id="startScreen">
+    	<header> Sheepherd </header>
+    	<span class="subtitle"> Developed by Meh. </span>
+    	<label for"nameInput"> Enter Your Name: </label>
+    	<input type="text" id="nameInput" name="playerName">
+    	<div id="playerColor">
+    		<label for="colorChoice">
+    		<div id="colorChoice">
+    			<input type="radio" name="playerColor" value="" />
+    			<input type="radio" name="playerColor" value="" />
+    			<input type="radio" name="playerColor" value="" />
+    		</div>
+    	</div>
+    </section>
 
-    <div id="controlsMenu">
+    <section id="controlsMenu">
     	<p> Toggle Controls: C </p>
     	<p> Toggle Shepherd Following: Right Click </p>
     	<p> Move Camera: Scroll Wheel </p>
-    </div>
+    </section>
+
+    <section id="leaderboard">
+
+    </section>
+
+    <section id="hud">
+
+    </section>
 	
 	<!-- Script Links -->
 	<script src="/socket.io/socket.io.js"></script>

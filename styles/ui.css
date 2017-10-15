@@ -1,5 +1,9 @@
 #startScreen{
-	display:none;
+	/*display:none;*/
+	width: 50%;
+	height: 50%;
+	z-index: 0;
+	background-color: red;
 }
 #controlsMenu{
 	display:none;
