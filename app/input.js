@@ -84,11 +84,12 @@ let inputManager = (function(){
 		Listeners to detect input (Only detect)
 		*/
 		object.setMouseMoveCallback = function(callback){
-            canvas.onmousemove = callback;
+			// can use entire window instead of just the canvas, because the canvas takes up the entire window
+            window.onmousemove = callback;
 		}
 		
 		object.setMouseWheelCallback = function(callback){
-			canvas.onwheel = function(event){
+			window.onwheel = function(event){
 				let result = event.deltaY > 0;
 				callback(result);
 			}

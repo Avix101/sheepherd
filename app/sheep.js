@@ -10,10 +10,9 @@
 
 		this.velocity = { x: 0, y: 0};
 		this.acceleration = { x: 0, y: 0};
-		this.angle = 0;
+		this.angle = Math.PI;
 
 		this.update = function(){
-			console.log("sheep updating");
 			let closestPlayer = getClosestPlayer(this); 
 			let vector = getNormalizedVectortoPlayer(closestPlayer, this.position.x, this.position.y);
 

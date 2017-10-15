@@ -1,0 +1,576 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"text",
+				"textinput"
+			],
+			[
+				"on",
+				"oninput"
+			],
+			[
+				"wa",
+				"waveformData"
+			],
+			[
+				"prese",
+				"presenceFilter"
+			],
+			[
+				"brillia",
+				"brillianceFilter"
+			],
+			[
+				"biqu",
+				"biquadFilterNode"
+			],
+			[
+				"audio",
+				"audioCtx"
+			],
+			[
+				"analy",
+				"analyserNode"
+			],
+			[
+				"expand",
+				"expandedSetting"
+			],
+			[
+				"to",
+				"toggleAdvancedSettings"
+			],
+			[
+				"visuali",
+				"visualizationSettings"
+			],
+			[
+				"option",
+				"option"
+			],
+			[
+				"visu",
+				"visualizationSettings"
+			],
+			[
+				"ad",
+				"advancedOptions"
+			],
+			[
+				"expan",
+				"expandButton"
+			],
+			[
+				"getE",
+				"getElementsByTagName"
+			],
+			[
+				"get",
+				"getElementsByClassName"
+			],
+			[
+				"play",
+				"playbackRate"
+			],
+			[
+				"vis",
+				"visualizationSettings"
+			],
+			[
+				"backg",
+				"background-color"
+			],
+			[
+				"track",
+				"trackListHeight"
+			],
+			[
+				"trackList",
+				"trackListVisible"
+			],
+			[
+				"Volu",
+				"volumeControl"
+			],
+			[
+				"current",
+				"currentTrack"
+			],
+			[
+				"volume",
+				"volumeSlider"
+			],
+			[
+				"control",
+				"controlsHidden"
+			],
+			[
+				"bg",
+				"playBGAudio"
+			],
+			[
+				"game",
+				"GAME_STATE"
+			],
+			[
+				"gameS",
+				"gameState"
+			],
+			[
+				"round",
+				"roundScore"
+			],
+			[
+				"CirCLE",
+				"CIRCLE_STATE"
+			],
+			[
+				"EXPL",
+				"EXPLODING"
+			],
+			[
+				"MAX",
+				"MAX_LIFETIME"
+			],
+			[
+				"IMP",
+				"IMPLODING"
+			],
+			[
+				"CIRCL",
+				"CIRCLE_STATE"
+			],
+			[
+				"circl",
+				"CIRCLE"
+			],
+			[
+				"EXPLO",
+				"EXPLOSION_SPEED"
+			],
+			[
+				"CIRCLE",
+				"CIRCLE_STATE"
+			],
+			[
+				"Game",
+				"GAME_STATE"
+			],
+			[
+				"CIR",
+				"CIRCLE_STATE"
+			],
+			[
+				"num",
+				"numCircles"
+			],
+			[
+				"draw",
+				"drawPauseScreen"
+			],
+			[
+				"circlehit",
+				"circleHitTopBottom"
+			],
+			[
+				"x",
+				"xSpeed"
+			],
+			[
+				"MA",
+				"MAX_SPEED"
+			],
+			[
+				"Sta",
+				"START_RADIUS"
+			],
+			[
+				"curren",
+				"currentTool"
+			],
+			[
+				"fill",
+				"fillStyle"
+			],
+			[
+				"top",
+				"topCanvas"
+			],
+			[
+				"currne",
+				"currentTool"
+			],
+			[
+				"clear",
+				"clearButton"
+			],
+			[
+				"stroke",
+				"strokeStyle"
+			],
+			[
+				"doMous",
+				"doMousemove"
+			],
+			[
+				"rootAddress",
+				"rootAddress"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "let player, players, sheep, radius, canvas;\n\nlet gameManager = (function(){\n\t\n\tlet instance;\n\tlet audio;\n\tlet display;\n\tlet input;\n\tlet network;\n    \n    let cameraSpeed = {x: 0, y: 0};\n    let playerSpeed;\n\t\n\tfunction createInstance() {\n\t\taudio = audioManager.getInstance();\n\t\tdisplay = displayManager.getInstance();\n\t\tinput = inputManager.getInstance();\n        network = networkManager.getInstance();\n\n        //Remove comment\n\t\tui = uiManager.getInstance();\n\t\t\n\t\tlet object = new Object();\n\t\t\n\t\t/*\n\t\tAll game related methods if they need to be accessible by the client\n\t\t*/\n\t\t\n\t\tcanvas = document.querySelector('#primaryCanvas');\n\t\tinit();\n\t\t\n\t\tconsole.log(\"Game Manager Instance created\");\n\t\treturn object;\n\t}\n\t\n\t/*\n\tGame related methods (not accessible outside of this class)\n\t*/\n\t\n\tfunction init(){\n\t\t\n\t\tradius = 10;\n\t\t\n\t\tplayer = {\t\n\t\t\tx: -10,\n\t\t\ty: -10,\n\t\t\tid: 0,\n\t\t\tscore: 0\n\t\t}\n        \n        playerSpeed = {\n            x: 4,\n            y: 4\n        }\n\t\t\n\t\tplayers = [];\n        sheep = [];\n\t\t\n\t\tinput.setMouseMoveCallback(onMouseMove);\n\t\tinput.setMouseWheelCallback(onMouseScroll);\n\t\tinput.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);\n\t\tinput.setWindowActiveCallback(rejectHost, acceptHost);\n\t\tnetwork.setIsHostCallback(checkHostViability);\n\t\t\n\t\tupdate();\n\t}\n\t\n\tfunction update(){\n\t\t\n\t\tcheckInput();\n\t\t\n\t\tdisplay.clearCanvas();\n\t\tdisplay.update();\n\t\tdisplay.drawBG();\n\t\t\n        display.drawSheep(sheep);\n        display.drawPlayers(players);\n        //display.translateCamera(cameraSpeed.x, cameraSpeed.y);\n        \n        let localPlayerPosition = display.getLocalPosition(player.x, player.y);\n        var localMouse = input.getLocalMouseCoords();\n        let playerDirection = input.getVectorToMouse(localPlayerPosition.x, localPlayerPosition.y);\n        \n        let addX = playerDirection.x * playerSpeed.x;\n        let addY = playerDirection.y * playerSpeed.y;\n        \n        let globalFrame = display.getGlobalFrame();\n        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4 / globalFrame.scale){\n            addX = 0;\n        }\n        \n        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4 / globalFrame.scale){\n            addY = 0;\n        }\n        \n        player.x += addX;\n        player.y += addY;\n\n\t\tif(network.isHost()){\n\t\t\tlet sheepPacket = network.createSheepPacket();\n\t\t\n\t\t\t//sheep movement\n\t\t\tfor (let i = 0; i < sheep.length; i++) {\n\t\t\t\t let closestPlayer = getClosestPlayer(sheep[i]); \n\t\t\t\t let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);\n\n\t\t\t\t if(closestPlayer.id == undefined){\n\t\t\t\t\t continue;\n\t\t\t\t }\n\t\t\t\t \n\t\t\t\t if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {\n\t\t\t\t\t sheep[i].x += vector.x;\n\t\t\t\t\t sheep[i].y += vector.y;\n\t\t\t\t\t //network.updateSheep(sheep[i], i);\n\t\t\t\t\t network.appendSheepPacket(sheepPacket, sheep[i], i);\n\t\t\t\t }\n\t\t\t }\n\t\t\t \n\t\t\t network.sendSheepPacket(sheepPacket);\n\t\t}\n\t\t\n        //input.addToGlobalMouse(addX, addY, world);\n        \n        display.translateToCamera(player.x, player.y);\n        network.sendPlayerInfo(player);\n\t\t\n\t\t// update leaderboard\n\t\tui.leaderboard.update();\n\t\trequestAnimationFrame(update);\n\t}\n\t\n\tfunction rejectHost(windowActive){\n\t\tif(!windowActive && network.isHost()){\n\t\t\tnetwork.rejectHost();\n\t\t}\n\t}\n\t\n\tfunction acceptHost(windowActive){\n\t\tif(windowActive){\n\t\t\tnetwork.acceptHost();\n\t\t}\n\t}\n\t\n\tfunction checkHostViability(){\n\t\tif(!input.isWindowActive()){\n\t\t\tnetwork.rejectHost();\n\t\t}\n\t}\n\t\n\tfunction onMouseMove(event){\n\t\t\n\t\tlet globalFrame = display.getGlobalFrame();\n\t\tlet rect = canvas.getBoundingClientRect();\n\t\t//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;\n\t\t//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;\n\t\t//\n        \n        let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);\n        //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);\n        \n        /*cameraSpeed = {\n            x: ((canvas.width / 2) - mouseLocation.x) / 15,\n            y: ((canvas.height / 2) - mouseLocation.y) / 15\n        };*/\n        //console.dir(cameraSpeed);\n        \n\t}\n\t\n\tfunction onMouseScroll(result){\n\t\tdisplay.scaleCamera(result ? -0.1 : 0.1);\n\t}\n\t\n\tfunction checkInput(){\n\t\t\n\t\tif(input.isPressed(input.KEYS.RIGHT)){\n\t\t\tdisplay.translateCamera(-5, 0);\n\t\t} else if (input.isPressed(input.KEYS.LEFT)){\n\t\t\tdisplay.translateCamera(5, 0);\n\t\t}\n\t\t\n\t\tif(input.isPressed(input.KEYS.UP)){\n\t\t\tdisplay.translateCamera(0, 5);\n\t\t} else if (input.isPressed(input.KEYS.DOWN)){\n\t\t\tdisplay.translateCamera(0, -5);\n\t\t}\n        \n        if(input.isPressed(input.KEYS.S)){\n            network.spawnSheep();\n        }\n\n        if(input.isPressed(input.KEYS.C)){\n        \tconsole.log('toggling controls display');\n        \tif(ui.controls.visible)\n        \t\tui.controls.hide();\n        \telse\n        \t\tui.controls.show();\n        }\n    }\n\n    function calcPointDistance(point1, point2) {\n        return Math.sqrt(Math.abs(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2)));\n    }\n\n    function calcVectorDistance(vector) {\n        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);\n    }\n\n    function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {\n        let vector = {\n            x: playerObj.x - pointX,\n            y: playerObj.y - pointY\n        };\n\n        let norm = calcVectorDistance(vector);\n        if (norm != 0) {\n            vector.x /= norm;\n            vector.y /= norm;\n        }\n\n        return vector;\n    }\n\n    function getClosestPlayer(point) {\n        let closest = 10000;\n        let playNum = 0;\n        for (let i = 0; i < players.length; i++) {\n            let dist = calcPointDistance(point, players[i]);\n            if (dist < closest) {\n                closest = dist;\n                playNum = i;\n            }\n        }\n        return players[playNum];\n    }\n\n    function getVectortoPlayer(playerObj, pointX, pointY) {\n        let vector = {\n            x: playerObj.x - pointX,\n            y: playerObj.y - pointY\n        };\n\n        return vector;\n    }\n\n    function sheepSeek(sheep) {\n        \n    }\n\t\n\treturn {\n\t\tgetInstance: function() {\n\t\t\tif(!instance) {\n\t\t\t\tinstance = createInstance();\n\t\t\t}\n\t\t\treturn instance;\n\t\t}\n\t};\n\t\n})();",
+			"file": "/C/Users/user/Google Drive/School/Classwork/Fall2017/gameManager.js",
+			"file_size": 6592,
+			"file_write_time": 131525031573083090,
+			"settings":
+			{
+				"buffer_size": 6335,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "# Logs\nlogs\n*.log\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n\n# Runtime data\npids\n*.pid\n*.seed\n*.pid.lock\n\n# Directory for instrumented libs generated by jscoverage/JSCover\nlib-cov\n\n# Coverage directory used by tools like istanbul\ncoverage\n\n# nyc test coverage\n.nyc_output\n\n# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)\n.grunt\n\n# Bower dependency directory (https://bower.io/)\nbower_components\n\n# node-waf configuration\n.lock-wscript\n\n# Compiled binary addons (http://nodejs.org/api/addons.html)\nbuild/Release\n\n# Dependency directories\n.vs/\nnode_modules/\njspm_packages/\n\n# Typescript v1 declaration files\ntypings/\n\n# Optional npm cache directory\n.npm\n\n# Optional eslint cache\n.eslintcache\n\n# Optional REPL history\n.node_repl_history\n\n# Output of 'npm pack'\n*.tgz\n\n# Yarn Integrity file\n.yarn-integrity\n\n# dotenv environment variables file\n.env\n\n#sublime text stuff\n",
+			"file": ".gitignore",
+			"file_size": 949,
+			"file_write_time": 131520400060000000,
+			"settings":
+			{
+				"buffer_size": 909,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/gameManager.js",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/css/ui.css",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/css/generated.css",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/visualizermanager.js",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/utilities.js",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/uimanager.js",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/audiomanager.js",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/visualizer.html",
+		"/C/Users/user/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/server.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/views/index.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/uimanager.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/workspace.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/display.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/audio.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/server_modules/log.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/server.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/client.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/gameManager.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/network.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME320/sheepherd/app/input.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/visualizer.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/css/ui.css",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/audiomanager.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/visualizermanager.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/css/generated.css",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/src/utilities.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/js/emitter.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/ui.css",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/CSCI262/nfaToDfa.py",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/CSCI262/testnfa",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/CSCI262/dfa.1.42",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/js/sound.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/js/keys.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/js/utilities.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/boomshine.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/js/main.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-ICE-start/js/loader.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Boomshine-ICE-start/Boomshine-B/js/loader.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/web audio-1 start/web audio-1 start/web-audio-visualizer.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/Car demo done/Car demo done/Module Pattern/Car.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/uimanager.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Audio Visualizer/audiomanager.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/simple-filter-demo/simple-filter-demo/js/utilities.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/globalCompositeOperationDemo/globalCompositeOperationDemo/example.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Exercises/globalCompositeOperationDemo/globalCompositeOperationDemo/example.js",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/Drawing App Start/Drawing App Start/canvas-paint.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/speed-circles-start-files (Extra Credit)/speed-circles-start-files/speed_circles_2.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/speed-circles-start-files (Extra Credit)/speed-circles-start-files/speed_circles_1.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/speed-circles-start-files (Extra Credit)/speed-circles-start-files/speed_circles.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/shape-viewer-app-start/shape-viewer-app-start.html",
+		"/C/Users/Margaret/Google Drive/School/Classwork/Fall2017/IGME330/try-it-1-start/try-it-1-start/try-it-1.html",
+		"/D/Wyvern/codingstandard.txt",
+		"/D/Wyvern/Engine/debug/console.h",
+		"/D/Wyvern/Engine/memory/memoryallocator.h",
+		"/D/Wyvern/Engine/memory/linearmemoryallocator.cpp",
+		"/D/Wyvern/Engine/memory/stackmemoryallocator.h",
+		"/D/Wyvern/Engine/memory/stackmemoryallocator.cpp",
+		"/D/Wyvern/Engine/memory/listmemoryallocator.h",
+		"/D/Wyvern/Engine/memory/listmemoryallocator.cpp",
+		"/D/Wyvern/Engine/memory/poolmemoryallocator.cpp",
+		"/D/Wyvern/Engine/memory/proxymemoryallocator.cpp",
+		"/D/Wyvern/Engine/memory/proxymemoryallocator.h",
+		"/D/Wyvern/Engine/memory/poolmemoryallocator.h",
+		"/D/Wyvern/Engine/memory/linearmemoryallocator.h",
+		"/D/Wyvern/Engine/utility/file.cpp",
+		"/D/Wyvern/Engine/testing/testing.h",
+		"/D/Wyvern/Engine/testing/testing.cpp",
+		"/D/Wyvern/Engine/testing.h",
+		"/D/Wyvern/Engine/Debug_Output/engine.ilk",
+		"/D/Wyvern/Engine/Debug_Intermediate/engine.tlog/link.write.1.tlog",
+		"/D/Wyvern/Engine/Debug_Intermediate/engine.tlog/link.read.1.tlog",
+		"/D/Wyvern/Engine/Debug_Intermediate/engine.tlog/link.command.1.tlog",
+		"/D/Wyvern/Engine/Debug_Intermediate/engine.tlog/CL.write.1.tlog",
+		"/D/Wyvern/Engine/Debug_Intermediate/engine.tlog/CL.read.1.tlog",
+		"/D/Wyvern/Engine/Debug_Intermediate/engine.tlog/CL.command.1.tlog",
+		"/D/Wyvern/Engine/Debug_Intermediate/Engine.log",
+		"/D/Wyvern/Engine/Engine.vcxproj.filters",
+		"/D/Wyvern/Engine/Engine.vcxproj",
+		"/D/Wyvern/Engine/memory/allocator.cpp"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 117.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"sheep",
+			"canvas",
+			"setColorSetting",
+			"bslider",
+			"gslider",
+			"rslider",
+			"visualization",
+			"consol",
+			"Emitter",
+			"d_",
+			"playBG",
+			"this.stopBG",
+			"this.bgAud",
+			"playEffec",
+			"playEff",
+			"debugger",
+			"clear",
+			"ProxyAllocator",
+			"P",
+			"ProxyAllocator",
+			"u8",
+			"PoolAllocator",
+			"FreeListAllocator",
+			"StackAllocator",
+			"Allocator"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"setColorOption",
+			"lslider",
+			"sslider",
+			"hslider",
+			"gslider",
+			"particlesystem",
+			"ProxyMemoryAllocator",
+			"uint",
+			"PoolMemoryAllocator",
+			"ListMemoryAllocator",
+			"StackMemoryAllocator",
+			"MemoryAllocator"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/Users/user/Google Drive/School/Classwork/Fall2017/gameManager.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6335,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5893,
+								5893
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 3350.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": ".gitignore",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 909,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								908,
+								908
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 630.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 38.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "sheepherd.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 241.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
