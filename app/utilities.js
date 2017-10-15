@@ -12,6 +12,52 @@
 
     function calcVectorDistance(vector) {
         return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+}
+
+    function addVector(vector1, vector2) {
+        vector1.x += vector2.x;
+        vector1.y += vector2.y;
+
+        return vector1;
+    }
+
+    function subtractVector(vector1, vector2) {
+        vector1.x -= vector2.x;
+        vector1.y -= vector2.y;
+
+        return vector1;
+    }
+
+    function multiplyVector(vector, num)
+    {
+        vector.x *= num;
+        vector.y *= num;
+        return vector;
+    }
+
+    function divideVector(vector, num){
+        vector.x /= num;
+        vector.y /= num;
+        return vector;
+    }
+
+    function normalize(vector) {
+        let norm = calcVectorDistance(vector);
+        if (norm != 0) {
+            vector.x /= norm;
+            vector.y /= norm;
+        }
+
+        return vector;
+    }
+
+    function getVectortoPlayer(playerObj, pointX, pointY) {
+        let vector = {
+            x: playerObj.x - pointX,
+            y: playerObj.y - pointY
+        };
+
+        return vector;
     }
 
     function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {
@@ -20,11 +66,7 @@
             y: playerObj.y - pointY
         };
 
-        let norm = calcVectorDistance(vector);
-        if (norm != 0) {
-            vector.x /= norm;
-            vector.y /= norm;
-        }
+        vector = Normalize(vector);
 
         return vector;
     }
@@ -40,13 +82,4 @@
             }
         }
         return players[playNum];
-    }
-
-    function getVectortoPlayer(playerObj, pointX, pointY) {
-        let vector = {
-            x: playerObj.x - pointX,
-            y: playerObj.y - pointY
-        };
-
-        return vector;
     }
