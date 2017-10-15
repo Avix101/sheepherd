@@ -10,7 +10,7 @@
 
 		this.velocity = { x: 0, y: 0};
 		this.acceleration = { x: 0, y: 0};
-		this.angle = Math.PI;
+		this.angle = 0;
 
 		this.update = function(){
 			let closestPlayer = getClosestPlayer(this); 
@@ -23,7 +23,7 @@
 			if (calcVectorDistance(getVectortoPlayer(closestPlayer, this.position.x, this.position.y)) < 500) {
 				this.position.x += vector.x;
 				this.position.y += vector.y;
-				this.angle = Math.atan2(-vector.y, -vector.x);
+				this.angle = Math.atan2(vector.y, vector.x);
 			}
 		};
 	
