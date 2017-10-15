@@ -10,6 +10,7 @@ Constant Data that describes sprite info
 //Display Manager Instance
 let displayManager = (function(){
 	
+	let radius = 10;
 	let instance;
 	
 	function createInstance() {
@@ -25,6 +26,7 @@ let displayManager = (function(){
 		window.onresize =function() {
         		canvas.width = window.innerWidth;
         		canvas.height = window.innerHeight;
+        		camera.init(canvas.width/2, canvas.height/2, canvas.width, canvas.height);
     		};
 
 		
@@ -56,7 +58,11 @@ let displayManager = (function(){
 		*/
 		
 		object.update = function(){	
+			this.clearCanvas();
 			camera.render();
+			this.drawBG();
+			this.drawSheep(sheeps);
+			this.drawPlayers(players);
 		}
 		
 		object.drawBG = function(){
@@ -110,7 +116,7 @@ let displayManager = (function(){
     
     function drawSheep(sheepObj){
         ctx.beginPath();
-		ctx.arc(sheepObj.x, sheepObj.y, radius, 0, 2 * Math.PI, false);
+		ctx.arc(sheepObj.position.x, sheepObj.position.y, radius, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'white';
 		ctx.fill();
 		//ctx.stroke();

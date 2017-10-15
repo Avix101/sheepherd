@@ -8,7 +8,7 @@
 	<meta name="author" content="Meh.">
 	
 	<!-- Stylesheet Links -->
-	
+	<link rel="stylesheet" type="text/css" href="styles/ui.css">
 	<style>
 		canvas {
 			position:absolute;
@@ -23,16 +23,29 @@
 	<p>Hello World</p>
     <!-- <canvas id="primaryCanvas" width="640" height="480"> -->
     <canvas id="primaryCanvas" width="1000" height="480">
+
+    <div id="startScreen">
+    	Name: <input type="text" id="nameInput" name="playerName">
+    </div>
+
+    <div id="controlsMenu">
+    	<p> Toggle Controls: C </p>
+    	<p> Toggle Shepherd Following: Right Click </p>
+    	<p> Move Camera: Scroll Wheel </p>
+    </div>
 	
 	<!-- Script Links -->
 	<script src="/socket.io/socket.io.js"></script>
+	<script src="../app/utilities.js"></script>
 	<script src="../app/audio.js"></script>
 	<script src="../app/display.js"></script>
 	<script src="../app/input.js"></script>
+	<script src="../app/sheep.js"></script>
 	<script src="../app/network.js"></script>
+	<script src="../app/ui.js"></script>
 	<script src="../app/gameManager.js"></script>
 	<script src="../app/client.js"></script>
-	<script src="../app/ui.js"></script>
+
 	
 </body>
 </html>

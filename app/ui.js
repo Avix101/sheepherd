@@ -14,7 +14,7 @@ let uiManager = (function(){
 			hide: function(){
 
 			},
-			nameInput: {},
+			nameInput: document.querySelector("nameInput"),
 			colorInput: {},
 			element: document.querySelector('#startScreen')
 		};

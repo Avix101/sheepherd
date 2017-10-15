@@ -10,6 +10,7 @@ const TYPES = {
 }
 
 let host = false;
+let connected = false;
 let isHostCallback;
 
 //Network Manager Instance
@@ -26,6 +27,10 @@ let networkManager = (function(){
 		*/
         object.getID = function(){
             return socket.io.engine.id;
+        }
+
+        object.isConnected = function(){
+        	return connected;
         }
 		
 		object.isHost = function(){
@@ -81,16 +86,34 @@ let networkManager = (function(){
 	
 	socket.on('connect', function(){
 		console.log("Connected to server...");
-        player.id = instance.getID();
 	});
+
 
 	socket.on('gamestate', function(gameData){
 		players = gameData.playerData;
 	});
     
 	socket.on('sheepstate', function(gameData){
-        sheep = gameData.sheepData;
+        updateSheeps(gameData.sheepData);
 	});
+
+	function updateSheeps(sheepData){
+		console.dir(sheeps);
+		console.dir(sheepData);
+		for(let i = 0; i < sheepData.length; i++){
+			if(i < sheeps.length){
+				sheeps[i].position.x = sheepData[i].position.x;
+				sheeps[i].position.y = sheepData[i].position.y;
+				sheeps[i].velocity.x = sheepData[i].velocity.x;
+				sheeps[i].velocity.y = sheepData[i].velocity.y;
+				sheeps[i].acceleration.x = sheepData[i].acceleration.x;
+				sheeps[i].acceleration.y = sheepData[i].acceleration.y;
+			}
+			else{ // this sheep is newly spawned
+				sheeps[i] = new sheep(sheepData[i].x, sheepData[i].y);
+			}
+		}
+	}
 	
 	socket.on('host', function(isHost){
 		host = isHost;

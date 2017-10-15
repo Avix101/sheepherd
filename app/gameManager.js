@@ -1,134 +1,133 @@
-let player, players, sheep, radius, canvas;
+// ---------------------------------------------------------------------------
+//
+// gameManager.js
+//
+// The game manager handles all game logic - behavior, score, updates, etc.
+//
+// ----------------------------------------------------------------------------
 
-let gameManager = (function(){
-	
+let players, sheeps;
+
+let gameManager = ( function(){
+
 	let instance;
 	let audio;
 	let display;
 	let input;
 	let network;
-    
-    let cameraSpeed = {x: 0, y: 0};
-    let playerSpeed;
-	
-	function createInstance() {
+
+	sheeps = []; 	// array of all sheep in the game (can't overload the name sheep, so screw you English)
+	players = []; 	// array of all players in the game
+
+
+	let player = {
+		
+		position: { x: -10, y: -10},
+		speed: { x: 4, y: 4},
+		id: 0,
+		score: 0,
+		shepherd: {
+			flock: [], // array of sheep objects, at some point
+			position: {x: 0, y: 0},
+			// shepherd update logic goes here!
+			update: function(){
+
+
+			}
+		},
+		name: "Player Name",
+		color: "red", 
+		update: function(){
+			let localPosition = display.getLocalPosition(player.position.x, player.position.y);
+			let localMouse = input.getLocalMouseCoords();
+			let direction = input.getVectorToMouse(localPosition.x, localPosition.y);
+
+			let addX = direction.x *this.speed.x;
+			let addY = direction.y *this.speed.y;
+
+			let globalFrame = display.getGlobalFrame();
+			if(Math.abs(localPosition.x - localMouse.x) < 4 / globalFrame.scale){
+				addX = 0;
+			}
+
+			if(Math.abs(localPosition.y - localMouse.y) < 4 / globalFrame.scale){
+				addY = 0;
+			}
+
+			this.position.x += addX;
+			this.position.y += addY;
+
+			this.shepherd.update();
+		}
+	};
+	// player cannot be extended, to prevent hard to find bugs
+	Object.seal(player);
+
+	function createInstance(){
 		audio = audioManager.getInstance();
 		display = displayManager.getInstance();
 		input = inputManager.getInstance();
-        network = networkManager.getInstance();
-
-        //Remove comment
+		network = networkManager.getInstance();
 		ui = uiManager.getInstance();
-		
-		let object = new Object();
-		
-		/*
-		All game related methods if they need to be accessible by the client
-		*/
-		
-		canvas = document.querySelector('#primaryCanvas');
+
+		let object = {};
 		init();
-		
+
 		console.log("Game Manager Instance created");
 		return object;
 	}
-	
-	/*
-	Game related methods (not accessible outside of this class)
-	*/
-	
+
 	function init(){
-		
-		radius = 10;
-		
-		player = {	
-			x: -10,
-			y: -10,
-			id: 0,
-			score: 0
-		}
-        
-        playerSpeed = {
-            x: 4,
-            y: 4
-        }
-		
-		players = [];
-        sheep = [];
-		
+
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);
 		input.setWindowActiveCallback(rejectHost, acceptHost);
 		network.setIsHostCallback(checkHostViability);
-		
+
 		update();
 	}
-	
+
 	function update(){
-		
+
 		checkInput();
-		
-		display.clearCanvas();
-		display.update();
-		display.drawBG();
-		
-        display.drawSheep(sheep);
-        display.drawPlayers(players);
-        //display.translateCamera(cameraSpeed.x, cameraSpeed.y);
-        
-        let localPlayerPosition = display.getLocalPosition(player.x, player.y);
-        var localMouse = input.getLocalMouseCoords();
-        let playerDirection = input.getVectorToMouse(localPlayerPosition.x, localPlayerPosition.y);
-        
-        let addX = playerDirection.x * playerSpeed.x;
-        let addY = playerDirection.y * playerSpeed.y;
-        
-        let globalFrame = display.getGlobalFrame();
-        if(Math.abs(localPlayerPosition.x - localMouse.x) < 4 / globalFrame.scale){
-            addX = 0;
-        }
-        
-        if(Math.abs(localPlayerPosition.y - localMouse.y) < 4 / globalFrame.scale){
-            addY = 0;
-        }
-        
-        player.x += addX;
-        player.y += addY;
+		display.update(players, sheeps);
+		// the player also updates their shepherd
+		player.update();
 
 		if(network.isHost()){
-			let sheepPacket = network.createSheepPacket();
-		
-			//sheep movement
-			for (let i = 0; i < sheep.length; i++) {
-				 let closestPlayer = getClosestPlayer(sheep[i]); 
-				 let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
-
-				 if(closestPlayer.id == undefined){
-					 continue;
-				 }
-				 
-				 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
-					 sheep[i].x += vector.x;
-					 sheep[i].y += vector.y;
-					 //network.updateSheep(sheep[i], i);
-					 network.appendSheepPacket(sheepPacket, sheep[i], i);
-				 }
-			 }
-			 
-			 network.sendSheepPacket(sheepPacket);
+			hostUpdate();
 		}
-		
-        //input.addToGlobalMouse(addX, addY, world);
-        
-        display.translateToCamera(player.x, player.y);
-        network.sendPlayerInfo(player);
-		
-		// update leaderboard
+
+		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, score: player.score};
+		network.sendPlayerInfo(playerInfo);
+
+		display.translateToCamera(player.position.x, player.position.y);
+
 		ui.leaderboard.update();
 		requestAnimationFrame(update);
+
 	}
-	
+
+
+	// ------------------------------------
+	//
+	// HOST LOGIC
+	//
+	// ------------------------------------
+
+	function hostUpdate(){
+		let sheepPacket = network.createSheepPacket();
+
+		// update all the sheep
+		for(let i = 0; i < sheeps.length; i++){
+			sheeps[i].update();
+			network.appendSheepPacket(sheepPacket, sheeps[i], i);
+		}
+
+		network.sendSheepPacket(sheepPacket);
+	}
+
 	function rejectHost(windowActive){
 		if(!windowActive && network.isHost()){
 			network.rejectHost();
@@ -146,30 +145,14 @@ let gameManager = (function(){
 			network.rejectHost();
 		}
 	}
-	
-	function onMouseMove(event){
-		
-		let globalFrame = display.getGlobalFrame();
-		let rect = canvas.getBoundingClientRect();
-		//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
-		//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
-		//
-        
-        let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);
-        //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);
-        
-        /*cameraSpeed = {
-            x: ((canvas.width / 2) - mouseLocation.x) / 15,
-            y: ((canvas.height / 2) - mouseLocation.y) / 15
-        };*/
-        //console.dir(cameraSpeed);
-        
-	}
-	
-	function onMouseScroll(result){
-		display.scaleCamera(result ? -0.1 : 0.1);
-	}
-	
+
+
+
+// -----------------------------------------------
+// 
+// INPUT HANDLING
+//
+// -------------------------------------------------
 	function checkInput(){
 		
 		if(input.isPressed(input.KEYS.RIGHT)){
@@ -197,54 +180,30 @@ let gameManager = (function(){
         }
     }
 
-    function calcPointDistance(point1, point2) {
-        return Math.sqrt(Math.abs(Math.pow((point1.x - point2.x), 2) - Math.pow((point1.y - point2.y), 2)));
-    }
-
-    function calcVectorDistance(vector) {
-        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
-    }
-
-    function getNormalizedVectortoPlayer(playerObj, pointX, pointY) {
-        let vector = {
-            x: playerObj.x - pointX,
-            y: playerObj.y - pointY
-        };
-
-        let norm = calcVectorDistance(vector);
-        if (norm != 0) {
-            vector.x /= norm;
-            vector.y /= norm;
-        }
-
-        return vector;
-    }
-
-    function getClosestPlayer(point) {
-        let closest = 10000;
-        let playNum = 0;
-        for (let i = 0; i < players.length; i++) {
-            let dist = calcPointDistance(point, players[i]);
-            if (dist < closest) {
-                closest = dist;
-                playNum = i;
-            }
-        }
-        return players[playNum];
-    }
-
-    function getVectortoPlayer(playerObj, pointX, pointY) {
-        let vector = {
-            x: playerObj.x - pointX,
-            y: playerObj.y - pointY
-        };
-
-        return vector;
-    }
-
-    function sheepSeek(sheep) {
+	function onMouseMove(event){
+		
+		let globalFrame = display.getGlobalFrame();
+		let rect = canvas.getBoundingClientRect();
+		//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
+		//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
+		//
         
-    }
+        let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);
+        //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);
+        
+        /*cameraSpeed = {
+            x: ((canvas.width / 2) - mouseLocation.x) / 15,
+            y: ((canvas.height / 2) - mouseLocation.y) / 15
+        };*/
+        //console.dir(cameraSpeed);
+        
+	}
+	
+	function onMouseScroll(result){
+		display.scaleCamera(result ? -0.1 : 0.1);
+	}
+	
+
 	
 	return {
 		getInstance: function() {
@@ -254,5 +213,5 @@ let gameManager = (function(){
 			return instance;
 		}
 	};
-	
-})();
+
+}());
