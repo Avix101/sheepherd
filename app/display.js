@@ -60,7 +60,7 @@ let displayManager = (function(){
 		window.onresize = function(){
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
-			camera.init(canvas.width/2, canvas.height/2, canvas.width, canvas.height);
+			camera.defineViewPort(canvas.width/2, canvas.height/2, canvas.width, canvas.height, canvas);
 		}
 
 		// display update (draw loop)
@@ -187,9 +187,15 @@ let cameraInit = (function(){
 			viewPort.height = height;
 			viewPort.left = centerX - (width / 2);
 			viewPort.top = centerY - (height / 2);
+			
 			// this might be redundant, testing - Margaret
 			// ctx.translate(-viewPort.left, -viewPort.top);
 		};
+		
+		cameraObj.defineViewPort = function(centerX, centerY, width, height, canvas){
+			cameraObj.scale(1, canvas);
+			cameraObj.init(centerX, centerY, width, height);
+		}
 
 		cameraObj.defineWorld = function(left,top,width,height){
 			world.left = left;
