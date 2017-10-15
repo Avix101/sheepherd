@@ -132,7 +132,7 @@ let displayManager = (function(){
     }
     
     function drawSprite(drawObj, sprite){
-        ctx.translate(drawObj.x, drawObj.y);
+        ctx.translate(drawObj.position.x, drawObj.position.y);
         ctx.rotate(drawObj.angle)
         ctx.drawImage(
                 sprite.src,                     // spritesheet

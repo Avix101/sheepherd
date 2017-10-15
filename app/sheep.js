@@ -1,5 +1,8 @@
 	// to create a sheep, use the new keyword with this constructor.
 	// ex: var sheep = new sheep(0,0);
+
+	const sheepSpeed = 1.75;
+
 	function sheep(xpos,ypos){
 		this.position = {x: xpos, y: ypos};
 		this.shepherd = undefined; // undefined when the sheep is not associated with a shepherd, a player's shepherd otherwise
@@ -7,8 +10,10 @@
 
 		this.velocity = { x: 0, y: 0};
 		this.acceleration = { x: 0, y: 0};
+		this.angle = 0;
 
 		this.update = function(){
+			console.log("sheep updating");
 			let closestPlayer = getClosestPlayer(this); 
 			let vector = getNormalizedVectortoPlayer(closestPlayer, this.position.x, this.position.y);
 
@@ -19,6 +24,7 @@
 			if (calcVectorDistance(getVectortoPlayer(closestPlayer, this.position.x, this.position.y)) < 500) {
 				this.position.x += vector.x;
 				this.position.y += vector.y;
+				this.angle = Math.atan2(-vector.y, -vector.x);
 			}
 		};
 	
