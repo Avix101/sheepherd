@@ -87,8 +87,8 @@ let gameManager = ( function(){
 
 		update();
 	}
-
-	function update(){
+	
+    function update() {
 
 		checkInput();
 		display.update(players, sheeps);
@@ -153,6 +153,7 @@ let gameManager = ( function(){
 // INPUT HANDLING
 //
 // -------------------------------------------------
+
 	function checkInput(){
 		
 		if(input.isPressed(input.KEYS.RIGHT)){

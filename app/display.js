@@ -1,7 +1,7 @@
 //Possible variables needed: canvas, ctx, global graphics settings
 //Modular data isn't stored here, it's passed in
 
-let ctx, camera, mapPattern;
+let ctx, camera, mapPattern, sheepSprite;
 
 /*
 Constant Data that describes sprite info
@@ -42,7 +42,7 @@ let displayManager = (function(){
 			mapPattern = ctx.createPattern(mapImage, "repeat");
 		}
         
-        let sheepSprite = new Image();
+        sheepSprite = new Image();
         sheepSprite.src = "app/resources/sheep.png";
 		
 		/*
@@ -115,25 +115,38 @@ let displayManager = (function(){
 	}
     
     function drawSheep(sheepObj){
+        /*
         ctx.beginPath();
 		ctx.arc(sheepObj.position.x, sheepObj.position.y, radius, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'white';
 		ctx.fill();
-		//ctx.stroke();
+        */
+        let sprite = {
+            src: sheepSprite,
+            width: 256,
+            height: 151,
+            drawWidth: 55,
+            drawHeight: 35
+        }
+        drawSprite(sheepObj, sprite);
     }
     
     function drawSprite(drawObj, sprite){
+        ctx.translate(drawObj.x, drawObj.y);
+        ctx.rotate(drawObj.angle)
         ctx.drawImage(
                 sprite.src,                     // spritesheet
                 0,                              // x pos on spritesheet
                 0,                              // y pos on spritesheet
                 sprite.width,                   // width on spritesheet
                 sprite.height,                  // height on spritesheet
-                drawObj.x - drawObj.width / 2,  // top left corner x on canvas
-                drawObj.y - drawObj.height / 2, // top left corner y on canvas
-                drawObj.width,                  // width on canvas
-                drawObj.height                  // height on canvas
+                -sprite.drawWidth / 2,  // top left corner x on canvas
+                -sprite.drawHeight / 2, // top left corner y on canvas
+                sprite.drawWidth,                  // width on canvas
+                sprite.drawHeight                  // height on canvas
             );
+        ctx.rotate(-drawObj.angle)
+        ctx.translate(-drawObj.x, -drawObj.y);
     }
 	
 	return {
