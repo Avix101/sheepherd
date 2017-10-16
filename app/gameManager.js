@@ -6,7 +6,7 @@
 //
 // ----------------------------------------------------------------------------
 
-let players, sheeps;
+var players, sheeps;
 
 let gameManager = ( function(){
 
