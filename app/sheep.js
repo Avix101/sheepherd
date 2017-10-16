@@ -56,8 +56,8 @@
 
 
             let steeringForce = {
-                x: desiredVelocity.x - velocity.x,
-                y: desiredVelocity.y - velocity.y
+                x: desiredVelocity.x - this.velocity.x,
+                y: desiredVelocity.y - this.velocity.y
             };
 
             return steeringForce;
@@ -74,8 +74,8 @@
 
 
             let steeringForce = {
-                x: desiredVelocity.x - velocity.x,
-                y: desiredVelocity.y - velocity.y
+                x: desiredVelocity.x - this.velocity.x,
+                y: desiredVelocity.y - this.velocity.y
             };
 
             return steeringForce;
@@ -95,8 +95,8 @@
 
             for (let i = 0; i < flock.length; i++) {
                 let dist = {
-                    flock[i].x - position.x,
-                    flock[i].y - position.y
+                    x: flock[i].x - this.position.x,
+                    y: flock[i].y - this.position.y
                 };
                 let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
                 if (distSqr < Math.pow(separateRad, 2)) {
@@ -105,7 +105,7 @@
             }
 
             separateVec = normalize(separateVec);
-            return subtractVector(separateVec, velocity);
+            return subtractVector(separateVec, this.velocity);
         }
 
         function cohere() {
