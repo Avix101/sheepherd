@@ -38,9 +38,9 @@
 			// this.angle = Math.atan2(this.velocity.x, this.velocity.y);
 			
 			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
-				this.position.x += vector.x;
-				this.position.y += vector.y;
-				this.angle = Math.atan2(vector.y, vector.x);
+				this.position.x -= vector.x;
+				this.position.y -= vector.y;
+				this.angle = Math.atan2(-vector.y, -vector.x);
 			}
 		};
 	
