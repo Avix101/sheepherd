@@ -13,7 +13,7 @@
 		this.angle = 0;
 
 		this.update = function(){
-			let closestPlayer = getClosestPlayer(this); 
+			let closestPlayer = getClosestPlayer(this.position); 
 			let vector = getNormalizedVectorto(closestPlayer, this.position);
 
 			if(closestPlayer.id == undefined){
