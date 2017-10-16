@@ -47,12 +47,13 @@
     }
 
     function normalizeVector(vector){
-        let normalized = {};
+        let normalized = {x: 0, y: 0};
         let length = calcVectorLength(vector);
         if(length != 0){
             normalized.x = vector.x/length;
             normalized.y = vector.y/length;
         }
+        return normalized;
     }
 
     function getVectorto(vectorTo, vectorFrom){
