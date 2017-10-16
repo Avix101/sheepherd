@@ -59,5 +59,9 @@ typings/
 .env
 
 #sublime text stuff
-.sublime-project
-.sublime-workspace
+*.sublime-project
+*.sublime-workspace
+
+# google drive stuff
+
+*.ini

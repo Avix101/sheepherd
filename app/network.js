@@ -98,7 +98,7 @@ let networkManager = (function(){
 	});
 
 	function updateSheeps(sheepData){
-		console.dir(sheepData);
+		//console.dir(sheepData);
 		for(let i = 0; i < sheepData.length; i++){
 			if(sheeps[i]){
 				sheeps[i].position.x = sheepData[i].position.x;

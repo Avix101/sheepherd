@@ -14,13 +14,13 @@
 
 		this.update = function(){
 			let closestPlayer = getClosestPlayer(this); 
-			let vector = getNormalizedVectortoPlayer(closestPlayer, this.position.x, this.position.y);
+			let vector = getNormalizedVectorto(closestPlayer, this.position);
 
 			if(closestPlayer.id == undefined){
 				return;
 			}
 
-			if (calcVectorDistance(getVectortoPlayer(closestPlayer, this.position.x, this.position.y)) < 500) {
+			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
 				this.position.x += vector.x;
 				this.position.y += vector.y;
 				this.angle = Math.atan2(vector.y, vector.x);
