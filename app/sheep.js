@@ -13,12 +13,15 @@
 		this.angle = 0;
 
 		this.update = function(){
-			let closestPlayer = getClosestPlayer(this.position); 
-			let vector = getNormalizedVectorto(closestPlayer, this.position);
+            let closestPlayer = getClosestPlayer(this.position);
+            let vector = getNormalizedVectorto(closestPlayer, this.position);
+            this.acceleration = { x: 0, y: 0 };
 
 			if(closestPlayer.id == undefined){
 				return;
-			}
+            }
+
+            
 
 			// // might want to move these to globals for tweaking/balancing
 			// let playerFleeWeight = 1;
@@ -26,22 +29,29 @@
 			// let cohereWeight = 1;
 			// let leaderFollowWeight = 1;
 
-			// // player flee
-			// if(calcVectorLength(getVectorto(closestPlayer,this.position)) < 500){
-			// 	let fleeForce = multiplyVector(seek(vector), playerFleeWeight);
-			// 	this.acceleration = addVector(this.acceleration, fleeForce);
-			// }
-
-
 			// this.velocity = addVector(this.velocity, this.acceleration);
 			// this.position = addVector(this.velocity, this.position);
 			// this.angle = Math.atan2(this.velocity.x, this.velocity.y);
 			
 			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
-				this.position.x -= vector.x;
-				this.position.y -= vector.y;
-				this.angle = Math.atan2(-vector.y, -vector.x);
-			}
+                this.acceleration = addVector(flee(closestPlayer), this.acceleration);
+				//this.angle = Math.atan2(-vector.y, -vector.x);
+            }
+            if (this.acceleration.x == 0 && this.acceleration.y == 0) {
+                this.velocity = divideVector(this.velocity, 1.1);
+                if (this.velocity.x < 0.01 && this.velocity.y < 0.01) {
+                    this.velocity = { x: 0, y: 0 };
+                }
+            }
+
+            // Moves Sheep
+            this.velocity = addVector(this.velocity, this.acceleration);
+            //if (calcVectorLength(this.velocity) > 1) {
+            //    this.velocity = normalizeVector(this.velocity);
+            //    this.velocity = multiplyVector(this.velocity, sheepSpeed);
+            //}
+            this.angle = Math.atan2(this.velocity.x, this.velocity.y)
+			this.position = addVector(this.velocity, this.position);
 		};
 	
 
@@ -49,12 +59,15 @@
 		// sheep flocking algorithms
 
 		let seek = function(seekPoint){
-			let desiredVelocity = subtractVector(seekPoint, this.position);
-			desiredVelocity = normalizeVector(desiredVelocity);
-			desiredVelocity = multiplyVector(desiredVelocity, sheepSpeed);
-
-			let steeringForce = subtractVector(desiredVelocity, this.velocity);
-			return steeringForce;
+			//let desiredVelocity = subtractVector(seekPoint, this.position);
+			//desiredVelocity = normalizeVector(desiredVelocity);
+			//desiredVelocity = multiplyVector(desiredVelocity, sheepSpeed);
+            //
+			//let steeringForce = subtractVector(desiredVelocity, this.velocity);
+            //return steeringForce;
+            seekVec = subtractVector(seekPoint, this.position);
+            seekVec = normalizeVector(seekVec);
+            return seekVec;
 
 		}.bind(this);
 

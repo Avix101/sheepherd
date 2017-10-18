@@ -38,10 +38,11 @@
         return scalevector;
     }
 
-    function divideVector(vector, scalar){
+    function divideVector(vector, scalar) {
+        if (scalar == 0) return { x: 0, y: 0 };
         let scalevector = {};
-        scalevector.x = vector.x*scalar;
-        scalevector.y = vector.y*scalar;
+        scalevector.x = vector.x/scalar;
+        scalevector.y = vector.y/scalar;
 
         return scalevector;
     }
