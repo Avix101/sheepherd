@@ -98,7 +98,42 @@ let gameManager = ( function(){
 		player.update();
 
 		if(network.isHost()){
+<<<<<<< HEAD
 			hostUpdate();
+=======
+			let sheepPacket = network.createSheepPacket();
+
+            let flockVec = averageVectors(sheep);
+			//sheep movement
+            for (let i = 0; i < sheep.length; i++) {
+                let closestPlayer = getClosestPlayer(sheep[i]);
+
+				 if(closestPlayer.id == undefined){
+					 continue;
+				 }
+
+                 //calculate sheep movement
+                 let cohereWeight = 10;
+                 let separateWeight = 50;
+                 let fleeWeight = 30;
+
+                 for (let j = 0; j < sheep.length; j++) {
+                     //if(sheep[j].)
+                 }
+
+                //move sheep only if conditions met
+                 if (calcVectorDistance(getVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)) < 500) {
+                     //let finalVec = multiplyVector(negateVector(getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y)), fleeWeight);
+				     let vector = getNormalizedVectortoPlayer(closestPlayer, sheep[i].x, sheep[i].y);
+					 sheep[i].x += vector.x;
+					 sheep[i].y += vector.y;
+					 //network.updateSheep(sheep[i], i);
+					 network.appendSheepPacket(sheepPacket, sheep[i], i);
+				 }
+			 }
+			 
+			 network.sendSheepPacket(sheepPacket);
+>>>>>>> master
 		}
 
 		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};
@@ -190,6 +225,7 @@ let gameManager = ( function(){
 		//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
 		//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
 		//
+
         
         let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);
         //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);
