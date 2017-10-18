@@ -98,6 +98,7 @@ let gameManager = ( function(){
 		player.update();
 
 		if(network.isHost()){
+
 			hostUpdate();
 		}
 
@@ -190,6 +191,7 @@ let gameManager = ( function(){
 		//player.x = ((event.clientX - rect.left) / globalFrame.scale) + globalFrame.x;
 		//player.y = ((event.clientY - rect.top) / globalFrame.scale) + globalFrame.y;
 		//
+
         
         let mouseLocation = input.calcLocalMouseCoords(event, globalFrame, rect);
         //let mouseLocation = input.getGlobalMouseCoords(event, globalFrame, rect);
