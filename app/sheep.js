@@ -21,34 +21,30 @@
 				return;
             }
 
-            
+			// might want to move these to globals for tweaking/balancing
+			let playerFleeWeight = 1;
+			let separateWeight = 1;
+			let cohereWeight = 1;
+            let leaderFollowWeight = 1;
+            let sheepSlow = 1.1; // must be > 1
 
-			// // might want to move these to globals for tweaking/balancing
-			// let playerFleeWeight = 1;
-			// let separateWeight = 1;
-			// let cohereWeight = 1;
-			// let leaderFollowWeight = 1;
-
-			// this.velocity = addVector(this.velocity, this.acceleration);
-			// this.position = addVector(this.velocity, this.position);
-			// this.angle = Math.atan2(this.velocity.x, this.velocity.y);
-			
+            // add all forces to acceleration here
 			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
                 this.acceleration = addVector(flee(closestPlayer), this.acceleration);
-				//this.angle = Math.atan2(-vector.y, -vector.x);
             }
 
+            // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
 
             // slows sheep
             if (this.acceleration.x === 0 && this.acceleration.y === 0) {
                 this.velocity = divideVector(this.velocity, 1.1);
-                if (this.velocity.x < 0.01 && this.velocity.y < 0.01) {
+                if (this.velocity.x < 0.1 && this.velocity.y < 0.1) {
                     this.velocity = { x: 0, y: 0 };
                 }
             }
-            // moves sheep
-            else {
+            // limit sheep speed
+            else if (calcVectorLength(this.velocity) > 1) {
                 this.velocity = normalizeVector(this.velocity);
                 this.velocity = multiplyVector(this.velocity, sheepSpeed);
             }
@@ -57,6 +53,8 @@
             if (this.velocity.x !== 0 && this.velocity.y !== 0) {
                 this.angle = Math.atan2(this.velocity.y, this.velocity.x);
             }
+
+            // update position
 			this.position = addVector(this.velocity, this.position);
 		};
 	
@@ -65,15 +63,15 @@
 		// sheep flocking algorithms
 
 		let seek = function(seekPoint){
-			//let desiredVelocity = subtractVector(seekPoint, this.position);
-			//desiredVelocity = normalizeVector(desiredVelocity);
-			//desiredVelocity = multiplyVector(desiredVelocity, sheepSpeed);
-            //
-			//let steeringForce = subtractVector(desiredVelocity, this.velocity);
-            //return steeringForce;
-            seekVec = subtractVector(seekPoint, this.position);
-            seekVec = normalizeVector(seekVec);
-            return seekVec;
+			let desiredVelocity = subtractVector(seekPoint, this.position);
+			desiredVelocity = normalizeVector(desiredVelocity);
+			desiredVelocity = multiplyVector(desiredVelocity, sheepSpeed);
+            
+			let steeringForce = subtractVector(desiredVelocity, this.velocity);
+            return steeringForce;
+            //seekVec = subtractVector(seekPoint, this.position);
+            //seekVec = normalizeVector(seekVec);
+            //return seekVec;
 
 		}.bind(this);
 
