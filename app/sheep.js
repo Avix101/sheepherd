@@ -17,7 +17,7 @@
             let vector = getNormalizedVectorto(closestPlayer, this.position);
             this.acceleration = { x: 0, y: 0 };
 
-			if(closestPlayer.id == undefined){
+			if(closestPlayer.id === undefined){
 				return;
             }
 
@@ -37,20 +37,26 @@
                 this.acceleration = addVector(flee(closestPlayer), this.acceleration);
 				//this.angle = Math.atan2(-vector.y, -vector.x);
             }
-            if (this.acceleration.x == 0 && this.acceleration.y == 0) {
+
+            this.velocity = addVector(this.velocity, this.acceleration);
+
+            // slows sheep
+            if (this.acceleration.x === 0 && this.acceleration.y === 0) {
                 this.velocity = divideVector(this.velocity, 1.1);
                 if (this.velocity.x < 0.01 && this.velocity.y < 0.01) {
                     this.velocity = { x: 0, y: 0 };
                 }
             }
+            // moves sheep
+            else {
+                this.velocity = normalizeVector(this.velocity);
+                this.velocity = multiplyVector(this.velocity, sheepSpeed);
+            }
 
-            // Moves Sheep
-            this.velocity = addVector(this.velocity, this.acceleration);
-            //if (calcVectorLength(this.velocity) > 1) {
-            //    this.velocity = normalizeVector(this.velocity);
-            //    this.velocity = multiplyVector(this.velocity, sheepSpeed);
-            //}
-            this.angle = Math.atan2(this.velocity.x, this.velocity.y)
+            // retain rotation
+            if (this.velocity.x !== 0 && this.velocity.y !== 0) {
+                this.angle = Math.atan2(this.velocity.y, this.velocity.x);
+            }
 			this.position = addVector(this.velocity, this.position);
 		};
 	
@@ -116,7 +122,7 @@
 		}.bind(this);
 
 		let leaderFollow = function(){
-			if(this.shepherd == undefined){
+			if(this.shepherd === undefined){
 				let zeroVec = { x:0, y:0 };
 				return zeroVec;
 			}
