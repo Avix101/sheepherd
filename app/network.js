@@ -73,6 +73,10 @@ let networkManager = (function(){
 			packet.indicies.push(index);
 		}
 		
+		object.stageSheepDelete = function(packet, sheep, index){
+			object.appendSheepPacket(packet, 'del', index);
+		}
+		
 		object.sendSheepPacket = function(packet){
 			socket.emit('updateAllSheep', packet);
 		}

@@ -157,8 +157,16 @@ io.on('connection', function(socket){
 	
 	socket.on('updateAllSheep', function(packet){
 		for(let i = 0; i < packet.sheep.length; i++){
+			
+			if(packet.sheep[i] == "del"){
+				redis.lset('sheep', packet.indicies[i], DELETE);
+				continue;
+			}
+			
 			redis.lset('sheep', packet.indicies[i], packet.sheep[i]);
 		}
+		redis.lrem('sheep', -1, DELETE);
+		
 		sendSheepstate();
 	});
 	
