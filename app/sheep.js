@@ -23,7 +23,7 @@
 
 			// might want to move these to globals for tweaking/balancing
 			let playerFleeWeight = 1;
-			let separateWeight = 1;
+			let separateWeight = 10;
 			let cohereWeight = 1;
             let leaderFollowWeight = 1;
             let sheepSlow = 1.1; // must be > 1
@@ -32,6 +32,9 @@
 			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
                 this.acceleration = addVector(flee(closestPlayer), this.acceleration);
             }
+
+            this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
+            this.acceleration = addVector(multiplyVector(separate(), separateWeight), this.acceleration);
 
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
@@ -85,35 +88,52 @@
 
 
 		let separate = function(){
-			let separateRad = 40;
+			let separateRad = 150;
 			let separateVec = {x:0, y:0};
 
-			if(this.flock === undefined){
+			if(sheeps === undefined){
 				return separateVec;
 			}
 
-			for(let i = 0; i < this.flock.length; i++){
-				let dist = subtractVector(flock[i].position, this.position);
-				let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
-				if(distSqr < Math.pow(separateRad, 2)){
-					separateVec = addVector(flee(flock[i]));
+            for (let i = 0; i < sheeps.length; i++){
+                // calculate distance
+				let dist = subtractVector(sheeps[i].position, this.position);
+                let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
+
+                // if it's the same sheep, skip
+                if (sheeps.indexOf(this) == i) continue;
+
+                // if too close flee
+                if (distSqr < Math.pow(separateRad, 2)) {
+                    separateVec = addVector(flee(sheeps[i].position), separateVec);
 				}
-			}
+            }
+
+            separateVec = normalizeVector(separateVec);
+            console.log(separateVec);
+            return separateVec;
 
 		}.bind(this);
 
 		let cohere = function(){
 			let coherePoint = {x:0, y:0};
 
-			if(this.flock === undefined){
+			if(sheeps === undefined){
 				return coherePoint;
 			}
 
-			for(let i = 0; i < this.flock.length; i++){
-				coherePoint = addVector(coherePoint, this.flock[i]. position);
+			for(let i = 0; i < sheeps.length; i++){
+				coherePoint = addVector(coherePoint, sheeps[i]. position);
 			}
 
-			coherePoint = divideVector(coherePoint, this.flock.length);
+			coherePoint = divideVector(coherePoint, sheeps.length);
+
+            let dist = subtractVector(coherePoint, this.position);
+            let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
+
+            if (distSqr < 500) {
+                return { x: 0, y: 0 };
+            }
 
 			return seek(coherePoint);
 
