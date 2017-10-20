@@ -97,9 +97,9 @@ let gameManager = ( function(){
 		// the player also updates their shepherd
 		player.update();
 
-		if(network.isHost()){ 
-			hostUpdate();
+		if(network.isHost()){
 
+			hostUpdate();
 		}
 
 		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};

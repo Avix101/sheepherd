@@ -94,13 +94,15 @@ let networkManager = (function(){
 	});
     
 	socket.on('sheepstate', function(gameData){
+
         updateSheeps(gameData.sheepData);
 	});
 
 	function updateSheeps(sheepData){
 		//console.dir(sheepData);
+
 		for(let i = 0; i < sheepData.length; i++){
-			if(sheeps[i]){
+			if(sheeps[i] && !host){
 				sheeps[i].position.x = sheepData[i].position.x;
 				sheeps[i].position.y = sheepData[i].position.y;
 				sheeps[i].velocity.x = sheepData[i].velocity.x;
