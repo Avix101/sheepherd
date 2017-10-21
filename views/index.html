@@ -10,6 +10,10 @@
 	<!-- Stylesheet Links -->
 	<link rel="stylesheet" type="text/css" href="../styles/ui.css">
 	<style>
+		@import url('https://fonts.googleapis.com/css?family=Montserrat');
+		body{
+			font-family: 'Montserrat', sans-serif;
+		}
 		canvas {
 			position:absolute;
 			top:0;
@@ -18,7 +22,7 @@
 		}
 
 		#startScreen, #controlsMenu, #leaderboard, #hud{
-			display:none;
+			/*display:none;*/
 		}
 	</style>
 	
@@ -36,9 +40,20 @@
     	<div id="playerColor">
     		<label for="colorChoice">
     		<div id="colorChoice">
-    			<input type="radio" name="playerColor" value="" />
-    			<input type="radio" name="playerColor" value="" />
-    			<input type="radio" name="playerColor" value="" />
+    			<div class="iconPicker"> 
+	    			<div>
+	    			<img class = "selected" src="../app/resources/greyicon.png" alt = "Grey" /> 
+	    			<img src="../app/resources/brownicon.png" alt = "Brown" /> 
+	    			<img src="../app/resources/redicon.png" alt = "Red" />
+	    			<img src="../app/resources/darkbrownicon.png" alt = "Dark Brown" />
+	    			</div>
+    				<div>
+    				<img src="../app/resources/whiteicon.png" alt = "White" />
+    				<img src="../app/resources/whitespoticon.png" alt = "White Spotted" /> 
+    				<img src="../app/resources/blackspoticon.png" alt = "Black Spotted" /> 
+    				<img src="../app/resources/tanspoticon.png" alt = "Tan Spotted" />	
+    				</div>
+    			</div>
     		</div>
     	</div>
     </section>
