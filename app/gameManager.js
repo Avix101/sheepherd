@@ -125,8 +125,9 @@ let gameManager = ( function(){
 		// update all the sheep
 		for(let i = 0; i < sheeps.length; i++){
 			sheeps[i].update();
-            if (sheeps[i].position.x < -1000 || sheeps[i].position.y < -1000 || sheeps[i].position.x > 4500 || sheeps[i].position.y > 4500){   // REPLACE WITH MAP SIZE VARIABLES
-                network.stageSheepDelete(sheepPacket, sheeps[i], i);
+            if (sheeps[i].position.x < -1000 || sheeps[i].position.y < -1000 || sheeps[i].position.x > 3500 || sheeps[i].position.y > 3500){   // REPLACE WITH MAP SIZE VARIABLES
+				network.stageSheepDelete(sheepPacket, sheeps[i], i);
+				sheeps.splice(i, 1);
             } else{
                 network.appendSheepPacket(sheepPacket, sheeps[i], i);
             }
@@ -176,7 +177,11 @@ let gameManager = ( function(){
 		}
         
         if(input.isPressed(input.KEYS.S)){
-            network.spawnSheep();
+            let newSheepIndex = spawnSheep();
+			
+			let packet = network.createSheepPacket();
+			network.appendSheepPacket(packet, sheeps[newSheepIndex], newSheepIndex);
+			network.sendSheepPacket(packet);
         }
 
         if(input.isPressed(input.KEYS.C)){

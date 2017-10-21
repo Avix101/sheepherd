@@ -110,7 +110,7 @@
             }
 
             separateVec = normalizeVector(separateVec);
-            console.log(separateVec);
+            //console.log(separateVec);
             return separateVec;
 
 		}.bind(this);
@@ -153,4 +153,18 @@
 		// easier to read/trace/debug
 		Object.seal(this);
 	}
+	
+	//Let's put spawning here for now
+	function spawnSheep(){
+        let newSheep = new sheep(Math.random() * 5000, Math.random() * 5000);
+		newSheep.velocity = {x:0, y:0};
+		newSheep.acceleration = {x:0, y:0};
+		newSheep.angle = Math.random()*Math.PI*2;
+
+		//Append from the right side of the array
+		let newIndex = sheeps.length;
+        sheeps[newIndex] = newSheep;
+		
+		return newIndex;
+    };
 

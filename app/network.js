@@ -96,25 +96,36 @@ let networkManager = (function(){
 	socket.on('gamestate', function(gameData){
 		players = gameData.playerData;
 	});
+	
+	socket.on('playerdata', function(playerData){
+		players[playerData.index] = playerData.data;
+	});
     
-	socket.on('sheepstate', function(gameData){
-        updateSheeps(gameData.sheepData);
+	socket.on('sheepstate', function(sheepData){
+        updateSheeps(sheepData);
 	});
 
 	function updateSheeps(sheepData){
 		//console.dir(sheepData);
-		for(let i = 0; i < sheepData.length; i++){
-			if(sheeps[i]){
-				sheeps[i].position.x = sheepData[i].position.x;
-				sheeps[i].position.y = sheepData[i].position.y;
-				sheeps[i].velocity.x = sheepData[i].velocity.x;
-				sheeps[i].velocity.y = sheepData[i].velocity.y;
-				sheeps[i].acceleration.x = sheepData[i].acceleration.x;
-				sheeps[i].acceleration.y = sheepData[i].acceleration.y;
-				sheeps[i].angle = sheepData[i].angle;
+		for(let i = 0; i < sheepData.sheep.length; i++){
+			
+			let index = sheepData.indicies[i];
+			if(sheepData.sheep[index] == "del"){
+				sheeps.splice(sheepData[index], 1);
+				continue;
+			}
+			
+			if(sheeps[index]){
+				sheeps[index].position.x = sheepData.sheep[i].position.x;
+				sheeps[index].position.y = sheepData.sheep[i].position.y;
+				sheeps[index].velocity.x = sheepData.sheep[i].velocity.x;
+				sheeps[index].velocity.y = sheepData.sheep[i].velocity.y;
+				sheeps[index].acceleration.x = sheepData.sheep[i].acceleration.x;
+				sheeps[index].acceleration.y = sheepData.sheep[i].acceleration.y;
+				sheeps[index].angle = sheepData.sheep[i].angle;
 			}
 			else{
-				sheeps[i] = new sheep(sheepData[i].position.x, sheepData[i].position.y);
+				sheeps[index] = new sheep(sheepData.sheep[index].position.x, sheepData.sheep[index].position.y);
 			}
 		}
 		// console.dir(sheeps);
