@@ -1,4 +1,4 @@
-
+"use strict"
 //UI Manager Instance
 let uiManager = (function(){
 	
@@ -6,6 +6,8 @@ let uiManager = (function(){
 	
 	function createInstance() {
 		let object = new Object();
+		var input = inputManager.getInstance();
+		input.addListenerForKeys( [input.KEYS.C]);
 		
 		object.startScreen = {
 			show: function(){
@@ -34,19 +36,25 @@ let uiManager = (function(){
 		}.bind(object.startScreen);
 
 		object.controls = { 	// a popup dialogue explaining controls
-			show: function(){	// toggled with 'c' key at the moment
-				this.element.style.display = "block";
-				this.visible = true;
-			},
-			hide: function(){
-				this.element.style.display = "none";
-				this.visible = false;
-			},
+			
 			element: document.querySelector('#controlsMenu'),
-			visible: false,
+			visible: true,
+			toggle: function(){	// toggled with 'c' key at the moment
+				//console.dir(this);
+				if(this.controls.visible){						
+					this.controls.element.style.opacity = 0;
+					this.controls.visible = false;
+				}
+				else{
+					this.controls.element.style.opacity = 1;
+					this.controls.visible = true;
+				}
+			}.bind(object),
 			// possibly want to be able to alter keybinds here?
 			// stretch goal
 		};
+
+		input.setKeyCallback(input.KEYS.C, object.controls.toggle);
 
 		object.leaderboard = {
 			update: function(){

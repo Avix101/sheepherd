@@ -83,7 +83,7 @@ let gameManager = ( function(){
 
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
-		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S, input.KEYS.C]);
+		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);
 		input.setWindowActiveCallback(rejectHost, acceptHost);
 		network.setIsHostCallback(checkHostViability);
 
@@ -184,13 +184,6 @@ let gameManager = ( function(){
 			network.sendSheepPacket(packet);
         }
 
-        if(input.isPressed(input.KEYS.C)){
-        	console.log('toggling controls display');
-        	if(ui.controls.visible)
-        		ui.controls.hide();
-        	else
-        		ui.controls.show();
-        }
     }
 
 	function onMouseMove(event){

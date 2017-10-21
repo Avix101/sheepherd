@@ -25,6 +25,7 @@ let inputManager = (function(){
 		
 		object.KEYS = KEYCODES;
 		keys = {};
+		keyCallbacks = [];
         localMousePos = {x: 0, y: 0};
         globalMousePos = {x: 0, y: 0};
 		windowActive = true;
@@ -103,6 +104,10 @@ let inputManager = (function(){
 				keys[keyCodes[i]].pressed = false;
 			}
 		}
+
+		object.setKeyCallback = function(keyCode, f){
+			keyCallbacks[keyCode] = f;
+		}
 		
 		object.isPressed = function(key){
 			if(keys[key]){
@@ -127,6 +132,9 @@ let inputManager = (function(){
 		
 		document.addEventListener('keydown', function(event){
 			if(keys[event.keyCode]){
+				if(keys[event.keyCode].pressed === false && keyCallbacks[event.keyCode] != undefined){
+					keyCallbacks[event.keyCode]();
+				}
 				keys[event.keyCode].pressed = true;
 			}
 		});
