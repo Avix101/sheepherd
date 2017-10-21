@@ -131,10 +131,21 @@ let displayManager = (function(){
 				// ctx.fill();
 				dogSprites.src = greyDogSpriteSrc;
 				//hacky to test
-				let drawobj = {
-					position: {x:playerObj.x, y:playerObj.y},
-					angle: 0
-				};
+				let drawobj;
+				
+				//Let's do some local predicting to try and avoid the jitter
+				if(playerObj.id == player.id){
+					drawobj = {
+						position: {x:player.x, y:player.y},
+						angle: 0
+					};
+				} else {
+					drawobj = {
+						position: {x:playerObj.x, y:playerObj.y},
+						angle: 0
+					};
+				}
+				
 				drawSprite(drawobj, dogSprites);
 			}
 		}

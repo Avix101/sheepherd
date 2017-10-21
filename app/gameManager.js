@@ -6,7 +6,7 @@
 //
 // ----------------------------------------------------------------------------
 
-var players, sheeps;
+var player, players, sheeps;
 
 let gameManager = ( function(){
 
@@ -20,7 +20,7 @@ let gameManager = ( function(){
 	players = []; 	// array of all players in the game
 
 
-	let player = {
+	player = {
 		
 		position: { x: -10, y: -10},
 		speed: { x: 4, y: 4},
