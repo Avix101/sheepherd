@@ -83,7 +83,7 @@ let displayManager = (function(){
 		
 		//Shepherd
 		let shepherdSpriteSrc = new Image();
-		shepherdSpriteSrc.src = "app/resource/shepherd.png";
+		shepherdSpriteSrc.src = "app/resources/shepherd.png";
 		
 		shepherdSprite = {
 			src: shepherdSpriteSrc,
