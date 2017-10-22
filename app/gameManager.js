@@ -39,19 +39,21 @@ let gameManager = ( function(){
 			flock: [], // array of sheep objects, at some point
 			speed: {x: 2, y: 2},
 			position: {x: 0, y: 0},
+            following: true,
 			// shepherd update logic goes here!
 			update: function(){
+                if(calcVectorLength(getVectorto(player.position, this.position)) > 150){
 
-				if(calcVectorLength(getVectorto(player.position, this.position)) > 150){
-					
-					let direction = getNormalizedVectorto(player.position, this.position);
-					
-					let addX = direction.x * this.speed.x;
-					let addY = direction.y * this.speed.y;
-					
-					this.position.x += addX;
-					this.position.y += addY;
-				}
+                    let direction = getNormalizedVectorto(player.position, this.position);
+                    
+                    if (this.following){
+                        let addX = direction.x * this.speed.x;
+                        let addY = direction.y * this.speed.y;
+
+                        this.position.x += addX;
+                        this.position.y += addY;
+                    }
+                }
 			}
 		},
 		name: "Player Name",
@@ -102,6 +104,7 @@ let gameManager = ( function(){
 
 		input.setMouseMoveCallback(onMouseMove);
 		input.setMouseWheelCallback(onMouseScroll);
+        input.setMouseClickCallback(onMouseClick);
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);
 		input.setWindowActiveCallback(rejectHost, acceptHost);
 		network.setIsHostCallback(checkHostViability);
@@ -265,6 +268,13 @@ let gameManager = ( function(){
 		display.scaleCamera(result ? -0.1 : 0.1);
 	}
 	
+    function onMouseClick(event){
+        if (player.shepherd.following){
+            player.shepherd.following = false;
+        } else {
+            player.shepherd.following = true;
+        }
+    }
 
 	
 	return {
