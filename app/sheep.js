@@ -44,7 +44,7 @@ let sheepSpeed = 1;
             // add all forces to acceleration here
             if (calcPointDistance(closestPlayer, this.position) < 100) {
 
-                this.acceleration = addVector(multiplyVector(seek(closestPlayer), playerFleeWeight), this.acceleration);
+                this.acceleration = addVector(multiplyVector(flee(closestPlayer), playerFleeWeight), this.acceleration);
                 sheepSpeed = 4;
             }
 
