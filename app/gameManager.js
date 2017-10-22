@@ -178,7 +178,7 @@ let gameManager = ( function(){
 		//Spawn sheep if necessary
 		if(sheeps.length < MAX_SHEEP){
 			sheepTime += calcDeltaTime();
-			nextSheepSpawn = 0.05 * sheeps.length;
+			nextSheepSpawn = 0.01 * sheeps.length;
 			
 			if(sheepTime > nextSheepSpawn){
 				let newSheepIndex = spawnSheep();
