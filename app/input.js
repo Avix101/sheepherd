@@ -96,6 +96,10 @@ let inputManager = (function(){
 				callback(result);
 			}
 		}
+        
+        object.setMouseClickCallback = function(callback){
+            window.onclick = callback;
+        }
 		
 		object.addListenerForKeys = function(keyCodes){
 			
