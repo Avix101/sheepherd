@@ -68,6 +68,7 @@ io.on('connection', function(socket){
 			y: 0,
 			angle: 0,
 			shepherdPosition: {},
+			flock: [],
 			id: socket.id,
 			score: 0
 		};
@@ -83,7 +84,7 @@ io.on('connection', function(socket){
 		sendGamestate();
 	});
 	
-	socket.on('playerUpdate', function(x, y, angle, score, shepherdPosition){
+	socket.on('playerUpdate', function(x, y, angle, score, shepherdPosition, flock){
 		
 		var playerObj = {
 		
@@ -91,6 +92,7 @@ io.on('connection', function(socket){
 			y: y,
 			angle: angle,
 			shepherdPosition: shepherdPosition,
+			flock: flock,
 			id: socket.id,
 			score: score
 		};

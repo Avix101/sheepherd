@@ -123,7 +123,7 @@ let gameManager = ( function(){
 			hostUpdate();
 		}
 
-		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position};
+		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position, flock: player.shepherd.flock};
 		network.sendPlayerInfo(playerInfo);
 
 		display.translateToCamera(player.position.x, player.position.y);

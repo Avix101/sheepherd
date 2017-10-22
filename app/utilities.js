@@ -84,6 +84,19 @@
         }
         return players[playNum];
     }
+	
+	function getClosestShepherd(point) {
+		let closest = 10000;
+        let playNum = 0;
+        for (let i = 0; i < players.length; i++) {
+            let dist = calcPointDistance(point, players[i].shepherdPosition);
+            if (dist < closest) {
+                closest = dist;
+                playNum = i;
+            }
+        }
+        return players[playNum];
+	}
 
     function getVectortoPlayer(playerObj, pointX, pointY) {
         let vector = {
