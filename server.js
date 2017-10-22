@@ -39,6 +39,7 @@ function getPlayerIndex(socket){
 function sendGamestate(){
     var gameData = {
         playerData: redis.lrange('players', 0, -1),
+		playerInfo: redis.lrange('playerInfo', 0, -1);
     };
 	
 	io.sockets.emit('gamestate', gameData);
@@ -73,6 +74,7 @@ io.on('connection', function(socket){
 	
 	redis.lpush('playerIDs', socket.id);
 	redis.lpush('players', player);
+	redis.lpush('playerInfo', {});
 	
 	sendGamestate();
 	
@@ -89,6 +91,11 @@ io.on('connection', function(socket){
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, playerObj);
 		sendPlayerData(playerObj, index);
+	});
+	
+	socket.on('playerinfo', function(info){
+		let index = getPlayerIndex(socket);
+		redis.lset('playerInfo', index, info);
 	});
 	
 	socket.on('updateAllSheep', function(packet){
@@ -143,7 +150,9 @@ io.on('connection', function(socket){
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, DELETE);
+		redis.lset('playerInfo', index, DELETE);
 		redis.lrem('players', -1, DELETE);
+		redis.lrem('playerInfo', -1, DELETE);
 		redis.lrem('playerIDs', -1, socket.id);
 		
 		sendGamestate();

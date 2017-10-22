@@ -80,6 +80,10 @@ let networkManager = (function(){
 		object.sendSheepPacket = function(packet){
 			socket.emit('updateAllSheep', packet);
 		}
+		
+		object.setPlayerInfo = function(info){
+			socket.emit('playerinfo', info);
+		}
 		/*
 		Methods that receive information from the server
 		*/
@@ -96,6 +100,7 @@ let networkManager = (function(){
 
 	socket.on('gamestate', function(gameData){
 		players = gameData.playerData;
+		playersInfo = gameData.playerInfo;
 	});
 	
 	socket.on('playerdata', function(playerData){

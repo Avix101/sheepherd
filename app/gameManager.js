@@ -6,7 +6,7 @@
 //
 // ----------------------------------------------------------------------------
 
-var player, players, sheeps;
+var player, players, playersInfo, sheeps;
 
 let gameManager = ( function(){
 
@@ -18,7 +18,10 @@ let gameManager = ( function(){
 
 	sheeps = []; 	// array of all sheep in the game (can't overload the name sheep, so screw you English)
 	players = []; 	// array of all players in the game
+	playersInfo = [];
 
+	let sheepTime = 0;
+	let nextSheepSpawn = 0;
 
 	player = {
 		
