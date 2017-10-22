@@ -63,6 +63,7 @@ let gameManager = ( function(){
 
 			this.position.x += addX;
 			this.position.y += addY;
+			
 			this.angle = Math.atan2(addY, addX);
 
 			this.shepherd.update();

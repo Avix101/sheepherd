@@ -135,6 +135,8 @@ let displayManager = (function(){
 				
 				//Let's do some local predicting to try and avoid the jitter
 				if(playerObj.id == player.id){
+					playerObj.x = player.position.x;
+					playerObj.y = player.position.y;
 					drawobj = {
 						position: {x:player.position.x, y:player.position.y},
 						angle: 0
