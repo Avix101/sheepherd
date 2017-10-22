@@ -144,9 +144,7 @@ let displayManager = (function(){
 			function drawPlayer(index){
 				
 				let playerObj = players[index];
-				console.log(playersInfo);
-				debugger;
-				dogSprite.src = dogSpriteImages[playersInfo[index].dog].src;
+				dogSprite.src = dogSpriteImages[playersInfo[index].dog];
 				//hacky to test
 				let drawobj;
 				

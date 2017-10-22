@@ -78,7 +78,6 @@ io.on('connection', function(socket){
 		
 		redis.lpush('playerIDs', socket.id);
 		redis.lpush('players', player);
-		redis.lpush('playerInfo', {});
 		redis.lpush('playerInfo', info);
 		sendGamestate();
 	});

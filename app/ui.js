@@ -41,6 +41,7 @@ let uiManager = (function(){
 		document.querySelector("#startSubmit").onclick = function(){
 			player.name = this.nameInput.value;
 			player.dog = this.dog;
+			console.log(this.dog);
 			network.joinGame({name: player.name, dog: player.dog});
 			game = true;
 			this.element.style.opacity = 0;
