@@ -105,6 +105,8 @@ let networkManager = (function(){
 
 		socket.on('gamestate', function(gameData){
 			players = gameData.playerData;
+			console.dir(gameData);
+			debugger;
 			playersInfo = gameData.playerInfo;
 		});
 		

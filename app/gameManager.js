@@ -102,23 +102,23 @@ let gameManager = ( function(){
 	}
 	
     function update() {
-
 		checkInput();
 		display.update(players, sheeps);
-		// the player also updates their shepherd
-		player.update();
+		if(game){
+			// the player also updates their shepherd
+			player.update();
 
-		if(network.isHost()){
+			if(network.isHost()){
 
-			hostUpdate();
+				hostUpdate();
+			}
+
+			let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};
+			network.sendPlayerInfo(playerInfo);
+			ui.leaderboard.update();
 		}
 
-		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};
-		network.sendPlayerInfo(playerInfo);
-
 		display.translateToCamera(player.position.x, player.position.y);
-
-		ui.leaderboard.update();
 		requestAnimationFrame(update);
 
 	}

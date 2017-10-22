@@ -8,7 +8,7 @@
 "use strict"
 
 let displayManager = (function(){
-	let mapPattern,sheepSprite,dogSprites,shepherdSprite;
+	let mapPattern,sheepSprite,shepherdSprite;
 	var ctx, camera, canvas;
 	let radius = 20;
 	let instance;
@@ -56,24 +56,25 @@ let displayManager = (function(){
 		};
 
 		// dogs
-		let greyDogSpriteSrc = new Image();
-		greyDogSpriteSrc.src = "app/resources/greydog.png";
-		let blackSpotDogSpriteSrc = new Image();
-		blackSpotDogSpriteSrc.src = "app/resources/blackspotdog.png";
-		let brownDogSpriteSrc = new Image();
-		brownDogSpriteSrc.src = "app/resources/browndog.png";
-		let darkBrownDogSpriteSrc = new Image();
-		darkBrownDogSpriteSrc.src = "app/resources/darkbrowndog.png";
-		let redDogSpriteSrc = new Image();
-		redDogSpriteSrc.src = "app/resources/reddog.png";
-		let tanSpotDogSpriteSrc = new Image();
-		tanSpotDogSpriteSrc.src = "app/resources/tanspotdog.png";
-		let whiteDogSpriteSrc = new Image();
-		whiteDogSpriteSrc.src = "app/resources/whitedog.png";
-		let whiteSpotDogSpriteSrc = new Image();
-		whiteSpotDogSpriteSrc.src = "app/resources/whitespotdog.png";
+		let dogSpriteImages = [];
+		dogSpriteImages[0] = new Image();
+		dogSpriteImages[0].src = "app/resources/greydog.png";
+		dogSpriteImages[6] = new Image();
+		dogSpriteImages[6].src = "app/resources/blackspotdog.png";
+		dogSpriteImages[1] = new Image();
+		dogSpriteImages[1].src = "app/resources/browndog.png";
+		dogSpriteImages[3] = new Image();
+		dogSpriteImages[3].src = "app/resources/darkbrowndog.png";
+		dogSpriteImages[2] = new Image();
+		dogSpriteImages[2].src = "app/resources/reddog.png";
+		dogSpriteImages[7] = new Image();
+		dogSpriteImages[7].src = "app/resources/tanspotdog.png";
+		dogSpriteImages[4] = new Image();
+		dogSpriteImages[4].src = "app/resources/whitedog.png";
+		dogSpriteImages[5] = new Image();
+		dogSpriteImages[5].src = "app/resources/whitespotdog.png";
 		
-		dogSprites = {
+		let dogSprite = {
 			src:{}, // sprite changes based on the player
 			width: 48,
 			height: 60,
@@ -103,12 +104,15 @@ let displayManager = (function(){
 
 		// display update (draw loop)
 		obj.update = function(){
+
 			clearCanvas();
 			ctx.save();
 			camera.setRenderTransform(ctx);
 			drawBG();
-			drawSheeps(sheeps);
-			drawPlayers(players);
+			if(game){
+				drawSheeps(sheeps);
+				drawPlayers(players);
+			}
 			//drawShepherds(players);
 			ctx.restore();
 		}
@@ -133,16 +137,16 @@ let displayManager = (function(){
 			var viewPort = camera.getViewPort();
 			ctx.save();
 			for (let i = 0; i < players.length; i++){
-				drawPlayer(players[i]);
+				drawPlayer(i);
 			}
 			ctx.restore();
 
-			function drawPlayer(playerObj){
-				// ctx.beginPath();
-				// ctx.arc(playerObj.x, playerObj.y, radius, 0, 2*Math.PI, false);
-				// ctx.fillStyle = 'black';
-				// ctx.fill();
-				dogSprites.src = greyDogSpriteSrc;
+			function drawPlayer(index){
+				
+				let playerObj = players[index];
+				console.log(playersInfo);
+				debugger;
+				dogSprite.src = dogSpriteImages[playersInfo[index].dog].src;
 				//hacky to test
 				let drawobj;
 				
@@ -154,14 +158,15 @@ let displayManager = (function(){
 						position: {x:player.position.x, y:player.position.y},
 						angle: 0
 					};
+					drawSprite(drawobj, dogSprite);
 				} else {
 					drawobj = {
 						position: {x:playerObj.x, y:playerObj.y},
 						angle: 0
 					};
+					drawSprite(drawobj, dogSprite);
 				}
 				
-				drawSprite(drawobj, dogSprites);
 			}
 		}
 
