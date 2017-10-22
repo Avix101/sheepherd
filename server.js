@@ -98,6 +98,7 @@ io.on('connection', function(socket){
 	socket.on('playerinfo', function(info){
 		let index = getPlayerIndex(socket);
 		redis.lset('playerInfo', index, info);
+		sendGamestate();
 	});
 	
 	socket.on('updateAllSheep', function(packet){
