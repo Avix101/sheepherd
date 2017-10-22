@@ -64,7 +64,8 @@ io.on('connection', function(socket){
 		x: 0,
 		y: 0,
 		angle: 0,
-		id: socket.id
+		id: socket.id,
+		score: 0
 	};
 	
 	if(!host){
@@ -78,14 +79,15 @@ io.on('connection', function(socket){
 	
 	sendGamestate();
 	
-	socket.on('playerUpdate', function(x, y, angle){
+	socket.on('playerUpdate', function(x, y, angle, score){
 			
 		var playerObj = {
 		
 			x: x,
 			y: y,
 			angle: angle,
-			id: socket.id
+			id: socket.id,
+			score: score
 		};
 		
 		var index = getPlayerIndex(socket);
