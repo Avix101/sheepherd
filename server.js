@@ -60,24 +60,28 @@ io.on('connection', function(socket){
 	
 	log.notify(socket.request.connection.remoteAddress + " connected!");
 	
-	var player = {
-		x: 0,
-		y: 0,
-		angle: 0,
-		id: socket.id,
-		score: 0
-	};
-	
-	if(!host){
-		host = socket.id;
-		io.sockets.connected[host].emit('host', true);
-	}
-	
-	redis.lpush('playerIDs', socket.id);
-	redis.lpush('players', player);
-	redis.lpush('playerInfo', {});
-	
 	sendGamestate();
+	
+	socket.on('createPlayer', function(info){
+		var player = {
+			x: 0,
+			y: 0,
+			angle: 0,
+			id: socket.id,
+			score: 0
+		};
+		
+		if(!host){
+			host = socket.id;
+			io.sockets.connected[host].emit('host', true);
+		}
+		
+		redis.lpush('playerIDs', socket.id);
+		redis.lpush('players', player);
+		redis.lpush('playerInfo', {});
+		redis.lpush('playerInfo', info);
+		sendGamestate();
+	});
 	
 	socket.on('playerUpdate', function(x, y, angle, score){
 			
@@ -96,9 +100,7 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('playerinfo', function(info){
-		let index = getPlayerIndex(socket);
-		redis.lset('playerInfo', index, info);
-		sendGamestate();
+		
 	});
 	
 	socket.on('updateAllSheep', function(packet){

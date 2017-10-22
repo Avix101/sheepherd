@@ -84,9 +84,10 @@ let networkManager = (function(){
 			socket.emit('updateAllSheep', packet);
 		}
 		
-		object.setPlayerInfo = function(info){
-			socket.emit('playerinfo', info);
+		object.createPlayer = function(){
+			socket.emit('createPlayer', info);
 		}
+
 		/*
 		Methods that receive information from the server
 		*/
