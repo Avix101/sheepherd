@@ -115,23 +115,25 @@ let gameManager = ( function(){
 	}
 	
     function update() {
-
 		checkInput();
 		display.update(players, sheeps);
-		// the player also updates their shepherd
-		player.update();
 
-		if(network.isHost()){
+		if(game){
+			// the player also updates their shepherd
+			player.update();
 
-			hostUpdate();
+			if(network.isHost()){
+
+				hostUpdate();
+			}
+
+			let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position, flock: player.shepherd.flock};
+			network.sendPlayerInfo(playerInfo);
+			ui.leaderboard.update();
 		}
 
-		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position};
-		network.sendPlayerInfo(playerInfo);
 
 		display.translateToCamera(player.position.x, player.position.y);
-
-		ui.leaderboard.update();
 		requestAnimationFrame(update);
 
 	}
@@ -181,7 +183,7 @@ let gameManager = ( function(){
 		//Spawn sheep if necessary
 		if(sheeps.length < MAX_SHEEP){
 			sheepTime += calcDeltaTime();
-			nextSheepSpawn = 0.05 * sheeps.length;
+			nextSheepSpawn = 0.01 * sheeps.length;
 			
 			if(sheepTime > nextSheepSpawn){
 				let newSheepIndex = spawnSheep();

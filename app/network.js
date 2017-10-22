@@ -53,7 +53,7 @@ let networkManager = (function(){
 		}
 		
 		object.sendPlayerInfo = function(playerObj){
-			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle, playerObj.score, playerObj.shepherdPosition);
+			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle, playerObj.score, playerObj.shepherdPosition, playerObj.flock);
 		}
 		
         object.spawnSheep = function(){
@@ -101,7 +101,6 @@ let networkManager = (function(){
 		console.log("Connected to server...");
 		player.id = instance.getID();
 		});
-
 
 		socket.on('gamestate', function(gameData){
 			players = gameData.playerData;

@@ -31,6 +31,18 @@ let sheepSpeed = 1;
             let closestPlayer = getClosestPlayer(this.position);
             let vector = getNormalizedVectorto(closestPlayer, this.position);
             this.acceleration = { x: 0, y: 0 };
+			
+			/*if(this.shepherd == undefined){
+				let closestShepherd = getClosestShepherd(this.position);
+				let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
+				
+				if(calcVectorLength(vectorToShepherd) < 800){
+					let sheepIndex = sheeps.indexOf(this);
+					closestShepherd.flock.push(sheepIndex);
+					player.shepherd.flock.push(sheepIndex);
+					this.shephed = closestShepherd;
+				}
+			}*/
             
             if (closestPlayer.id === undefined) {
 				return;
@@ -44,7 +56,8 @@ let sheepSpeed = 1;
             // add all forces to acceleration here
             if (calcPointDistance(closestPlayer, this.position) < 100) {
 
-                this.acceleration = addVector(multiplyVector(flee(closestPlayer), playerFleeWeight), this.acceleration);
+				this.acceleration = addVector(multiplyVector(flee(closestPlayer), playerFleeWeight), this.acceleration);
+                
                 sheepSpeed = 4;
             }
 
@@ -55,7 +68,6 @@ let sheepSpeed = 1;
             if (calcVectorLength(this.acceleration) <= 0) {
                 this.acceleration = addVector(wander(wanderRange, wanderRadius, this.forward), this.acceleration);
             }
-
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
 
