@@ -104,6 +104,7 @@ let gameManager = ( function(){
     function update() {
 		checkInput();
 		display.update(players, sheeps);
+
 		if(game){
 			// the player also updates their shepherd
 			player.update();

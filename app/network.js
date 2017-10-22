@@ -102,7 +102,6 @@ let networkManager = (function(){
 		player.id = instance.getID();
 		});
 
-
 		socket.on('gamestate', function(gameData){
 			players = gameData.playerData;
 			console.dir(gameData);

@@ -23,7 +23,7 @@
 
 			// might want to move these to globals for tweaking/balancing
 			let playerFleeWeight = 1;
-			let separateWeight = 10;
+			let separateWeight = 7;
 			let cohereWeight = 1;
             let leaderFollowWeight = 1;
             let sheepSlow = 1.1; // must be > 1
@@ -32,9 +32,6 @@
 			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
                 this.acceleration = addVector(flee(closestPlayer), this.acceleration);
             }
-
-            this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
-            this.acceleration = addVector(multiplyVector(separate(), separateWeight), this.acceleration);
 
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
