@@ -1,7 +1,7 @@
 	// to create a sheep, use the new keyword with this constructor.
 	// ex: var sheep = new sheep(0,0);
 
-	const sheepSpeed = 1.75;
+let sheepSpeed = 1;
 
 	function sheep(xpos,ypos){
 		this.position = {x: xpos, y: ypos};
@@ -10,31 +10,49 @@
 
 		this.velocity = { x: 0, y: 0};
 		this.acceleration = { x: 0, y: 0};
-		this.angle = 0;
+        this.angle = 0;
+        this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
+        this.frontPoint = addVector(this.forward, this.position);
+        this.wanderSmooth = -1;
 
-		this.update = function(){
+        this.update = function () {
+            // might want to move these to globals for tweaking/balancing
+            let playerFleeWeight = 5;
+            let separateWeight = 5;
+            let cohereWeight = 0.1;
+            let leaderFollowWeight = 1;
+            let sheepSlow = 1.1; // must be > 1
+            let forwardVectorLength = 200;
+            let wanderRange = 1;
+            let wanderRadius = 10;
+            sheepSpeed = 1.75;
+
             let closestPlayer = getClosestPlayer(this.position);
             let vector = getNormalizedVectorto(closestPlayer, this.position);
             this.acceleration = { x: 0, y: 0 };
-
-			if(closestPlayer.id === undefined){
+            
+            if (closestPlayer.id === undefined) {
 				return;
             }
 
-			// might want to move these to globals for tweaking/balancing
-			let playerFleeWeight = 1;
-			let separateWeight = 10;
-			let cohereWeight = 1;
-            let leaderFollowWeight = 1;
-            let sheepSlow = 1.1; // must be > 1
+            // calculates normalized forward vector and normalized vector in front of the object
+            this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
+            this.forward = multiplyVector(normalizeVector(this.forward), forwardVectorLength);
+            this.frontPoint = addVector(this.forward, this.position);
 
             // add all forces to acceleration here
-			if (calcVectorLength(getVectorto(closestPlayer, this.position)) < 500) {
-                this.acceleration = addVector(flee(closestPlayer), this.acceleration);
+            if (calcPointDistance(closestPlayer, this.position) < 200) {
+
+                this.acceleration = addVector(multiplyVector(flee(closestPlayer), playerFleeWeight), this.acceleration);
+                sheepSpeed = 4;
             }
 
-            this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
+            //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), separateWeight), this.acceleration);
+
+            if (calcVectorLength(this.acceleration) <= 0) {
+                this.acceleration = addVector(wander(wanderRange, wanderRadius, this.forward), this.acceleration);
+            }
 
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
@@ -51,6 +69,7 @@
                 this.velocity = normalizeVector(this.velocity);
                 this.velocity = multiplyVector(this.velocity, sheepSpeed);
             }
+
 
             // retain rotation
             if (this.velocity.x !== 0 && this.velocity.y !== 0) {
@@ -147,7 +166,32 @@
 
 			return seek(shepherd.position);
 
-		}.bind(this);
+        }.bind(this);
+
+        let wander = function (wanderRange, wanderRadius) {
+            //console.log(this.forward);
+            let wanderPoint = this.forward;
+            let ranAngle = 0;
+            if (this.wanderSmooth == -1) ranAngle = Math.random() * 360;
+            else {
+                let min = (this.wanderSmooth - wanderRange);
+                let max = (this.wanderSmooth + wanderRange);
+                // smooth
+                ranAngle = min + Math.random() * (max - min);
+            }
+            this.wanderSmooth = ranAngle;
+
+            //limit the wanderSmooth between 0 and 360
+            if (this.wanderSmooth < 0) this.wanderSmooth = 0;
+            if (this.wanderSmooth > 2 * Math.PI) this.wanderSmooth = 2 * Math.PI;
+
+            // set wanderPoint x and z
+            wanderPoint.x = Math.cos(ranAngle) * wanderRadius;
+            wanderPoint.y = Math.sin(ranAngle) * wanderRadius;
+            wanderPoint = addVector(this.frontPoint, wanderPoint);
+
+            return seek(wanderPoint);
+        }.bind(this);
 
 		// further properties cannot be added outside of this constructor, to keep code
 		// easier to read/trace/debug
