@@ -6,7 +6,7 @@
 //
 // ----------------------------------------------------------------------------
 
-let player, players, playersInfo, sheeps;
+let player, players, playersInfo, sheeps, game= false;
 
 const MAX_SHEEP = 300;
 
@@ -17,6 +17,7 @@ let gameManager = ( function(){
 	let display;
 	let input;
 	let network;
+
 
 	sheeps = []; 	// array of all sheep in the game (can't overload the name sheep, so screw you English)
 	players = []; 	// array of all players in the game
@@ -33,13 +34,24 @@ let gameManager = ( function(){
 		angle: 0,
 		id: 0,
 		score: 0,
+		dog: 0,
 		shepherd: {
 			flock: [], // array of sheep objects, at some point
+			speed: {x: 2, y: 2},
 			position: {x: 0, y: 0},
 			// shepherd update logic goes here!
 			update: function(){
 
-
+				if(calcVectorLength(getVectorto(player.position, this.position)) > 150){
+					
+					let direction = getNormalizedVectorto(player.position, this.position);
+					
+					let addX = direction.x * this.speed.x;
+					let addY = direction.y * this.speed.y;
+					
+					this.position.x += addX;
+					this.position.y += addY;
+				}
 			}
 		},
 		name: "Player Name",
@@ -111,7 +123,7 @@ let gameManager = ( function(){
 			hostUpdate();
 		}
 
-		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};
+		let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position};
 		network.sendPlayerInfo(playerInfo);
 
 		display.translateToCamera(player.position.x, player.position.y);

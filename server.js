@@ -60,42 +60,44 @@ io.on('connection', function(socket){
 	
 	log.notify(socket.request.connection.remoteAddress + " connected!");
 	
-	var player = {
-		x: 0,
-		y: 0,
-		angle: 0,
-		id: socket.id
-	};
-	
-	if(!host){
-		host = socket.id;
-		io.sockets.connected[host].emit('host', true);
-	}
-	
-	redis.lpush('playerIDs', socket.id);
-	redis.lpush('players', player);
-	redis.lpush('playerInfo', {});
-	
 	sendGamestate();
 	
-	socket.on('playerUpdate', function(x, y, angle){
-			
+	socket.on('createPlayer', function(info){
+		var player = {
+			x: 0,
+			y: 0,
+			angle: 0,
+			shepherdPosition: {},
+			id: socket.id,
+			score: 0
+		};
+		
+		if(!host){
+			host = socket.id;
+			io.sockets.connected[host].emit('host', true);
+		}
+		
+		redis.lpush('playerIDs', socket.id);
+		redis.lpush('players', player);
+		redis.lpush('playerInfo', info);
+		sendGamestate();
+	});
+	
+	socket.on('playerUpdate', function(x, y, angle, score, shepherdPosition){
+		
 		var playerObj = {
 		
 			x: x,
 			y: y,
 			angle: angle,
-			id: socket.id
+			shepherdPosition: shepherdPosition,
+			id: socket.id,
+			score: score
 		};
 		
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, playerObj);
 		sendPlayerData(playerObj, index);
-	});
-	
-	socket.on('playerinfo', function(info){
-		let index = getPlayerIndex(socket);
-		redis.lset('playerInfo', index, info);
 	});
 	
 	socket.on('updateAllSheep', function(packet){
