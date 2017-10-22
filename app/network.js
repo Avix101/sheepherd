@@ -128,7 +128,6 @@ let networkManager = (function(){
 	}
 
 	function updateSheeps(sheepData){
-		console.dir(sheepData);
 		if(game)
 		{
 			for(let i = 0; i < sheepData.sheep.length; i++){
