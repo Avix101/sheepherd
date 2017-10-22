@@ -39,7 +39,7 @@ function getPlayerIndex(socket){
 function sendGamestate(){
     var gameData = {
         playerData: redis.lrange('players', 0, -1),
-		playerInfo: redis.lrange('playerInfo', 0, -1);
+		playerInfo: redis.lrange('playerInfo', 0, -1)
     };
 	
 	io.sockets.emit('gamestate', gameData);
