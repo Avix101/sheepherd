@@ -8,9 +8,10 @@
 "use strict"
 
 let displayManager = (function(){
-	let mapPattern,sheepSprite,dogSprites,shepherdSprite;
+	let mapPattern,sheepSprite,dogSprites,daisySprite,shepherdSprite;
 	var ctx, camera, canvas;
 	let radius = 20;
+    let flowers;
 	let instance;
 
 	function createInstance(){
@@ -42,6 +43,19 @@ let displayManager = (function(){
 		mapImage.onload = function(){
 			mapPattern = ctx.createPattern(mapImage, "repeat");
 		}
+        
+        flowers = [];
+        let flowerPos = 0;
+        while (flowerPos < 5500 * 5500 / 150){
+            flowerPos += (50 + Math.random() * 500)
+            let newFlower;
+            newFlower = {
+                position: {x: (flowerPos % 5500) - 1000, y: (flowerPos / 5500) * 150 - 1000 + (Math.random() * 150)},
+                angle: Math.random()
+            }
+            //Math.random();
+            flowers.push(newFlower);
+        }
 
 		//initialize sprites
 		// sheep
@@ -54,7 +68,18 @@ let displayManager = (function(){
 			drawWidth: 55,
 			drawHeight: 35
 		};
-
+        
+        // daisies
+        let daisySpriteSrc = new Image();
+        daisySpriteSrc.src = "app/resources/daisy.png";
+        daisySprite = {
+			src: daisySpriteSrc,
+			width: 255,
+			height: 255,
+			drawWidth: 14,
+			drawHeight: 14
+		};
+        
 		// dogs
 		let greyDogSpriteSrc = new Image();
 		greyDogSpriteSrc.src = "app/resources/greydog.png";
@@ -72,7 +97,7 @@ let displayManager = (function(){
 		whiteDogSpriteSrc.src = "app/resources/whitedog.png";
 		let whiteSpotDogSpriteSrc = new Image();
 		whiteSpotDogSpriteSrc.src = "app/resources/whitespotdog.png";
-		
+        
 		dogSprites = {
 			src:{}, // sprite changes based on the player
 			width: 48,
@@ -107,6 +132,7 @@ let displayManager = (function(){
 			ctx.save();
 			camera.setRenderTransform(ctx);
 			drawBG();
+            drawFlowers(flowers);
 			drawSheeps(sheeps);
 			drawPlayers(players);
 			drawShepherds(players);
@@ -128,6 +154,13 @@ let displayManager = (function(){
 			ctx.fillRect(viewPort.left,viewPort.top,viewPort.width,viewPort.height);
 			ctx.restore();
 		}
+        
+        function drawFlowers(flowers){
+            var viewPort = camera.getViewPort();
+			for(let i = 0; i < flowers.length; i++){
+				drawSprite(flowers[i], daisySprite);
+			}
+        }
 
 		function drawPlayers(players){
 			var viewPort = camera.getViewPort();
