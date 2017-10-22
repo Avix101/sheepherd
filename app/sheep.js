@@ -18,8 +18,9 @@ let sheepSpeed = 1;
         this.update = function () {
             // might want to move these to globals for tweaking/balancing
             let playerFleeWeight = 5;
-            let separateWeight = 5;
-            let cohereWeight = 0.1;
+            let separateWeight = 7;
+            let cohereWeight = 0.5;
+            let alignWeight = 0.5;
             let leaderFollowWeight = 1;
             let sheepSlow = 1.1; // must be > 1
             let forwardVectorLength = 200;
@@ -37,17 +38,18 @@ let sheepSpeed = 1;
 
             // calculates normalized forward vector and normalized vector in front of the object
             this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
-            this.forward = multiplyVector(normalizeVector(this.forward), forwardVectorLength);
-            this.frontPoint = addVector(this.forward, this.position);
+            this.forward = normalizeVector(this.forward);
+            this.frontPoint = addVector(multiplyVector(this.forward, forwardVectorLength), this.position);
 
             // add all forces to acceleration here
-            if (calcPointDistance(closestPlayer, this.position) < 200) {
+            if (calcPointDistance(closestPlayer, this.position) < 100) {
 
-                this.acceleration = addVector(multiplyVector(flee(closestPlayer), playerFleeWeight), this.acceleration);
+                this.acceleration = addVector(multiplyVector(seek(closestPlayer), playerFleeWeight), this.acceleration);
                 sheepSpeed = 4;
             }
 
             //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
+            //this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), separateWeight), this.acceleration);
 
             if (calcVectorLength(this.acceleration) <= 0) {
@@ -87,10 +89,9 @@ let sheepSpeed = 1;
 		let seek = function(seekPoint){
 			let desiredVelocity = subtractVector(seekPoint, this.position);
 			desiredVelocity = normalizeVector(desiredVelocity);
-			desiredVelocity = multiplyVector(desiredVelocity, sheepSpeed);
             
 			let steeringForce = subtractVector(desiredVelocity, this.velocity);
-            return steeringForce;
+            return normalizeVector(steeringForce);
             //seekVec = subtractVector(seekPoint, this.position);
             //seekVec = normalizeVector(seekVec);
             //return seekVec;
@@ -156,7 +157,22 @@ let sheepSpeed = 1;
 
 			return seek(coherePoint);
 
-		}.bind(this);
+        }.bind(this);
+
+        let align = function () {
+            let flockDir = { x: 0, y: 0 };
+            if (sheeps === undefined) {
+                return flockDir;
+            }
+            for (let i = 0; i < sheeps.length; i++) {
+                flockDir = addVector(sheeps[i].forward, flockDir)//member.GetComponent<Human>().direction;
+            }
+
+            let desiredVelocity = normalizeVector(flockDir);
+
+            let steeringForce = subtractVector(desiredVelocity, this.velocity);
+            return normalizeVector(steeringForce);
+        }.bind(this);
 
 		let leaderFollow = function(){
 			if(this.shepherd === undefined){
