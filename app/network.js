@@ -1,7 +1,7 @@
 /*
 Initialize socket connection, describe any constants used
 */
-const socket = io();
+let socket;
 
 const TYPES = {
 	VARIABLE: 0,
@@ -20,6 +20,9 @@ let networkManager = (function(){
 	
 	function createInstance() {
 		let object = new Object();
+		
+		socket = io();
+		attachSocketFunctions();
 		
 		object.TYPES = TYPES;
 		/*
@@ -92,28 +95,37 @@ let networkManager = (function(){
 		return object;
 	}
 	
-	socket.on('connect', function(){
+	function attachSocketFunctions(){
+		socket.on('connect', function(){
 		console.log("Connected to server...");
 		player.id = instance.getID();
-	});
+		});
 
 
-	socket.on('gamestate', function(gameData){
-		players = gameData.playerData;
-		playersInfo = gameData.playerInfo;
-	});
-	
-	socket.on('playerdata', function(playerData){
-		//Another anti-jitter safeguard, unless the whole gamestate is updated, just ignore server changes to local character
-		if(playerData.data.id == player.id){
-			return;
-		}
-		players[playerData.index] = playerData.data;
-	});
-    
-	socket.on('sheepstate', function(sheepData){
-        updateSheeps(sheepData);
-	});
+		socket.on('gamestate', function(gameData){
+			players = gameData.playerData;
+			playersInfo = gameData.playerInfo;
+		});
+		
+		socket.on('playerdata', function(playerData){
+			//Another anti-jitter safeguard, unless the whole gamestate is updated, just ignore server changes to local character
+			if(playerData.data.id == player.id){
+				return;
+			}
+			players[playerData.index] = playerData.data;
+		});
+		
+		socket.on('sheepstate', function(sheepData){
+			updateSheeps(sheepData);
+		});
+		
+		socket.on('host', function(isHost){
+			host = isHost;
+			if(host){
+				isHostCallback();
+			}
+		});
+	}
 
 	function updateSheeps(sheepData){
 		//console.dir(sheepData);
@@ -140,13 +152,6 @@ let networkManager = (function(){
 		}
 		// console.dir(sheeps);
 	}
-	
-	socket.on('host', function(isHost){
-		host = isHost;
-		if(host){
-			isHostCallback();
-		}
-	});
 	
 	return {
 		getInstance: function() {

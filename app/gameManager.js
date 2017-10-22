@@ -6,7 +6,9 @@
 //
 // ----------------------------------------------------------------------------
 
-var player, players, playersInfo, sheeps;
+let player, players, playersInfo, sheeps;
+
+const MAX_SHEEP = 300;
 
 let gameManager = ( function(){
 
@@ -22,6 +24,7 @@ let gameManager = ( function(){
 
 	let sheepTime = 0;
 	let nextSheepSpawn = 0;
+	let lastTime = 0;
 
 	player = {
 		
@@ -89,6 +92,8 @@ let gameManager = ( function(){
 		input.addListenerForKeys([input.KEYS.RIGHT, input.KEYS.LEFT, input.KEYS.UP, input.KEYS.DOWN, input.KEYS.S]);
 		input.setWindowActiveCallback(rejectHost, acceptHost);
 		network.setIsHostCallback(checkHostViability);
+		
+		lastTime = performance.now();
 
 		update();
 	}
@@ -114,7 +119,26 @@ let gameManager = ( function(){
 		requestAnimationFrame(update);
 
 	}
-
+	
+	function calcDeltaTime(){
+		let now, fps;
+		now = performance.now();
+		fps = 1000 / (now - lastTime);
+		fps = clamp(fps, 15, 60);
+		lastTime = now;
+		return 1 / fps;
+	}
+	
+	/*
+	Function Name: clamp(val, min, max)
+	Author: Web - various sources
+	Return Value: the constrained value
+	Description: returns a value that is
+	constrained between min and max (inclusive) 
+	*/
+	function clamp(val, min, max){
+		return Math.max(min, Math.min(max, val));
+	}
 
 	// ------------------------------------
 	//
@@ -137,6 +161,21 @@ let gameManager = ( function(){
 		}
 
 		network.sendSheepPacket(sheepPacket);
+		
+		//Spawn sheep if necessary
+		if(sheeps.length < MAX_SHEEP){
+			sheepTime += calcDeltaTime();
+			nextSheepSpawn = 0.05 * sheeps.length;
+			
+			if(sheepTime > nextSheepSpawn){
+				let newSheepIndex = spawnSheep();
+				sheepTime = 0;
+				
+				let packet = network.createSheepPacket();
+				network.appendSheepPacket(packet, sheeps[newSheepIndex], newSheepIndex);
+				network.sendSheepPacket(packet);
+			}
+		}	
 	}
 
 	function rejectHost(windowActive){
@@ -180,11 +219,11 @@ let gameManager = ( function(){
 		}
         
         if(input.isPressed(input.KEYS.S)){
-            let newSheepIndex = spawnSheep();
+            /*let newSheepIndex = spawnSheep();
 			
 			let packet = network.createSheepPacket();
 			network.appendSheepPacket(packet, sheeps[newSheepIndex], newSheepIndex);
-			network.sendSheepPacket(packet);
+			network.sendSheepPacket(packet);*/
         }
 
     }
