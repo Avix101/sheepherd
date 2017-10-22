@@ -128,7 +128,7 @@ let networkManager = (function(){
 	}
 
 	function updateSheeps(sheepData){
-		//console.dir(sheepData);
+		console.dir(sheepData);
 		if(game)
 		{
 			for(let i = 0; i < sheepData.sheep.length; i++){
@@ -149,7 +149,7 @@ let networkManager = (function(){
 					sheeps[index].angle = sheepData.sheep[i].angle;
 				}
 				else{
-					sheeps[index] = new sheep(sheepData.sheep[index].position.x, sheepData.sheep[index].position.y);
+					sheeps[index] = new sheep(sheepData.sheep[i].position.x, sheepData.sheep[i].position.y);
 				}
 			}
 		}
