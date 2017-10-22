@@ -53,7 +53,7 @@ let networkManager = (function(){
 		}
 		
 		object.sendPlayerInfo = function(playerObj){
-			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle);
+			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle, playerObj.score);
 		}
 		
         object.spawnSheep = function(){
@@ -84,9 +84,10 @@ let networkManager = (function(){
 			socket.emit('updateAllSheep', packet);
 		}
 		
-		object.setPlayerInfo = function(info){
-			socket.emit('playerinfo', info);
+		object.joinGame = function(info){
+			socket.emit('createPlayer', info);
 		}
+
 		/*
 		Methods that receive information from the server
 		*/

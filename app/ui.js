@@ -7,6 +7,7 @@ let uiManager = (function(){
 	function createInstance() {
 		let object = new Object();
 		var input = inputManager.getInstance();
+		var network = networkManager.getInstance();
 		input.addListenerForKeys( [input.KEYS.C]);
 		
 		object.startScreen = {
@@ -21,19 +22,29 @@ let uiManager = (function(){
 			},
 			nameInput: document.querySelector("#nameInput"),
 			colorInput: {},
+			dog: 0,
 			element: document.querySelector('#startScreen'),
 			validateName:function(){
 
 			}.bind(nameInput), //should already happen with an oninput function, but this makes it explicit
 		};
 
+		var dogicons = document.querySelector(".iconPicker").querySelectorAll('img');
+		for(let i = 0; i < dogicons.length; i++){
+			dogicons[i].onclick = function(e){
+				dogicons.forEach(function(icon){icon.className = ""});
+				e.target.className="selected";
+				this.dog = e.target.name;
+			}.bind(object.startScreen);
+		}
 		object.startScreen.nameInput.oninput = object.startScreen.validateName();
-		object.startScreen.nameInput.onchange = function(){
-			// set the player name
-
-			// hide the start screen, start the game!
-			this.hide();
-		}.bind(object.startScreen);
+		document.querySelector("#startSubmit").onclick = function(){
+			player.name = this.nameInput.value;
+			player.dog = this.dog;
+			network.joinGame({name: player.name, dog: player.dog});
+			game = true;
+			this.element.style.opacity = 0;
+		}.bind(object.startScreen)
 
 		object.controls = { 	// a popup dialogue explaining controls
 			
