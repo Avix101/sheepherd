@@ -9,6 +9,7 @@ let uiManager = (function(){
 		var input = inputManager.getInstance();
 		var network = networkManager.getInstance();
 		input.addListenerForKeys( [input.KEYS.C]);
+		input.addListenerForKeys( [input.KEYS.V]);
 		
 		object.startScreen = {
 			show: function(){
@@ -67,6 +68,9 @@ let uiManager = (function(){
 		};
 
 		input.setKeyCallback(input.KEYS.C, object.controls.toggle);
+        input.setKeyCallback(input.KEYS.V, function(){
+            
+        })
 
 		object.leaderboard = {
 			update: function(){

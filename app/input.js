@@ -6,7 +6,7 @@ const KEYCODES = {
 	DOWN: 40,
 	LEFT: 37,
 	RIGHT: 39,
-    S: 83,
+    V: 86,
     C: 67
 }
 

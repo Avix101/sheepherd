@@ -194,15 +194,23 @@ let displayManager = (function(){
 						position: {x:player.position.x, y:player.position.y},
 						angle: 0
 					};
-					drawSprite(drawobj, dogSprite);
 				} else {
 					drawobj = {
 						position: {x:playerObj.x, y:playerObj.y},
 						angle: 0
 					};
-					drawSprite(drawobj, dogSprite);
 				}
-				
+                
+                //draw line to shepherd
+                if (true){
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(drawobj.position.x, drawobj.position.y);
+                    ctx.lineTo(playerObj.shepherdPosition.x, playerObj.shepherdPosition.y);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+                drawSprite(drawobj, dogSprite);
 			}
 		}
 
