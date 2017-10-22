@@ -67,6 +67,8 @@ io.on('connection', function(socket){
 			x: 0,
 			y: 0,
 			angle: 0,
+			shepherdPosition: {},
+			flock: [],
 			id: socket.id,
 			score: 0
 		};
@@ -82,13 +84,15 @@ io.on('connection', function(socket){
 		sendGamestate();
 	});
 	
-	socket.on('playerUpdate', function(x, y, angle, score){
-			
+	socket.on('playerUpdate', function(x, y, angle, score, shepherdPosition, flock){
+		
 		var playerObj = {
 		
 			x: x,
 			y: y,
 			angle: angle,
+			shepherdPosition: shepherdPosition,
+			flock: flock,
 			id: socket.id,
 			score: score
 		};
@@ -96,10 +100,6 @@ io.on('connection', function(socket){
 		var index = getPlayerIndex(socket);
 		redis.lset('players', index, playerObj);
 		sendPlayerData(playerObj, index);
-	});
-	
-	socket.on('playerinfo', function(info){
-		
 	});
 	
 	socket.on('updateAllSheep', function(packet){

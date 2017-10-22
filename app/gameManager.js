@@ -37,11 +37,21 @@ let gameManager = ( function(){
 		dog: 0,
 		shepherd: {
 			flock: [], // array of sheep objects, at some point
+			speed: {x: 2, y: 2},
 			position: {x: 0, y: 0},
 			// shepherd update logic goes here!
 			update: function(){
 
-
+				if(calcVectorLength(getVectorto(player.position, this.position)) > 150){
+					
+					let direction = getNormalizedVectorto(player.position, this.position);
+					
+					let addX = direction.x * this.speed.x;
+					let addY = direction.y * this.speed.y;
+					
+					this.position.x += addX;
+					this.position.y += addY;
+				}
 			}
 		},
 		name: "Player Name",
@@ -114,10 +124,11 @@ let gameManager = ( function(){
 				hostUpdate();
 			}
 
-			let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score};
+			let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position, flock: player.shepherd.flock};
 			network.sendPlayerInfo(playerInfo);
 			ui.leaderboard.update();
 		}
+
 
 		display.translateToCamera(player.position.x, player.position.y);
 		requestAnimationFrame(update);
@@ -169,7 +180,7 @@ let gameManager = ( function(){
 		//Spawn sheep if necessary
 		if(sheeps.length < MAX_SHEEP){
 			sheepTime += calcDeltaTime();
-			nextSheepSpawn = 0.05 * sheeps.length;
+			nextSheepSpawn = 0.01 * sheeps.length;
 			
 			if(sheepTime > nextSheepSpawn){
 				let newSheepIndex = spawnSheep();

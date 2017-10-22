@@ -8,9 +8,12 @@
 "use strict"
 
 let displayManager = (function(){
-	let mapPattern,sheepSprite,shepherdSprite;
+
+	let mapPattern,sheepSprite,dogSprites,daisySprite,shepherdSprite;
+
 	var ctx, camera, canvas;
 	let radius = 20;
+    let flowers;
 	let instance;
 
 	function createInstance(){
@@ -42,6 +45,19 @@ let displayManager = (function(){
 		mapImage.onload = function(){
 			mapPattern = ctx.createPattern(mapImage, "repeat");
 		}
+        
+        flowers = [];
+        let flowerPos = 0;
+        while (flowerPos < 5500 * 5500 / 150){
+            flowerPos += (50 + Math.random() * 500)
+            let newFlower;
+            newFlower = {
+                position: {x: (flowerPos % 5500) - 1000, y: (flowerPos / 5500) * 150 - 1000 + (Math.random() * 150)},
+                angle: Math.random()
+            }
+            //Math.random();
+            flowers.push(newFlower);
+        }
 
 		//initialize sprites
 		// sheep
@@ -54,7 +70,18 @@ let displayManager = (function(){
 			drawWidth: 55,
 			drawHeight: 35
 		};
-
+        
+        // daisies
+        let daisySpriteSrc = new Image();
+        daisySpriteSrc.src = "app/resources/daisy.png";
+        daisySprite = {
+			src: daisySpriteSrc,
+			width: 255,
+			height: 255,
+			drawWidth: 14,
+			drawHeight: 14
+		};
+        
 		// dogs
 		let dogSpriteImages = [];
 		dogSpriteImages[0] = new Image();
@@ -84,14 +111,14 @@ let displayManager = (function(){
 		
 		//Shepherd
 		let shepherdSpriteSrc = new Image();
-		shepherdSpriteSrc.src = "app/resource/shepherd.png";
+		shepherdSpriteSrc.src = "app/resources/shepherd.png";
 		
 		shepherdSprite = {
 			src: shepherdSpriteSrc,
 			width: 90,
 			height: 93,
-			drawWidth: 90,
-			drawHeight: 93
+			drawWidth: 48,
+			drawHeight: 50
 		};
 
 		// when the window gets resized, update everything to scale with it 
@@ -109,11 +136,14 @@ let displayManager = (function(){
 			ctx.save();
 			camera.setRenderTransform(ctx);
 			drawBG();
-			if(game){
+
+
+            drawFlowers(flowers);
+            if(game){
 				drawSheeps(sheeps);
 				drawPlayers(players);
+				drawShepherds(players);
 			}
-			//drawShepherds(players);
 			ctx.restore();
 		}
 
@@ -132,6 +162,13 @@ let displayManager = (function(){
 			ctx.fillRect(viewPort.left,viewPort.top,viewPort.width,viewPort.height);
 			ctx.restore();
 		}
+        
+        function drawFlowers(flowers){
+            var viewPort = camera.getViewPort();
+			for(let i = 0; i < flowers.length; i++){
+				drawSprite(flowers[i], daisySprite);
+			}
+        }
 
 		function drawPlayers(players){
 			var viewPort = camera.getViewPort();
@@ -152,6 +189,7 @@ let displayManager = (function(){
 				if(playerObj.id == player.id){
 					playerObj.x = player.position.x;
 					playerObj.y = player.position.y;
+					playerObj.shepherdPosition = player.shepherd.position;
 					drawobj = {
 						position: {x:player.position.x, y:player.position.y},
 						angle: 0
@@ -178,7 +216,7 @@ let displayManager = (function(){
 		function drawShepherds(players){
 			let viewPort = camera.getViewPort();
 			for(let i = 0; i < players.length; i++){
-				drawSprite(players[i].shepherd, shepherdSprite);
+				drawSprite({position: players[i].shepherdPosition}, shepherdSprite);
 			}
 		}
 
