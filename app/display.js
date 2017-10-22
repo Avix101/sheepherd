@@ -89,8 +89,8 @@ let displayManager = (function(){
 			src: shepherdSpriteSrc,
 			width: 90,
 			height: 93,
-			drawWidth: 90,
-			drawHeight: 93
+			drawWidth: 48,
+			drawHeight: 50
 		};
 
 		// when the window gets resized, update everything to scale with it 
@@ -109,7 +109,7 @@ let displayManager = (function(){
 			drawBG();
 			drawSheeps(sheeps);
 			drawPlayers(players);
-			//drawShepherds(players);
+			drawShepherds(players);
 			ctx.restore();
 		}
 
@@ -150,6 +150,7 @@ let displayManager = (function(){
 				if(playerObj.id == player.id){
 					playerObj.x = player.position.x;
 					playerObj.y = player.position.y;
+					playerObj.shepherdPosition = player.shepherd.position;
 					drawobj = {
 						position: {x:player.position.x, y:player.position.y},
 						angle: 0
@@ -175,7 +176,7 @@ let displayManager = (function(){
 		function drawShepherds(players){
 			let viewPort = camera.getViewPort();
 			for(let i = 0; i < players.length; i++){
-				drawSprite(players[i].shepherd, shepherdSprite);
+				drawSprite({position: players[i].shepherdPosition}, shepherdSprite);
 			}
 		}
 

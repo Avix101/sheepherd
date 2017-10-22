@@ -53,7 +53,7 @@ let networkManager = (function(){
 		}
 		
 		object.sendPlayerInfo = function(playerObj){
-			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle, playerObj.score);
+			socket.emit('playerUpdate', playerObj.x, playerObj.y, playerObj.angle, playerObj.score, playerObj.shepherdPosition);
 		}
 		
         object.spawnSheep = function(){
