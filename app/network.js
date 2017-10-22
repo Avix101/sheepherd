@@ -84,7 +84,7 @@ let networkManager = (function(){
 			socket.emit('updateAllSheep', packet);
 		}
 		
-		object.createPlayer = function(){
+		object.joinGame = function(info){
 			socket.emit('createPlayer', info);
 		}
 

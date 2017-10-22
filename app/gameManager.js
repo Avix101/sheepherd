@@ -6,7 +6,7 @@
 //
 // ----------------------------------------------------------------------------
 
-let player, players, playersInfo, sheeps;
+let player, players, playersInfo, sheeps, game= false;
 
 const MAX_SHEEP = 300;
 
@@ -17,6 +17,7 @@ let gameManager = ( function(){
 	let display;
 	let input;
 	let network;
+
 
 	sheeps = []; 	// array of all sheep in the game (can't overload the name sheep, so screw you English)
 	players = []; 	// array of all players in the game
@@ -33,6 +34,7 @@ let gameManager = ( function(){
 		angle: 0,
 		id: 0,
 		score: 0,
+		dog: 0,
 		shepherd: {
 			flock: [], // array of sheep objects, at some point
 			position: {x: 0, y: 0},
