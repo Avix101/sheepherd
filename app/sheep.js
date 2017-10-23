@@ -5,8 +5,8 @@
         var flockingWeights = {
             playerFleeWeight: 5,
             separateWeight: 7,
-            cohereWeight: 0.5,
-            alignWeight: 0.5,
+            cohereWeight: 0,
+            alignWeight: 0,
             leaderFollowWeight: 1,
             sheepSlow: 1.1,
             forwardVectorLength: 200,
@@ -65,8 +65,8 @@ let sheepSpeed = 1;
                 sheepSpeed = 4;
             }
 
-            //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
-            //this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
+            this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
+            this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);
 
             if (calcVectorLength(this.acceleration) <= 0) {
