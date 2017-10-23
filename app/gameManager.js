@@ -121,7 +121,7 @@ let gameManager = ( function(){
 		if(game){
 			// the player also updates their shepherd
 			player.update();
-
+			ui.updatePlayerScore(player.score);
 			if(network.isHost()){
 
 				hostUpdate();

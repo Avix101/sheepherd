@@ -12,6 +12,11 @@ let uiManager = (function(){
 		input.addListenerForKeys( [input.KEYS.C]);
 		input.addListenerForKeys( [input.KEYS.V]);
 		
+
+		object.updatePlayerScore = function(score){
+			document.querySelector("#playerScore").innerHTML = score;
+		};
+
 		object.startScreen = {
 			show: function(){
 				this.element.style.opacity = 1; // for fade in
@@ -26,9 +31,13 @@ let uiManager = (function(){
 			colorInput: {},
 			dog: 0,
 			element: document.querySelector('#startScreen'),
-			validateName:function(){
-
-			}.bind(nameInput), //should already happen with an oninput function, but this makes it explicit
+			validateName:function(e){ // enforces a character limit (and possibly other limits in the future) on name
+				let name = e.target.value;
+				if(name.length > 100){
+					name = name.slice(0,100);
+					e.target.value = name;
+				}
+			}, 
 		};
 
 		var dogicons = document.querySelector(".iconPicker").querySelectorAll('img');
@@ -39,7 +48,7 @@ let uiManager = (function(){
 				this.dog = e.target.name;
 			}.bind(object.startScreen);
 		}
-		object.startScreen.nameInput.oninput = object.startScreen.validateName();
+		object.startScreen.nameInput.oninput = function(e){object.startScreen.validateName(e)};
 		document.querySelector("#startSubmit").onclick = function(){
 			player.name = this.nameInput.value;
 			player.dog = this.dog;
@@ -48,6 +57,8 @@ let uiManager = (function(){
 			game = true;
 			this.element.style.opacity = 0;
 			document.querySelector("#leaderboard").style.opacity = 1;
+			document.querySelector("#playerName").innerHTML = player.name;
+			document.querySelector("#playerScore").innerHTML = 0;
 		}.bind(object.startScreen)
 
 		object.controls = { 	// a popup dialogue explaining controls
@@ -111,12 +122,6 @@ let uiManager = (function(){
 			thirdPlace: {name: document.querySelector("#ThirdPlace").querySelector(".leaderboardName"), score: document.querySelector("#ThirdPlace").querySelector(".leaderboardScore")},
 			fourthPlace: {name: document.querySelector("#FourthPlace").querySelector(".leaderboardName"), score: document.querySelector("#FourthPlace").querySelector(".leaderboardScore")},
 			fifthPlace: {name: document.querySelector("#FifthPlace").querySelector(".leaderboardName"), score: document.querySelector("#FifthPlace").querySelector(".leaderboardScore")},
-			show: function(){
-				document.querySelector("#leaderboard").style.opacity = 1;
-			},
-			show: function(){
-				document.querySelector("#leaderboard").style.opacity = 0;
-			},
 
 		};
 		object.hud = {

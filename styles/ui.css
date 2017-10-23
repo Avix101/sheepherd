@@ -84,3 +84,14 @@
 #leaderboard div .leaderboardScore{
 	float:right;
 }
+
+#hud{
+	position:absolute;
+	top: 10px;
+	left: 10px;
+	color: white;
+}
+
+#hud #playerInfo #playerScore{
+	margin-left: 50px;
+}
