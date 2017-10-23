@@ -214,6 +214,10 @@ let displayManager = (function(){
                     ctx.restore();
                 }
                 drawSprite(drawobj, dogSprite);
+                // draw name under sprite
+                ctx.font = "10px Arial";
+                ctx.fillText(playersInfo[index].name, drawobj.position.x - 15, drawobj.position.y+25);
+
 			}
 		}
 
