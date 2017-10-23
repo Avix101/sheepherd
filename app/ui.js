@@ -47,6 +47,7 @@ let uiManager = (function(){
 			network.joinGame({name: player.name, dog: player.dog});
 			game = true;
 			this.element.style.opacity = 0;
+			document.querySelector("#leaderboard").style.opacity = 1;
 		}.bind(object.startScreen)
 
 		object.controls = { 	// a popup dialogue explaining controls
@@ -75,8 +76,48 @@ let uiManager = (function(){
 
 		object.leaderboard = {
 			update: function(){
+				var indices = new Array(players.length);
+				for(let i = 0; i < players.length; i++) indices[i] = i;
 
-			}
+				indices.sort(function(a,b){
+					return players[b].score - players[a].score;
+
+				});
+
+				this.firstPlace.name.innerText = indices[0] != undefined ? getTruncatedName(playersInfo[indices[0]].name) : "";
+				this.firstPlace.score.innerText = indices[0] != undefined? players[0].score : "";
+				this.secondPlace.name.innerText = indices[1] != undefined? getTruncatedName(playersInfo[indices[1]].name) : "";
+				this.secondPlace.score.innerText = indices[1] != undefined? players[1].score : "";
+				this.thirdPlace.name.innerText = indices[2] != undefined? getTruncatedName(playersInfo[indices[2]].name) : "";
+				this.thirdPlace.score.innerText = indices[2] != undefined? players[2].score : "";
+				this.fourthPlace.name.innerText = indices[3] != undefined? getTruncatedName(playersInfo[indices[3]].name) : "";
+				this.fourthPlace.score.innerText = indices[3] != undefined? players[3].score : "";
+				this.fifthPlace.name.innerText = indices[4] != undefined? getTruncatedName(playersInfo[indices[4]].name) : "";
+				this.fifthPlace.score.innerText = indices[4] != undefined? players[4].score : "";
+
+				function getTruncatedName(name){
+					var truncName = name;
+					if(name.length > 20){
+						truncName = name.slice(0,17)
+						truncName += "...";
+					}
+					return truncName;
+				}
+
+
+			},
+			firstPlace: {name: document.querySelector("#FirstPlace").querySelector(".leaderboardName"), score: document.querySelector("#FirstPlace").querySelectorAll(".leaderboardScore") },
+			secondPlace: {name: document.querySelector("#SecondPlace").querySelector(".leaderboardName"), score: document.querySelector("#SecondPlace").querySelector(".leaderboardScore")},
+			thirdPlace: {name: document.querySelector("#ThirdPlace").querySelector(".leaderboardName"), score: document.querySelector("#ThirdPlace").querySelector(".leaderboardScore")},
+			fourthPlace: {name: document.querySelector("#FourthPlace").querySelector(".leaderboardName"), score: document.querySelector("#FourthPlace").querySelector(".leaderboardScore")},
+			fifthPlace: {name: document.querySelector("#FifthPlace").querySelector(".leaderboardName"), score: document.querySelector("#FifthPlace").querySelector(".leaderboardScore")},
+			show: function(){
+				document.querySelector("#leaderboard").style.opacity = 1;
+			},
+			show: function(){
+				document.querySelector("#leaderboard").style.opacity = 0;
+			},
+
 		};
 		object.hud = {
 			herdindicator: {},		// an arrow pointing towards your herd

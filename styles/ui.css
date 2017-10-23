@@ -56,3 +56,31 @@
 	border-radius: 5px;
 
 }
+
+#leaderboard{
+	opacity: 0;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	background: white;
+	width: 250px;
+	border-radius: 5px;
+}
+
+#leaderboard header{
+	padding: 10px;
+}
+
+#leaderboard div {
+	margin-left:15px;
+	height: 35px;
+	width: 220px;
+}
+
+#leaderboard div .leaderboardName{
+	overflow:hidden;
+}
+
+#leaderboard div .leaderboardScore{
+	float:right;
+}
