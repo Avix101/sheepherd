@@ -39,6 +39,7 @@ let displayManager = (function(){
 		obj.translateCamera = function(x,y){camera.translate(x,y);};
 		obj.scaleCamera = function(scale){camera.scale(scale, canvas);};
 
+
 		// initialize background
 		let mapImage = new Image();
 		mapImage.src = "app/resources/grass.jpg";
@@ -170,6 +171,8 @@ let displayManager = (function(){
 			}
         }
 
+        let drawShepherdLine = false;
+        obj.toggleShepherdLine = function(){ drawShepherdLine = !drawShepherdLine;};
 		function drawPlayers(players){
 			var viewPort = camera.getViewPort();
 			ctx.save();
@@ -202,7 +205,7 @@ let displayManager = (function(){
 				}
                 
                 //draw line to shepherd
-                if (true){
+                if (drawShepherdLine){
                     ctx.save();
                     ctx.beginPath();
                     ctx.moveTo(drawobj.position.x, drawobj.position.y);

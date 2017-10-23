@@ -8,6 +8,7 @@ let uiManager = (function(){
 		let object = new Object();
 		var input = inputManager.getInstance();
 		var network = networkManager.getInstance();
+		var display = displayManager.getInstance();
 		input.addListenerForKeys( [input.KEYS.C]);
 		input.addListenerForKeys( [input.KEYS.V]);
 		
@@ -69,8 +70,8 @@ let uiManager = (function(){
 
 		input.setKeyCallback(input.KEYS.C, object.controls.toggle);
         input.setKeyCallback(input.KEYS.V, function(){
-            
-        })
+            display.toggleShepherdLine();
+        });
 
 		object.leaderboard = {
 			update: function(){
