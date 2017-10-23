@@ -1,6 +1,19 @@
 	// to create a sheep, use the new keyword with this constructor.
 	// ex: var sheep = new sheep(0,0);
 
+        // flocking constants
+        var flockingWeights = {
+            playerFleeWeight: 5,
+            separateWeight: 7,
+            cohereWeight: 0.5,
+            alignWeight: 0.5,
+            leaderFollowWeight: 1,
+            sheepSlow: 1.1,
+            forwardVectorLength: 200,
+            wanderRange: 1,
+            wanderRadius: 10,
+
+        };
 let sheepSpeed = 1;
 
 	function sheep(xpos,ypos){
@@ -16,16 +29,7 @@ let sheepSpeed = 1;
         this.wanderSmooth = -1;
 
         this.update = function () {
-            // might want to move these to globals for tweaking/balancing
-            let playerFleeWeight = 5;
-            let separateWeight = 7;
-            let cohereWeight = 0.5;
-            let alignWeight = 0.5;
-            let leaderFollowWeight = 1;
-            let sheepSlow = 1.1; // must be > 1
-            let forwardVectorLength = 200;
-            let wanderRange = 1;
-            let wanderRadius = 10;
+            
             sheepSpeed = 1.75;
 
             let closestPlayer = getClosestPlayer(this.position);
@@ -51,22 +55,22 @@ let sheepSpeed = 1;
             // calculates normalized forward vector and normalized vector in front of the object
             this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
             this.forward = normalizeVector(this.forward);
-            this.frontPoint = addVector(multiplyVector(this.forward, forwardVectorLength), this.position);
+            this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
 
             // add all forces to acceleration here
             if (calcPointDistance(closestPlayer, this.position) < 100) {
 
-				this.acceleration = addVector(multiplyVector(flee(closestPlayer), playerFleeWeight), this.acceleration);
+				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight), this.acceleration);
                 
                 sheepSpeed = 4;
             }
 
             //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
             //this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
-            this.acceleration = addVector(multiplyVector(separate(), separateWeight), this.acceleration);
+            this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);
 
             if (calcVectorLength(this.acceleration) <= 0) {
-                this.acceleration = addVector(wander(wanderRange, wanderRadius, this.forward), this.acceleration);
+                this.acceleration = addVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), this.acceleration);
             }
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
