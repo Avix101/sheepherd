@@ -65,8 +65,8 @@ let sheepSpeed = 1;
                 sheepSpeed = 4;
             }
 
-            this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
-            this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
+            //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
+            //this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);
 
             if (calcVectorLength(this.acceleration) <= 0) {
