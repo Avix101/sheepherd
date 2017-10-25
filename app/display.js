@@ -13,7 +13,7 @@ let displayManager = (function(){
 
 	var ctx, camera, canvas;
 	let radius = 20;
-    let flowers;
+    //let flowers;
 	let instance;
 
 	function createInstance(){
@@ -47,6 +47,7 @@ let displayManager = (function(){
 			mapPattern = ctx.createPattern(mapImage, "repeat");
 		}
         
+        /*
         flowers = [];
         let flowerPos = 0;
         while (flowerPos < 5500 * 5500 / 150){
@@ -59,6 +60,7 @@ let displayManager = (function(){
             //Math.random();
             flowers.push(newFlower);
         }
+        */
 
 		//initialize sprites
 		// sheep
@@ -73,6 +75,7 @@ let displayManager = (function(){
 		};
         
         // daisies
+        /*
         let daisySpriteSrc = new Image();
         daisySpriteSrc.src = "app/resources/daisy.png";
         daisySprite = {
@@ -82,6 +85,7 @@ let displayManager = (function(){
 			drawWidth: 14,
 			drawHeight: 14
 		};
+        */
         
 		// dogs
 		let dogSpriteImages = [];
@@ -139,7 +143,7 @@ let displayManager = (function(){
 			drawBG();
 
 
-            drawFlowers(flowers);
+            //drawFlowers(flowers);
             if(game){
 				drawSheeps(sheeps);
 				drawPlayers(players);
@@ -164,12 +168,14 @@ let displayManager = (function(){
 			ctx.restore();
 		}
         
+        /*
         function drawFlowers(flowers){
             var viewPort = camera.getViewPort();
 			for(let i = 0; i < flowers.length; i++){
 				drawSprite(flowers[i], daisySprite);
 			}
         }
+        */
 
         let drawShepherdLine = false;
         obj.toggleShepherdLine = function(){ drawShepherdLine = !drawShepherdLine;};
