@@ -10,8 +10,8 @@
             leaderFollowWeight: 1,
             sheepSlow: 1.1,
             forwardVectorLength: 200,
-            wanderRange: 1,
-            wanderRadius: 10,
+            wanderRange: 0.1,
+            wanderRadius: 1,
             fleeRadius: 300
 
         };
@@ -62,14 +62,15 @@ let sheepSpeed = 1;
             if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
 
 				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight), this.acceleration);
-                
-                sheepSpeed = 4;
-            }
 
+                sheepSpeed = 4 * (calcPointDistance(closestPlayer, this.position) / flockingWeights.fleeRadius);
+                if (sheepSpeed < 1.75) sheepSpeed = 1.75;
+            }
             //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
             //this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);
 
+            // sheep wandering
             if (calcVectorLength(this.acceleration) <= 0) {
                 this.acceleration = addVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), this.acceleration);
             }
