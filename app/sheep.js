@@ -3,16 +3,16 @@
 
         // flocking constants
         var flockingWeights = {
-            playerFleeWeight: 6,
-            separateWeight: 7,
-            cohereWeight: 0,
-            alignWeight: 0,
+            playerFleeWeight: 15,
+            separateWeight: 1,
+            cohereWeight: .05,
+            alignWeight: .01,
             leaderFollowWeight: 1,
             sheepSlow: 1.1,
             forwardVectorLength: 200,
             wanderRange: 0.1,
-            wanderRadius: 1,
-            fleeRadius: 300
+            wanderRadius: 2,
+            fleeRadius: 400
 
         };
 let sheepSpeed = 1;
@@ -61,34 +61,43 @@ let sheepSpeed = 1;
             // add all forces to acceleration here
             if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
 
-				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight), this.acceleration);
+				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight / calcPointDistance(this.position, closestPlayer)), this.acceleration);
 
-                sheepSpeed = 4 * (calcPointDistance(closestPlayer, this.position) / flockingWeights.fleeRadius);
+                sheepSpeed = .8 / (calcPointDistance(this.position, closestPlayer) / flockingWeights.fleeRadius);
                 if (sheepSpeed < 1.75) sheepSpeed = 1.75;
+                if (sheepSpeed > 6) sheepSpeed = 6;
             }
-            //this.acceleration = addVector(multiplyVector(cohere(), cohereWeight), this.acceleration);
-            //this.acceleration = addVector(multiplyVector(align(), alignWeight), this.acceleration);
+            this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);
+            this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);
 
             // sheep wandering
-            if (calcVectorLength(this.acceleration) <= 0) {
-                this.acceleration = addVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), this.acceleration);
+            if (calcVectorLength(this.velocity) <= 1) {
+                //this.acceleration = addVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), this.acceleration);
             }
+            
+            // drag
+            this.acceleration = addVector(multiplyVector(this.velocity, -0.01), this.acceleration);
+            this.acceleration = addVector(multiplyVector(this.forward, .1), this.acceleration);
+            this.acceleration = normalizeVector(this.acceleration);
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
 
             // slows sheep
+            
             if (this.acceleration.x === 0 && this.acceleration.y === 0) {
                 this.velocity = divideVector(this.velocity, 1.1);
                 if (this.velocity.x < 0.1 && this.velocity.y < 0.1) {
                     this.velocity = { x: 0, y: 0 };
                 }
             }
+            
             // limit sheep speed
             else if (calcVectorLength(this.velocity) > 1) {
                 this.velocity = normalizeVector(this.velocity);
                 this.velocity = multiplyVector(this.velocity, sheepSpeed);
             }
+            
 
 
             // retain rotation
@@ -126,7 +135,7 @@ let sheepSpeed = 1;
 
 
 		let separate = function(){
-			let separateRad = 150;
+			let separateRad = 80;
 			let separateVec = {x:0, y:0};
 
 			if(sheeps === undefined){
@@ -160,11 +169,15 @@ let sheepSpeed = 1;
 				return coherePoint;
 			}
 
+            let cohereNum = 0
 			for(let i = 0; i < sheeps.length; i++){
-				coherePoint = addVector(coherePoint, sheeps[i]. position);
+                if (calcPointDistance(sheeps[i].position, this.position) < 150){
+				    coherePoint = addVector(coherePoint, sheeps[i].position);
+                    cohereNum++;
+                }
 			}
 
-			coherePoint = divideVector(coherePoint, sheeps.length);
+			coherePoint = divideVector(coherePoint, cohereNum);
 
             let dist = subtractVector(coherePoint, this.position);
             let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
@@ -182,8 +195,10 @@ let sheepSpeed = 1;
             if (sheeps === undefined) {
                 return flockDir;
             }
-            for (let i = 0; i < sheeps.length; i++) {
-                flockDir = addVector(sheeps[i].forward, flockDir)//member.GetComponent<Human>().direction;
+            for(let i = 0; i < sheeps.length; i++){
+                if (calcPointDistance(sheeps[i].position, this.position) < 200){
+                    flockDir = addVector(sheeps[i].forward, flockDir)//member.GetComponent<Human>().direction;
+                }
             }
 
             let desiredVelocity = normalizeVector(flockDir);
