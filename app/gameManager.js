@@ -30,7 +30,7 @@ let gameManager = ( function(){
 	player = {
 		
 		position: { x: -10, y: -10},
-		speed: { x: 4, y: 4},
+		speed: { x: 6, y: 6},
 		angle: 0,
 		id: 0,
 		score: 0,

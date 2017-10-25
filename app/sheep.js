@@ -12,6 +12,7 @@
             forwardVectorLength: 200,
             wanderRange: 1,
             wanderRadius: 10,
+            fleeRadius: 300
 
         };
 let sheepSpeed = 1;
@@ -58,7 +59,7 @@ let sheepSpeed = 1;
             this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
 
             // add all forces to acceleration here
-            if (calcPointDistance(closestPlayer, this.position) < 100) {
+            if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
 
 				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight), this.acceleration);
                 
