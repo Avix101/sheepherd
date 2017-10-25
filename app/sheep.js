@@ -7,12 +7,13 @@
             separateWeight: 1,
             cohereWeight: .05,
             alignWeight: .01,
-            leaderFollowWeight: 1,
+            leaderFollowWeight: 4,
             sheepSlow: 1.1,
             forwardVectorLength: 200,
             wanderRange: 0.1,
             wanderRadius: 2,
-            fleeRadius: 400
+            fleeRadius: 300,
+			shepherdRadius: 500
 
         };
 let sheepSpeed = 1;
@@ -37,29 +38,19 @@ let sheepSpeed = 1;
             let vector = getNormalizedVectorto(closestPlayer, this.position);
             this.acceleration = { x: 0, y: 0 };
 			
-			/*if(this.shepherd == undefined){
-				let closestShepherd = getClosestShepherd(this.position);
-				let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
-				
-				if(calcVectorLength(vectorToShepherd) < 800){
-					let sheepIndex = sheeps.indexOf(this);
-					closestShepherd.flock.push(sheepIndex);
-					player.shepherd.flock.push(sheepIndex);
-					this.shephed = closestShepherd;
-				}
-			}*/
+			let closestShepherd = getClosestShepherd(this.position);
+			let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
+			
+			if(calcVectorLength(vectorToShepherd) < flockingWeights.shepherdRadius){
+				this.shepherd = closestShepherd;
+			} else {
+				this.shepherd = undefined;
+			}
             
             if (closestPlayer.id === undefined) {
 				return;
             }
-
-            // calculates normalized forward vector and normalized vector in front of the object
-            this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
-            this.forward = normalizeVector(this.forward);
-            this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
-
-            // add all forces to acceleration here
-            if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
+			if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
 
 				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight / calcPointDistance(this.position, closestPlayer)), this.acceleration);
 
@@ -67,10 +58,23 @@ let sheepSpeed = 1;
                 if (sheepSpeed < 1.75) sheepSpeed = 1.75;
                 if (sheepSpeed > 6) sheepSpeed = 6;
             }
+			else if(this.shepherd){
+				this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
+			}
+			
+
+            // calculates normalized forward vector and normalized vector in front of the object
+            this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
+            this.forward = normalizeVector(this.forward);
+            this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
+
             this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);
             this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);
 
+			// add all forces to acceleration here
+            
+			
             // sheep wandering
             if (calcVectorLength(this.velocity) <= 1) {
                 //this.acceleration = addVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), this.acceleration);
@@ -80,6 +84,7 @@ let sheepSpeed = 1;
             this.acceleration = addVector(multiplyVector(this.velocity, -0.01), this.acceleration);
             this.acceleration = addVector(multiplyVector(this.forward, .1), this.acceleration);
             this.acceleration = normalizeVector(this.acceleration);
+			
             // calculates sheep movement
             this.velocity = addVector(this.velocity, this.acceleration);
 
@@ -207,7 +212,7 @@ let sheepSpeed = 1;
             return normalizeVector(steeringForce);
         }.bind(this);
 
-		let leaderFollow = function(){
+		/*let leaderFollow = function(){
 			if(this.shepherd === undefined){
 				let zeroVec = { x:0, y:0 };
 				return zeroVec;
@@ -215,7 +220,7 @@ let sheepSpeed = 1;
 
 			return seek(shepherd.position);
 
-        }.bind(this);
+        }.bind(this);*/
 
         let wander = function (wanderRange, wanderRadius) {
             //console.log(this.forward);
