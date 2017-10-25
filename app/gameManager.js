@@ -224,17 +224,17 @@ let gameManager = ( function(){
 
 	function checkInput(){
 		
-		if(input.isPressed(input.KEYS.RIGHT)){
-			display.translateCamera(-5, 0);
-		} else if (input.isPressed(input.KEYS.LEFT)){
-			display.translateCamera(5, 0);
-		}
+		//if(input.isPressed(input.KEYS.RIGHT)){
+		//	display.translateCamera(-5, 0);
+		//} else if (input.isPressed(input.KEYS.LEFT)){
+		//	display.translateCamera(5, 0);
+		//}
 		
-		if(input.isPressed(input.KEYS.UP)){
-			display.translateCamera(0, 5);
-		} else if (input.isPressed(input.KEYS.DOWN)){
-			display.translateCamera(0, -5);
-		}
+		//if(input.isPressed(input.KEYS.UP)){
+		//	display.translateCamera(0, 5);
+		//} else if (input.isPressed(input.KEYS.DOWN)){
+		//	display.translateCamera(0, -5);
+		//}
         
         if(input.isPressed(input.KEYS.S)){
             /*let newSheepIndex = spawnSheep();

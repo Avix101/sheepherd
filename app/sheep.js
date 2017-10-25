@@ -3,7 +3,7 @@
 
         // flocking constants
         var flockingWeights = {
-            playerFleeWeight: 5,
+            playerFleeWeight: 6,
             separateWeight: 7,
             cohereWeight: 0,
             alignWeight: 0,
