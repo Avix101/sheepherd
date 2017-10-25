@@ -224,7 +224,7 @@ let displayManager = (function(){
                 ctx.save();
                 ctx.font = "10px Arial";
                 ctx.fillStyle = "#EEEEEE";
-                ctx.fillText(playersInfo[index].name, drawobj.position.x - 15, drawobj.position.y+25);
+                ctx.fillText(playersInfo[index].name, drawobj.position.x - playersInfo[index].name.length * 3, drawobj.position.y+25);
                 ctx.restore();
 
 			}
