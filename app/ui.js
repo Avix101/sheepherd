@@ -59,6 +59,7 @@ let uiManager = (function(){
 			document.querySelector("#leaderboard").style.opacity = 1;
 			document.querySelector("#playerName").innerHTML = player.name;
 			document.querySelector("#playerScore").innerHTML = 0;
+			document.querySelector("#startSubmit").disabled = true;
 		}.bind(object.startScreen)
 
 		object.controls = { 	// a popup dialogue explaining controls
