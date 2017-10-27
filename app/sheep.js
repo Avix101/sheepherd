@@ -45,7 +45,8 @@ let sheepSpeed = 1;
 			
 			if(calcVectorLength(vectorToShepherd) < flockingWeights.shepherdRadius){
 				this.shepherd = closestShepherd;
-			} else {
+            }
+            else {
 				this.shepherd = undefined;
 			}
             
@@ -57,59 +58,57 @@ let sheepSpeed = 1;
             // add all forces to acceleration here
             
             
-            if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
+            //if (calcPointDistance(closestPlayer, this.position) < flockingWeights.fleeRadius) {
+            //
+			//	this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight / calcPointDistance(this.position, closestPlayer)), this.acceleration);
+            //
+            //    sheepSpeed = 1 / (calcPointDistance(this.position, closestPlayer) / (flockingWeights.fleeRadius * 1.5));
+            //    if (sheepSpeed < 1.75) sheepSpeed = 1.75;
+            //    if (sheepSpeed > 6) sheepSpeed = 6;
+            //}
+            //else if (this.shepherd) {
+			//	this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
+            //}
+            //else {
+            //    this.acceleration = addVector(multiplyVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), flockingWeights.wanderWeight), this.acceleration);
+            //    //this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);
+            //}
 
-				this.acceleration = addVector(multiplyVector(flee(closestPlayer), flockingWeights.playerFleeWeight / calcPointDistance(this.position, closestPlayer)), this.acceleration);
-
-                sheepSpeed = 1 / (calcPointDistance(this.position, closestPlayer) / (flockingWeights.fleeRadius * 1.5));
-                if (sheepSpeed < 1.75) sheepSpeed = 1.75;
-                if (sheepSpeed > 6) sheepSpeed = 6;
-            } else if(this.shepherd){
-				this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
-			} /*else {
-                this.acceleration = addVector(multiplyVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), flockingWeights.wanderWeight), this.acceleration);
-            }*/
-			
+            //this.acceleration = addVector(this.acceleration, seek(this.shepherd));
 
             // calculates normalized forward vector and normalized vector in front of the object
-            this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
-            this.forward = normalizeVector(this.forward);
-            this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
-            
-            this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);       //cohesion
-            this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);         //alignment
-            this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);   //separation
+            //this.forward = { x: Math.cos(this.angle), y: Math.sin(this.angle) };
+            //this.forward = normalizeVector(this.forward);
+            //this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
+            //
+            //this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);         //alignment
+            //this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);   //separation
             
             // drag
-            //this.acceleration = addVector(multiplyVector(this.velocity, -0.01), this.acceleration);
-            this.acceleration = addVector(multiplyVector(this.forward, .1), this.acceleration);
-                
-            //this.acceleration = normalizeVector(this.acceleration);
-            // calculates sheep movement
-            this.lastLastVelocity = this.lastVelocity;
-            this.lastVelocity = this.velocity;
-            this.velocity = addVector(this.velocity, this.acceleration);
-
-            // slows sheep
-            
-            if (this.acceleration.x === 0 && this.acceleration.y === 0) {
-                this.velocity = divideVector(this.velocity, 1.1);
-                if (this.velocity.x < 0.1 && this.velocity.y < 0.1) {
-                    this.velocity = { x: 0, y: 0 };
-                }
+            this.velocity = divideVector(this.velocity, 1.1);
+            if (this.velocity.x < 0.1 && this.velocity.y < 0.1) {
+                this.velocity = { x: 0, y: 0 };
             }
+
+            // calculates sheep movement
+            //this.lastLastVelocity = this.lastVelocity;
+            //this.lastVelocity = this.velocity;
+            this.velocity = addVector(this.velocity, this.acceleration);
             
             // limit sheep speed
-            else if (calcVectorLength(this.velocity) > 1) {
+            if (calcVectorLength(this.acceleration) > 0) {
                 this.velocity = normalizeVector(this.velocity);
                 this.velocity = multiplyVector(this.velocity, sheepSpeed);
             }
-            
-
 
             // retain rotation
-            if (this.velocity.x !== 0 && this.velocity.y !== 0 && this.lastVelocity.x !== 0 && this.lastVelocity.y !== 0 && this.lastLastVelocity.x !== 0 && this.lastLastVelocity.y !== 0) {
-                this.angle = Math.atan2(this.velocity.y + this.lastVelocity.y + this.lastLastVelocity.y, this.velocity.x + this.lastVelocity.x + this.lastLastVelocity.x);
+
+            //if (this.velocity.x !== 0 && this.velocity.y !== 0 && this.lastVelocity.x !== 0 && this.lastVelocity.y !== 0 && this.lastLastVelocity.x !== 0 && this.lastLastVelocity.y !== 0) {
+            //    this.angle = Math.atan2((this.velocity.y + this.lastVelocity.y + this.lastLastVelocity.y) / 3, (this.velocity.x + this.lastVelocity.x + this.lastLastVelocity.x) / 3);
+            //}
+
+            if (this.velocity.x !== 0 && this.velocity.y !== 0) {
+                this.angle = Math.atan2(this.velocity.y, this.velocity.x);
             }
 
             // update position
