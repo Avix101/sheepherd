@@ -98,8 +98,6 @@ let uiManager = (function(){
 
 				this.firstPlace.name.innerText = indices[0] != undefined ? getTruncatedName(playersInfo[indices[0]].name) : "";
 				this.firstPlace.score.innerHTML = indices[0] != undefined? players[0].score : "";
-				console.dir(this.firstPlace);
-				debugger;
 				this.secondPlace.name.innerText = indices[1] != undefined? getTruncatedName(playersInfo[indices[1]].name) : "";
 				this.secondPlace.score.innerText = indices[1] != undefined? players[1].score : "";
 				this.thirdPlace.name.innerText = indices[2] != undefined? getTruncatedName(playersInfo[indices[2]].name) : "";
