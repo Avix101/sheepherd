@@ -110,6 +110,7 @@ let networkManager = (function(){
 		socket.on('playerdata', function(playerData){
 			//Another anti-jitter safeguard, unless the whole gamestate is updated, just ignore server changes to local character
 			if(playerData.data.id == player.id){
+				players[playerData.index].score = playerData.data.score;
 				return;
 			}
 			players[playerData.index] = playerData.data;
