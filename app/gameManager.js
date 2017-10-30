@@ -62,7 +62,7 @@ let gameManager = ( function(){
                 	if(sheep.shepherd !== undefined && sheep.shepherd.id === player.id && index === -1 ){
                 		this.flock.push(sheep);
                 	}
-                	else if(sheep.shepherd !== undefined && sheep.shepherd.id !== player.id && index !== -1){	
+                	else if((sheep.shepherd === undefined || sheep.shepherd.id !== player.id) && index !== -1){	
                 		this.flock.splice(index,1);
                 	}
                 }.bind(this));
