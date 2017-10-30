@@ -201,12 +201,12 @@ let displayManager = (function(){
 					playerObj.shepherdPosition = player.shepherd.position;
 					drawobj = {
 						position: {x:player.position.x, y:player.position.y},
-						angle: 0
+						angle: player.angle - Math.PI/2
 					};
 				} else {
 					drawobj = {
 						position: {x:playerObj.x, y:playerObj.y},
-						angle: 0
+						angle: playerObj.angle - Math.PI/2
 					};
 				}
                 

@@ -26,6 +26,7 @@ let gameManager = ( function(){
 	let sheepTime = 0;
 	let nextSheepSpawn = 0;
 	let lastTime = 0;
+	let flockRadius = 100;
 
 	player = {
 		
@@ -54,6 +55,17 @@ let gameManager = ( function(){
                         this.position.y += addY;
                     }
                 }
+
+                // calculate flock
+                sheeps.forEach(function(sheep){
+                	let index = this.flock.indexOf(sheep);
+                	if(sheep.shepherd !== undefined && sheep.shepherd.id === player.id && index === -1 ){
+                		this.flock.push(sheep);
+                	}
+                	else if(sheep.shepherd !== undefined && sheep.shepherd.id !== player.id && index !== -1){	
+                		this.flock.splice(index,1);
+                	}
+                }.bind(this));
 			}
 		},
 		name: "Player Name",
@@ -79,6 +91,8 @@ let gameManager = ( function(){
 			this.position.y += addY;
 			
 			this.angle = Math.atan2(addY, addX);
+
+			this.score = this.shepherd.flock.length;
 
 			this.shepherd.update();
 		}
@@ -127,7 +141,7 @@ let gameManager = ( function(){
 				hostUpdate();
 			}
 
-			let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position, flock: player.shepherd.flock};
+			let playerInfo = { x: player.position.x, y: player.position.y, id: player.id, angle: player.angle, score: player.score, shepherdPosition: player.shepherd.position};
 			network.sendPlayerInfo(playerInfo);
 			ui.leaderboard.update();
 		}
