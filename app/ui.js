@@ -97,7 +97,9 @@ let uiManager = (function(){
 				});
 
 				this.firstPlace.name.innerText = indices[0] != undefined ? getTruncatedName(playersInfo[indices[0]].name) : "";
-				this.firstPlace.score.innerText = indices[0] != undefined? players[0].score : "";
+				this.firstPlace.score.innerHTML = indices[0] != undefined? players[0].score : "";
+				console.dir(this.firstPlace);
+				debugger;
 				this.secondPlace.name.innerText = indices[1] != undefined? getTruncatedName(playersInfo[indices[1]].name) : "";
 				this.secondPlace.score.innerText = indices[1] != undefined? players[1].score : "";
 				this.thirdPlace.name.innerText = indices[2] != undefined? getTruncatedName(playersInfo[indices[2]].name) : "";
@@ -118,7 +120,7 @@ let uiManager = (function(){
 
 
 			},
-			firstPlace: {name: document.querySelector("#FirstPlace").querySelector(".leaderboardName"), score: document.querySelector("#FirstPlace").querySelectorAll(".leaderboardScore") },
+			firstPlace: {name: document.querySelector("#FirstPlace").querySelector(".leaderboardName"), score: document.querySelector("#FirstPlace").querySelector(".leaderboardScore") },
 			secondPlace: {name: document.querySelector("#SecondPlace").querySelector(".leaderboardName"), score: document.querySelector("#SecondPlace").querySelector(".leaderboardScore")},
 			thirdPlace: {name: document.querySelector("#ThirdPlace").querySelector(".leaderboardName"), score: document.querySelector("#ThirdPlace").querySelector(".leaderboardScore")},
 			fourthPlace: {name: document.querySelector("#FourthPlace").querySelector(".leaderboardName"), score: document.querySelector("#FourthPlace").querySelector(".leaderboardScore")},
