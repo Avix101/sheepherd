@@ -126,6 +126,7 @@ let networkManager = (function(){
 		});
 		
 		socket.on('host', function(isHost){
+			console.log(isHost);
 			host = isHost;
 			if(host){
 				isHostCallback();

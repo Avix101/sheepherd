@@ -54,7 +54,7 @@ function sendPlayerData(pData, i){
 	io.sockets.emit('playerdata', playerData); 
 }
 
-let host;
+let host = false;
 
 io.on('connection', function(socket){
 	
@@ -112,18 +112,17 @@ io.on('connection', function(socket){
 		let oldHost = host;
 		let oldHostIndex = players.indexOf(oldHost);
 		
+		if(io.sockets.connected[oldHost]){
+			io.sockets.connected[oldHost].emit('host', false);
+		}
+		
 		for(let i = 0; i < players.length; i++){
 			
-		
 			if(redis.lindex('rejectedHosts', players[i]) != -1){
 				continue;
 			}
 		
 			host = redis.lindex('playerIDs', i);
-			
-			if(io.sockets.connected[oldHost]){
-				io.sockets.connected[oldHost].emit('host', false);
-			}
 			
 			if(io.sockets.connected[host]){
 				io.sockets.connected[host].emit('host', true);
@@ -163,6 +162,8 @@ io.on('connection', function(socket){
 			host = redis.lindex('playerIDs', 0);
 			if(host){
 				io.sockets.connected[host].emit('host', true);
+			} else {
+				host = undefined;
 			}
 		}
 	});
