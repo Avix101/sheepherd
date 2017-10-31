@@ -97,15 +97,15 @@ let uiManager = (function(){
 				});
 
 				this.firstPlace.name.innerText = indices[0] != undefined ? getTruncatedName(playersInfo[indices[0]].name) : "";
-				this.firstPlace.score.innerHTML = indices[0] != undefined? players[0].score : "";
+				this.firstPlace.score.innerHTML = indices[0] != undefined? players[indices[0]].score : "";
 				this.secondPlace.name.innerText = indices[1] != undefined? getTruncatedName(playersInfo[indices[1]].name) : "";
-				this.secondPlace.score.innerText = indices[1] != undefined? players[1].score : "";
+				this.secondPlace.score.innerText = indices[1] != undefined? players[indices[1]].score : "";
 				this.thirdPlace.name.innerText = indices[2] != undefined? getTruncatedName(playersInfo[indices[2]].name) : "";
-				this.thirdPlace.score.innerText = indices[2] != undefined? players[2].score : "";
+				this.thirdPlace.score.innerText = indices[2] != undefined? players[indices[2]].score : "";
 				this.fourthPlace.name.innerText = indices[3] != undefined? getTruncatedName(playersInfo[indices[3]].name) : "";
-				this.fourthPlace.score.innerText = indices[3] != undefined? players[3].score : "";
+				this.fourthPlace.score.innerText = indices[3] != undefined? players[indices[3]].score : "";
 				this.fifthPlace.name.innerText = indices[4] != undefined? getTruncatedName(playersInfo[indices[4]].name) : "";
-				this.fifthPlace.score.innerText = indices[4] != undefined? players[4].score : "";
+				this.fifthPlace.score.innerText = indices[4] != undefined? players[indices[4]].score : "";
 
 				function getTruncatedName(name){
 					var truncName = name;
