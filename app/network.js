@@ -72,7 +72,11 @@ let networkManager = (function(){
 		}
 		
 		object.appendSheepPacket = function(packet, sheep, index){
-			packet.sheep[index] = sheep;
+			packet.sheep[index] = {
+				position: sheep.position,
+				angle: sheep.angle,
+				shepherd : sheep.shepherd
+			};
 			packet.indices.push(index);
 		}
 		
@@ -131,7 +135,7 @@ let networkManager = (function(){
 	function updateSheeps(sheepData){
 		if(game)
 		{
-			for(let i = 0; i < sheepData.sheep.length; i++){
+			for(let i = 0; i < sheepData.indices.length; i++){
 			
 				let index = sheepData.indices[i];
 				if(sheepData.sheep[index] == "del"){
@@ -139,10 +143,21 @@ let networkManager = (function(){
 					continue;
 				}
 			
-				sheeps[index] = sheepData.sheep[index];
+				if(sheeps[index]){
+					sheeps[index].position = sheepData.sheep[index].position;
+					sheeps[index].angle = sheepData.sheep[index].angle;
+					sheeps[index].shepherd = sheepData.sheep[index].shepherd;
+				}
+				else{
+					sheeps[index] = new sheep(sheepData.sheep[index].position.x, sheepData.sheep[index].position.y);
+					sheeps[index].angle = sheepData.sheep[index].angle;
+					sheeps[index].shepherd = sheepData.sheep[index].shepherd;
+				}
 			}
 		}
-		// console.dir(sheeps);
+		 // console.dir(sheeps);
+		 // console.dir(sheepData);
+		 // debugger;
 	}
 	
 	return {

@@ -232,9 +232,9 @@ let displayManager = (function(){
 
 		function drawSheeps(sheeps){
 			var viewPort = camera.getViewPort();
-			for(let i = 0; i < sheeps.length; i++){
-				drawSprite(sheeps[i], sheepSprite);
-			}
+			sheeps.forEach(function(sheep){
+				drawSprite(sheep, sheepSprite);
+			});
 		}
 		
 		function drawShepherds(players){
