@@ -135,11 +135,11 @@ let networkManager = (function(){
 			
 				let index = sheepData.indices[i];
 				if(sheepData.sheep[index] == "del"){
-					sheeps.splice(sheepData[index], 1);
+					sheeps.splice(index, 1);
 					continue;
 				}
 			
-				sheeps[index] = sheepData.data;
+				sheeps[index] = sheepData.sheep[index];
 			}
 		}
 		// console.dir(sheeps);
