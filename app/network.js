@@ -67,13 +67,13 @@ let networkManager = (function(){
 		object.createSheepPacket = function(){
 			let packet = {};
 			packet.sheep = [];
-			packet.indicies = [];
+			packet.indices = [];
 			return packet;
 		}
 		
 		object.appendSheepPacket = function(packet, sheep, index){
-			packet.sheep.push(sheep);
-			packet.indicies.push(index);
+			packet.sheep[index] = sheep;
+			packet.indices.push(index);
 		}
 		
 		object.stageSheepDelete = function(packet, sheep, index){
@@ -109,7 +109,7 @@ let networkManager = (function(){
 		
 		socket.on('playerdata', function(playerData){
 			//Another anti-jitter safeguard, unless the whole gamestate is updated, just ignore server changes to local character
-			if(playerData.data.id == player.id){
+			if(playerData.data.id === player.id){
 				players[playerData.index].score = playerData.data.score;
 				return;
 			}
@@ -133,24 +133,13 @@ let networkManager = (function(){
 		{
 			for(let i = 0; i < sheepData.sheep.length; i++){
 			
-				let index = sheepData.indicies[i];
+				let index = sheepData.indices[i];
 				if(sheepData.sheep[index] == "del"){
 					sheeps.splice(sheepData[index], 1);
 					continue;
 				}
 			
-				if(sheeps[index]){
-					sheeps[index].position.x = sheepData.sheep[i].position.x;
-					sheeps[index].position.y = sheepData.sheep[i].position.y;
-					sheeps[index].velocity.x = sheepData.sheep[i].velocity.x;
-					sheeps[index].velocity.y = sheepData.sheep[i].velocity.y;
-					sheeps[index].acceleration.x = sheepData.sheep[i].acceleration.x;
-					sheeps[index].acceleration.y = sheepData.sheep[i].acceleration.y;
-					sheeps[index].angle = sheepData.sheep[i].angle;
-				}
-				else{
-					sheeps[index] = new sheep(sheepData.sheep[i].position.x, sheepData.sheep[i].position.y);
-				}
+				sheeps[index] = sheepData.data;
 			}
 		}
 		// console.dir(sheeps);

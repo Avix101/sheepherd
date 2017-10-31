@@ -186,7 +186,6 @@ let gameManager = ( function(){
 			sheeps[i].update();
             if (sheeps[i].position.x < -1000 || sheeps[i].position.y < -1000 || sheeps[i].position.x > 3500 || sheeps[i].position.y > 3500){   // REPLACE WITH MAP SIZE VARIABLES
 				network.stageSheepDelete(sheepPacket, sheeps[i], i);
-				sheeps.splice(i, 1);
             } else{
                 network.appendSheepPacket(sheepPacket, sheeps[i], i);
             }
