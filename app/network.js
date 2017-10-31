@@ -121,7 +121,8 @@ let networkManager = (function(){
 		});
 		
 		socket.on('sheepstate', function(sheepData){
-			updateSheeps(sheepData);
+			if(!host)
+				updateSheeps(sheepData);
 		});
 		
 		socket.on('host', function(isHost){
