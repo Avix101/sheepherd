@@ -4,6 +4,7 @@
         // flocking constants
         var flockingWeights = {
             playerFleeWeight: 50,
+            seperateRad: 80,
             separateWeight: 1,
             cohereWeight: .09,
             alignWeight: .02,
@@ -63,7 +64,7 @@ let sheepSpeed = 1;
             this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
             
             this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);         //alignment
-            this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);   //separation
+            this.acceleration = addVector(multiplyVector(separate(seperateRad), flockingWeights.separateWeight), this.acceleration);   //separation
             this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);       //cohesion
             
             // drag
@@ -141,8 +142,7 @@ let sheepSpeed = 1;
 		}.bind(this);
 
 
-		let separate = function(){
-			let separateRad = 80;
+		let separate = function(separateRad){
 			let separateVec = {x:0, y:0};
 
 			if(sheeps === undefined){
@@ -151,20 +151,23 @@ let sheepSpeed = 1;
 
             for (let i = 0; i < sheeps.length; i++){
                 // calculate distance
-				let dist = subtractVector(sheeps[i].position, this.position);
                 let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
 
                 // if it's the same sheep, skip
                 if (sheeps.indexOf(this) == i) continue;
 
                 // if too close flee
-                if (distSqr < Math.pow(separateRad, 2)) {
+                if (calcPointDistance(sheeps[i].position, this.position) < Math.pow(separateRad, 2)) {
                     separateVec = addVector(flee(sheeps[i].position), separateVec);
 				}
             }
 
+            // separates from shepherd
+            if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
+                seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
+            }
+
             separateVec = normalizeVector(separateVec);
-            //console.log(separateVec);
             return separateVec;
 
 		}.bind(this);
