@@ -64,7 +64,7 @@ let sheepSpeed = 1;
             this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
             
             this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);         //alignment
-            this.acceleration = addVector(multiplyVector(separate(seperateRad), flockingWeights.separateWeight), this.acceleration);   //separation
+            this.acceleration = addVector(multiplyVector(separate(flockingWeights.seperateRad), flockingWeights.separateWeight), this.acceleration);   //separation
             this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);       //cohesion
             
             // drag
@@ -151,19 +151,21 @@ let sheepSpeed = 1;
 
             for (let i = 0; i < sheeps.length; i++){
                 // calculate distance
+                let dist = subtractVector(sheeps[i].position, this.position);
                 let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
 
                 // if it's the same sheep, skip
                 if (sheeps.indexOf(this) == i) continue;
 
                 // if too close flee
-                if (calcPointDistance(sheeps[i].position, this.position) < Math.pow(separateRad, 2)) {
+                if (distSqr < Math.pow(separateRad, 2)) {
+                //if (calcPointDistance(sheeps[i].position, this.position) < Math.pow(separateRad, 2)) {
                     separateVec = addVector(flee(sheeps[i].position), separateVec);
 				}
             }
 
             // separates from shepherd
-            if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
+            if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < Math.pow(separateRad, 2)) {
                 seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
             }
 
