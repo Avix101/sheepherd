@@ -64,7 +64,7 @@ let sheepSpeed = 1;
             this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
             
             this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);         //alignment
-            this.acceleration = addVector(multiplyVector(separate(seperateRad), flockingWeights.separateWeight), this.acceleration);   //separation
+            this.acceleration = addVector(multiplyVector(separate(flockingWeights.seperateRad), flockingWeights.separateWeight), this.acceleration);   //separation
             this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);       //cohesion
             
             // drag
@@ -150,8 +150,6 @@ let sheepSpeed = 1;
 			}
 
             for (let i = 0; i < sheeps.length; i++){
-                // calculate distance
-                let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
 
                 // if it's the same sheep, skip
                 if (sheeps.indexOf(this) == i) continue;
@@ -163,9 +161,9 @@ let sheepSpeed = 1;
             }
 
             // separates from shepherd
-            if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
-                seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
-            }
+            //if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
+            //    seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
+            //}
 
             separateVec = normalizeVector(separateVec);
             return separateVec;
@@ -179,7 +177,7 @@ let sheepSpeed = 1;
 				return coherePoint;
 			}
 
-            let cohereNum = 0
+            let cohereNum = 0;
 			for(let i = 0; i < sheeps.length; i++){
                 if (calcPointDistance(sheeps[i].position, this.position) < 200){
 				    coherePoint = addVector(coherePoint, sheeps[i].position);
@@ -207,7 +205,7 @@ let sheepSpeed = 1;
             }
             for(let i = 0; i < sheeps.length; i++){
                 if (calcPointDistance(sheeps[i].position, this.position) < 200){
-                    flockDir = addVector(sheeps[i].forward, flockDir)//member.GetComponent<Human>().direction;
+                    flockDir = addVector(sheeps[i].forward, flockDir);//member.GetComponent<Human>().direction;
                 }
             }
 
@@ -234,8 +232,8 @@ let sheepSpeed = 1;
             if (this.wanderSmooth == -1){
                 ranAngle = Math.random() * 360;
             } else {
-                let min = (this.wanderSmooth - wanderRange);
-                let max = (this.wanderSmooth + wanderRange);
+                let min = this.wanderSmooth - wanderRange;
+                let max = this.wanderSmooth + wanderRange;
                 // smooth
                 ranAngle = min + Math.random() * (max - min);
             }
@@ -270,5 +268,5 @@ let sheepSpeed = 1;
         sheeps[newIndex] = newSheep;
 		
 		return newIndex;
-    };
+    }
 
