@@ -241,10 +241,12 @@ let displayManager = (function(){
 			let viewPort = camera.getViewPort();
 			for(let i = 0; i < players.length; i++){
 				drawSprite({position: players[i].shepherdPosition}, shepherdSprite);
+                //console.log(players[i].shepherdPosition);
 			}
 		}
 
 		function drawSprite(drawObj, sprite){
+            if (drawObj.position !== undefined){
 			ctx.save();
 			ctx.translate(drawObj.position.x, drawObj.position.y);
 			ctx.rotate(drawObj.angle);
@@ -260,6 +262,7 @@ let displayManager = (function(){
 				sprite.drawHeight		// height on canvas
 			);
 			ctx.restore();
+            }
 		}
 
 		console.log("Display Manager Instance created");

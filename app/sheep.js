@@ -5,10 +5,10 @@
         var flockingWeights = {
             playerFleeWeight: 50,
             seperateRad: 80,
-            separateWeight: 3,
+            separateWeight: 1,
             cohereWeight: .09,
             alignWeight: .02,
-            leaderFollowWeight: .1,
+            leaderFollowWeight: .2,
             sheepSlow: 1.1,
             forwardVectorLength: 200,
             wanderRange: 0.3,
@@ -69,7 +69,7 @@ let sheepSpeed = 1;
             
             // drag
             this.velocity = divideVector(this.velocity, 1.1);
-            if (this.velocity.x < 0.1 && this.velocity.y < 0.1) {
+            if (Math.abs(this.velocity.x) < 0.1 && Math.abs(this.velocity.y < 0.1)) {
                 this.velocity = { x: 0, y: 0 };
             }
 
@@ -163,9 +163,9 @@ let sheepSpeed = 1;
             }
 
             // separates from shepherd
-            //if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
-            //    seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
-            //}
+            if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
+                seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
+            }
 
             separateVec = normalizeVector(separateVec);
             return separateVec;
@@ -193,7 +193,7 @@ let sheepSpeed = 1;
             let distSqr = Math.pow(dist.x, 2) + Math.pow(dist.y, 2);
 
             if (distSqr < 500) {
-                return { x: 0, y: 0 };
+                //return { x: 0, y: 0 };
             }
 
 			return seek(coherePoint);
@@ -213,7 +213,7 @@ let sheepSpeed = 1;
 
             let desiredVelocity = normalizeVector(flockDir);
 
-            let steeringForce = subtractVector(desiredVelocity, this.velocity);
+            let steeringForce = subtractVector(desiredVelocity, normalizeVector(this.velocity));
             return normalizeVector(steeringForce);
         }.bind(this);
 
@@ -260,7 +260,7 @@ let sheepSpeed = 1;
 	
 	//Let's put spawning here for now
 	function spawnSheep(){
-        let newSheep = new sheep(Math.random() * 5000, Math.random() * 5000);
+        let newSheep = new sheep(Math.random() * 3500 - 500, Math.random() * 3500 - 500);
 		newSheep.velocity = {x:0, y:0};
 		newSheep.acceleration = {x:0, y:0};
 		newSheep.angle = Math.random()*Math.PI*2;

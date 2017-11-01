@@ -81,7 +81,8 @@ let networkManager = (function(){
 		}
 		
 		object.stageSheepDelete = function(packet, sheep, index){
-			object.appendSheepPacket(packet, 'del', index);
+			packet.sheep[index] = 'del';
+			packet.indices.push(index);
 		}
 		
 		object.sendSheepPacket = function(packet){
@@ -140,11 +141,11 @@ let networkManager = (function(){
 			for(let i = 0; i < sheepData.indices.length; i++){
 			
 				let index = sheepData.indices[i];
+                //console.log(index);
 				if(sheepData.sheep[index] == "del"){
 					sheeps.splice(index, 1);
-					continue;
-				}
-			
+                    //console.log('sheep deleted');
+				} else
 				if(sheeps[index]){
 					sheeps[index].position = sheepData.sheep[index].position;
 					sheeps[index].angle = sheepData.sheep[index].angle;
