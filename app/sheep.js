@@ -5,7 +5,7 @@
         var flockingWeights = {
             playerFleeWeight: 50,
             seperateRad: 80,
-            separateWeight: 1,
+            separateWeight: 3,
             cohereWeight: .09,
             alignWeight: .02,
             leaderFollowWeight: .1,
@@ -64,7 +64,7 @@ let sheepSpeed = 1;
             this.frontPoint = addVector(multiplyVector(this.forward, flockingWeights.forwardVectorLength), this.position);
             
             this.acceleration = addVector(multiplyVector(align(), flockingWeights.alignWeight), this.acceleration);         //alignment
-            this.acceleration = addVector(multiplyVector(separate(flockingWeights.seperateRad), flockingWeights.separateWeight), this.acceleration);   //separation
+            this.acceleration = addVector(multiplyVector(separate(), flockingWeights.separateWeight), this.acceleration);   //separation
             this.acceleration = addVector(multiplyVector(cohere(), flockingWeights.cohereWeight), this.acceleration);       //cohesion
             
             // drag
@@ -82,10 +82,10 @@ let sheepSpeed = 1;
                 if (sheepSpeed > 6) sheepSpeed = 6;
             }
             else if (this.shepherd) {
-                this.acceleration = addVector(multiplyVector(getNormalizedVectorto(this.shepherd.shepherdPosition, this.position), flockingWeights.leaderFollowWeight / calcPointDistance(this.position, this.shepherd.shepherdPosition)), this.acceleration);
-                //if (calcPointDistance(this.position, this.shepherd.shepherdPosition) > 50) {
-                //    this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
-                //}
+                //this.acceleration = addVector(multiplyVector(getNormalizedVectorto(this.shepherd.shepherdPosition, this.position), flockingWeights.leaderFollowWeight / calcPointDistance(this.position, this.shepherd.shepherdPosition)), this.acceleration);
+                if (calcPointDistance(this.position, this.shepherd.shepherdPosition) > 50) {
+                    this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
+                }
             }
             else {
                 // wandering
@@ -143,7 +143,8 @@ let sheepSpeed = 1;
 		}.bind(this);
 
 
-		let separate = function(separateRad){
+        let separate = function () {
+            let separateRad = 80;
 			let separateVec = {x:0, y:0};
 
 			if(sheeps === undefined){
@@ -156,7 +157,7 @@ let sheepSpeed = 1;
                 if (sheeps.indexOf(this) == i) continue;
 
                 // if too close flee
-                if (calcPointDistance(sheeps[i].position, this.position) < flockingWeights.separateRad) {
+                if (calcPointDistance(sheeps[i].position, this.position) < separateRad) {
                     separateVec = addVector(flee(sheeps[i].position), separateVec);
 				}
             }
@@ -269,5 +270,5 @@ let sheepSpeed = 1;
         sheeps[newIndex] = newSheep;
 		
 		return newIndex;
-    }
+    };
 
