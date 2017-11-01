@@ -5,10 +5,10 @@
         var flockingWeights = {
             playerFleeWeight: 50,
             seperateRad: 80,
-            separateWeight: 3,
-            cohereWeight: .09,
-            alignWeight: .02,
-            leaderFollowWeight: .1,
+            separateWeight: 2,
+            cohereWeight: .1,
+            alignWeight: .04,
+            leaderFollowWeight: .4,
             sheepSlow: 1.1,
             forwardVectorLength: 200,
             wanderRange: 0.3,
@@ -42,10 +42,11 @@ let sheepSpeed = 1;
             this.acceleration = { x: 0, y: 0 };
 			
 			let closestShepherd = getClosestShepherd(this.position);
-			let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
+            let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
 			
 			if(calcVectorLength(vectorToShepherd) < flockingWeights.shepherdRadius){
-				this.shepherd = closestShepherd;
+                this.shepherd = closestShepherd;
+                flockingWeights.shepherdRadius = 400 + this.shepherd.score * 10;
             }
             else {
 				this.shepherd = undefined;
@@ -69,7 +70,7 @@ let sheepSpeed = 1;
             
             // drag
             this.velocity = divideVector(this.velocity, 1.1);
-            if (this.velocity.x < 0.1 && this.velocity.y < 0.1) {
+            if (Math.abs(this.velocity.x) < 0.1 && Math.abs(this.velocity.y) < 0.1) {
                 this.velocity = { x: 0, y: 0 };
             }
 
@@ -163,9 +164,9 @@ let sheepSpeed = 1;
             }
 
             // separates from shepherd
-            //if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
-            //    seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
-            //}
+            if (this.shepherd && calcPointDistance(this.shepherd.shepherdPosition, this.position) < separateRad) {
+                seperateVec = addVector(flee(this.shepherd.shepherdPosition), separateVec);
+            }
 
             separateVec = normalizeVector(separateVec);
             return separateVec;
