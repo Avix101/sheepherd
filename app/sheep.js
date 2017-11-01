@@ -82,12 +82,13 @@ let sheepSpeed = 1;
                 if (sheepSpeed > 6) sheepSpeed = 6;
             }
             else if (this.shepherd) {
-                //this.acceleration = addVector(multiplyVector(getNormalizedVectorto(this.shepherd.shepherdPosition, this.position), flockingWeights.leaderFollowWeight / calcPointDistance(this.position, this.shepherd.shepherdPosition)), this.acceleration);
-                if (calcPointDistance(this.position, this.shepherd.shepherdPosition) > 50) {
-                    this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
-                }
+                this.acceleration = addVector(multiplyVector(getNormalizedVectorto(this.shepherd.shepherdPosition, this.position), flockingWeights.leaderFollowWeight / calcPointDistance(this.position, this.shepherd.shepherdPosition)), this.acceleration);
+                //if (calcPointDistance(this.position, this.shepherd.shepherdPosition) > 50) {
+                //    this.acceleration = addVector(multiplyVector(seek(this.shepherd.shepherdPosition), flockingWeights.leaderFollowWeight), this.acceleration);
+                //}
             }
             else {
+                // wandering
                 this.acceleration = addVector(multiplyVector(wander(flockingWeights.wanderRange, flockingWeights.wanderRadius, this.forward), flockingWeights.wanderWeight), this.acceleration);
                 
             }
@@ -155,7 +156,7 @@ let sheepSpeed = 1;
                 if (sheeps.indexOf(this) == i) continue;
 
                 // if too close flee
-                if (calcPointDistance(sheeps[i].position, this.position) < Math.pow(separateRad, 2)) {
+                if (calcPointDistance(sheeps[i].position, this.position) < flockingWeights.separateRad) {
                     separateVec = addVector(flee(sheeps[i].position), separateVec);
 				}
             }
