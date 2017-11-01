@@ -42,10 +42,11 @@ let sheepSpeed = 1;
             this.acceleration = { x: 0, y: 0 };
 			
 			let closestShepherd = getClosestShepherd(this.position);
-			let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
+            let vectorToShepherd = getVectorto(this.position, closestShepherd.shepherdPosition);
 			
 			if(calcVectorLength(vectorToShepherd) < flockingWeights.shepherdRadius){
-				this.shepherd = closestShepherd;
+                this.shepherd = closestShepherd;
+                flockingWeights.shepherdRadius = 400 + this.shepherd.score * 10;
             }
             else {
 				this.shepherd = undefined;
@@ -69,7 +70,7 @@ let sheepSpeed = 1;
             
             // drag
             this.velocity = divideVector(this.velocity, 1.1);
-            if (Math.abs(this.velocity.x) < 0.1 && Math.abs(this.velocity.y < 0.1)) {
+            if (Math.abs(this.velocity.x) < 0.1 && Math.abs(this.velocity.y) < 0.1) {
                 this.velocity = { x: 0, y: 0 };
             }
 
